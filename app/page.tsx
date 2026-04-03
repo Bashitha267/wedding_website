@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Hero from "@/components/Hero";
 import CountdownSection from "@/components/CountdownSection";
 import ItineraryTimeline from "@/components/ItineraryTimeline";
@@ -105,10 +105,17 @@ const WeddingCalendar = ({ onAdd }: { onAdd: () => void }) => {
 };
 
 const PhotoCarousel = () => {
-  const [index, setIndex] = useState(0);
-  const photos = ['/home_hero_bg.png', '/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png'];
+    const [index, setIndex] = useState(0);
+    const photos = ['/home_hero_bg.png', '/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png'];
 
-  return (
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
+        }, 4000);
+        return () => clearInterval(interval);
+    }, [photos.length]);
+
+    return (
     <Reveal delay={200}>
       <div style={{ padding: '60px 0', textAlign: 'center' }}>
         <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '2.8rem', color: 'var(--rose-dark)', marginBottom: '30px' }}>
@@ -437,8 +444,6 @@ export default function Home() {
               <PhotoCarousel />
 
               <Decoration />
-
-              <SectionImage src="/photo_4.png" alt="Grand Ballroom" height="350px" />
 
               <RSVPFooter />
             </div>
