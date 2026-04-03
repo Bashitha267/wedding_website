@@ -234,9 +234,13 @@ const SectionImage = ({ src, alt, height = "250px", delay = 200 }: { src: string
 );
 
 const Decoration = () => (
-  <div style={{ display: 'flex', justifyContent: 'center', margin: '30px 0' }}>
-    <img src="https://www.transparentpng.com/download/floral/floral-pink-watercolor-flowers-png-5.png" alt="" style={{ width: '120px', opacity: 0.2 }} />
-  </div>
+    <div style={{ display: 'flex', justifyContent: 'center', margin: '30px 0', opacity: 0.3 }}>
+        <svg width="150" height="40" viewBox="0 0 150 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M75 10c-5-5-12-5-17 0m17 0c5-5 12-5 17 0M75 10v20m0-20L60 25m15-15 15 15" stroke="var(--rose-vibrant)" strokeWidth="1.5" strokeLinecap="round" />
+            <circle cx="75" cy="10" r="3" fill="var(--rose-vibrant)" />
+            <path d="M10 20h45M95 20h45" stroke="var(--rose-light)" strokeWidth="1" strokeDasharray="4 4" />
+        </svg>
+    </div>
 );
 
 const FloatingHearts = () => (
