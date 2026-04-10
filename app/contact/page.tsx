@@ -46,14 +46,14 @@ export default function ContactPage() {
                     <div style={{ fontSize: '1.5rem' }}>📍</div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: '1.1rem' }}>OFFICE</h4>
-                      <p style={{ color: 'var(--bw-gray-medium)' }}>123 Elegance Avenue, Design District, NY 10001</p>
+                      <p style={{ color: 'var(--bw-gray-medium)' }}>Negombo, Sri Lanka</p>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
                     <div style={{ fontSize: '1.5rem' }}>📞</div>
                     <div>
                       <h4 style={{ margin: 0, fontSize: '1.1rem' }}>CALL US</h4>
-                      <p style={{ color: 'var(--bw-gray-medium)' }}>+1 (555) 123-4567</p>
+                      <p style={{ color: 'var(--bw-gray-medium)' }}>+94 77 123 4567</p>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
@@ -85,17 +85,11 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div>
               <Reveal delay={200}>
-                <div style={{ 
-                  padding: '50px', 
-                  backgroundColor: 'var(--bw-white)', 
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.08)',
-                  borderRadius: '4px',
-                  border: '1px solid #eee'
-                }}>
+                <div className="form-container">
                   <h3 style={{ fontSize: '1.5rem', marginBottom: '30px', textTransform: 'uppercase', textAlign: 'center' }}>Send a Message</h3>
                   
                   <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                    <div className="form-grid">
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <label style={{ fontSize: '0.8rem', fontWeight: 600, letterSpacing: '1px' }}>NAME</label>
                         <input type="text" style={{ padding: '12px', border: '1px solid #ddd', borderRadius: '4px' }} placeholder="Your Name" />
@@ -144,6 +138,29 @@ export default function ContactPage() {
             <p style={{ opacity: 0.3, fontSize: '0.7rem', marginTop: '10px', letterSpacing: '2px' }}>BY MATRIX</p>
         </div>
       </footer>
+
+      <style jsx>{`
+        .form-container {
+          padding: 50px;
+          background-color: var(--bw-white);
+          box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+          border-radius: 4px;
+          border: 1px solid #eee;
+        }
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+        @media (max-width: 768px) {
+          .form-container {
+            padding: 25px;
+          }
+          .form-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </main>
   );
 }
