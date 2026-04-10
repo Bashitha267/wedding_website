@@ -10,15 +10,15 @@ export default function AboutSection() {
         <div className="grid grid-2" style={{ alignItems: 'center' }}>
           <Reveal>
             <div style={{ position: 'relative', height: '500px', borderRadius: '8px', overflow: 'hidden' }}>
-              <Image 
-                src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop" 
-                alt="About Us" 
-                fill 
+              <Image
+                src="https://res.cloudinary.com/dxoa3ashm/image/upload/q_auto/f_auto/v1775821212/c6610b55e2ef06abee899953e1324b30_fzfsq9.jpg"
+                alt="About Us"
+                fill
                 style={{ objectFit: 'cover' }}
               />
             </div>
           </Reveal>
-          
+
           <div style={{ padding: '0 40px' }}>
             <Reveal delay={200}>
               <h2 style={{ fontSize: '2.5rem', marginBottom: '30px', textTransform: 'uppercase' }}>Our Pure Intention</h2>
