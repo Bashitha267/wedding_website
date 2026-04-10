@@ -15,8 +15,8 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "The Wedding of Sarah & Mark",
-  description: "Join us for our special day under the roses.",
+  title: "KNOT STORY | Premium Wedding Invitations",
+  description: "Beautifully crafted digital and physical wedding invitations for your dream wedding.",
 };
 
 export default function RootLayout({
