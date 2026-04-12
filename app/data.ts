@@ -17,7 +17,7 @@ export const templates: Product[] = [
   {
     id: "earthy",
     name: "The Earthy Botanical",
-    image: "/botanical_baby_breath.png", // Using the generated image for now as a placeholder
+    image: "https://res.cloudinary.com/dnfbik3if/image/upload/q_auto/f_auto/v1776009671/earthy_l8luv4.jpg", // Using the generated image for now as a placeholder
     description: "A warm, organic design featuring rich brown tones, tan accents, and delicate botanical line art.",
     theme: "Earthy Botanical"
   },
@@ -31,14 +31,14 @@ export const templates: Product[] = [
   {
     id: "icy",
     name: "Icy Royal Forest",
-    image: "/icy_flower.png", 
+    image: "https://res.cloudinary.com/dnfbik3if/image/upload/q_auto/f_auto/v1776009817/2_lgtwrw.jpg",
     description: "An ethereal winter design with arched frames, dusty blue roses, and frozen silver accents.",
     theme: "Icy Winter Tale"
   },
   {
     id: "scrapbook",
     name: "The Blue Gallery",
-    image: "https://res.cloudinary.com/dxoa3ashm/image/upload/q_auto/f_auto/v1775820733/Untitled_design_nalrft.jpg", 
+    image: "https://res.cloudinary.com/dnfbik3if/image/upload/q_auto/f_auto/v1776009818/3_seoqup.jpg",
     description: "A nostalgic scrapbook design with polaroid photos, paper clips, and sky blue accents.",
     theme: "Nostalgic Scrapbook"
   }
