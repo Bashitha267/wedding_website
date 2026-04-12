@@ -24,7 +24,7 @@ export const templates: Product[] = [
   {
     id: "monochrome",
     name: "The Midnight Contrast",
-    image: "https://res.cloudinary.com/dxoa3ashm/image/upload/q_auto/f_auto/v1775820733/Untitled_design_nalrft.jpg", // Placeholder for now
+    image: "https://res.cloudinary.com/dnfbik3if/image/upload/q_auto/f_auto/v1776009818/1_sstux1.jpg", // Placeholder for now
     description: "A bold, high-contrast design with jagged torn paper edges and modern monochrome aesthetics.",
     theme: "Modern Monochrome"
   },
