@@ -9,17 +9,18 @@ import RSVPFooter from "@/components/RSVPFooter";
 const MUSIC_URL = "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3";
 const FLOWER_DECO = "/icy_flower.png";
 
-const FloatingHearts = () => (
+const FloatingHearts = ({ count = 40 }: { count?: number }) => (
   <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
-    {[...Array(20)].map((_, i) => (
+    {[...Array(count)].map((_, i) => (
       <div key={i} className="pulse" style={{
         position: 'absolute',
         top: `${Math.random() * 100}%`,
         left: `${Math.random() * 100}%`,
-        fontSize: `${Math.random() * 1.5 + 0.5}rem`,
-        opacity: 0.2,
-        color: '#a5b5c5', /* Icy Accent */
-        animationDelay: `${i * 0.4}s`
+        fontSize: `${Math.random() * 1.8 + 0.5}rem`,
+        opacity: 0.15,
+        color: 'var(--icy-accent)',
+        animationDelay: `${i * 0.2}s`,
+        animationDuration: `${3 + Math.random() * 4}s`
       }}>
         ❤
       </div>
@@ -69,14 +70,14 @@ const IcyHero = ({ data }: { data: any }) => (
           backgroundImage: `url("${data?.images?.heroImage || '/home_hero_bg.png'}")`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.4,
-          filter: 'brightness(1.1) contrast(0.9) saturate(0.8)'
+          opacity: 0.85,
+          filter: 'brightness(1) contrast(1.05) saturate(1)'
       }} />
       
       <div style={{ 
           position: 'absolute', 
           top: 0, left: 0, right: 0, bottom: 0,
-          background: 'radial-gradient(circle at center, transparent 0%, var(--icy-frost) 80%)',
+          background: 'radial-gradient(circle at center, transparent 30%, var(--icy-frost) 95%)',
           zIndex: 1
       }} />
 
@@ -114,6 +115,59 @@ const IcyHero = ({ data }: { data: any }) => (
       </div>
     </section>
 );
+
+const IcyCalendar = ({ data }: { data: any }) => {
+  const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
+  const year = eventDate.getFullYear();
+  const month = eventDate.getMonth();
+  const targetDay = eventDate.getDate();
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startDay = new Date(year, month, 1).getDay();
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const blanks = Array.from({ length: startDay }, (_, i) => i);
+  const monthName = eventDate.toLocaleString('en-US', { month: 'long' }).toUpperCase();
+
+  return (
+    <Reveal delay={200}>
+      <div style={{ padding: '60px 30px', textAlign: 'center', backgroundColor: 'white', borderRadius: '40px', margin: '60px 0', border: '1px solid var(--icy-frost)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', color: 'var(--icy-dark)', marginBottom: '10px', lineHeight: 1.2 }}>Save the Date</div>
+        <div style={{ fontSize: '1.2rem', letterSpacing: '5px', color: 'var(--icy-blue)', fontWeight: 700, marginBottom: '40px' }}>{monthName} {year}</div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '15px', maxWidth: '340px', margin: '0 auto' }}>
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+            <div key={`${d}-${i}`} style={{ fontSize: '0.7rem', fontWeight: 800, opacity: 0.4, color: 'var(--icy-blue)' }}>{d}</div>
+          ))}
+          {blanks.map(b => <div key={`b-${b}`} />)}
+          {days.map(d => (
+            <div key={d} style={{ 
+                fontSize: '1.1rem', 
+                height: '45px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                position: 'relative', 
+                color: d === targetDay ? 'white' : 'var(--icy-dark)',
+                fontWeight: d === targetDay ? 800 : 400 
+            }}>
+                {d === targetDay && (
+                    <div style={{ 
+                        position: 'absolute', 
+                        top: 0, left: 0, right: 0, bottom: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '2.8rem', color: 'var(--icy-dark)', zIndex: 1, pointerEvents: 'none'
+                    }}>
+                        ❤
+                    </div>
+                )}
+                <span style={{ position: 'relative', zIndex: 2 }}>{d}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Reveal>
+  );
+};
 
 const AnnouncementBox = ({ data }: { data: any }) => (
     <Reveal delay={200}>
@@ -181,6 +235,7 @@ export default function IcyTemplate({ data, orderId }: { data: any, orderId?: st
 
                 {!isOpen ? (
                     <div onClick={handleOpen} style={{ width: '100%', height: '100vh', backgroundColor: 'var(--icy-frost)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', textAlign: 'center', padding: '40px', position: 'relative', overflow: 'hidden' }}>
+                        <FloatingHearts count={25} />
                         <FlowerDeco style={{ top: '10%', right: '-50px', transform: 'rotate(15deg)' }} />
                         <FlowerDeco style={{ bottom: '10%', left: '-50px', transform: 'rotate(-15deg)' }} />
                         <Reveal>
@@ -191,7 +246,7 @@ export default function IcyTemplate({ data, orderId }: { data: any, orderId?: st
                     </div>
                 ) : (
                     <div style={{ width: '100%', position: 'relative' }}>
-                        <FloatingHearts />
+                        <FloatingHearts count={50} />
                         
                         <IcyHero data={data} />
 
@@ -210,12 +265,7 @@ export default function IcyTemplate({ data, orderId }: { data: any, orderId?: st
                                 <ItineraryTimeline data={data} />
                             </div>
 
-                            <section style={{ padding: '60px 30px', backgroundColor: 'white', borderRadius: '40px', textAlign: 'center', position: 'relative', overflow: 'hidden', border: '1px solid var(--icy-frost)' }}>
-                                <div style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: 'var(--icy-dark)', marginBottom: '10px' }}>Save the Date</div>
-                                <div style={{ fontSize: '1.2rem', letterSpacing: '5px', color: 'var(--icy-blue)', fontWeight: 700, marginBottom: '30px' }}>DECEMBER 2026</div>
-                                <p style={{ fontSize: '1rem', opacity: 0.7, color: 'var(--icy-dark)' }}>Detailed calendar and countdown logic follows current standards.</p>
-                                <div style={{ marginTop: '30px', fontSize: '1.1rem', fontWeight: 600, color: 'var(--icy-blue)' }}>{data?.eventTime || '4:00 PM'}</div>
-                            </section>
+                            <IcyCalendar data={data} />
 
                             <ArchedImage src={data?.images?.image2 || "/photo_3.png"} alt="Ceremony" height="400px" />
 

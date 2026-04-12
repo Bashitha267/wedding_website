@@ -135,6 +135,60 @@ const Countdown = ({ data }: { data: any }) => {
     );
 };
 
+const ScrapbookCalendar = ({ data }: { data: any }) => {
+  const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
+  const year = eventDate.getFullYear();
+  const month = eventDate.getMonth();
+  const targetDay = eventDate.getDate();
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startDay = new Date(year, month, 1).getDay();
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const blanks = Array.from({ length: startDay }, (_, i) => i);
+  const monthName = eventDate.toLocaleString('en-US', { month: 'long' }).toUpperCase();
+
+  return (
+    <Reveal delay={200}>
+      <div style={{ padding: '60px 30px', textAlign: 'center', backgroundColor: 'white', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', margin: '40px auto', width: '90%', position: 'relative', border: '1px solid #eee' }}>
+        <PaperClip style={{ position: 'absolute', top: '-15px', right: '20px', zIndex: 10, transform: 'rotate(15deg)' }} />
+        <div style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '3.5rem', color: 'var(--sky-text)', marginBottom: '10px' }}>Save the Date</div>
+        <div style={{ fontSize: '1.1rem', letterSpacing: '4px', fontWeight: 700, opacity: 0.6, color: 'var(--sky-blue)', marginBottom: '35px' }}>{monthName} {year}</div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px', maxWidth: '300px', margin: '0 auto' }}>
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+            <div key={`${d}-${i}`} style={{ fontSize: '0.7rem', fontWeight: 900, opacity: 0.4, color: 'var(--sky-blue)' }}>{d}</div>
+          ))}
+          {blanks.map(b => <div key={`b-${b}`} />)}
+          {days.map(d => (
+            <div key={d} style={{ 
+                fontSize: '1.1rem', 
+                height: '40px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                position: 'relative',
+                color: d === targetDay ? 'white' : 'var(--sky-text)',
+                fontWeight: d === targetDay ? 900 : 400
+            }}>
+                {d === targetDay && (
+                    <div style={{ 
+                        position: 'absolute', 
+                        top: 0, left: 0, right: 0, bottom: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '2.5rem', color: 'var(--sky-text)', zIndex: 1, pointerEvents: 'none'
+                    }}>
+                        ❤
+                    </div>
+                )}
+                <span style={{ position: 'relative', zIndex: 2 }}>{d}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Reveal>
+  );
+};
+
 export default function ScrapbookTemplate({ data, orderId }: { data: any, orderId?: string }) {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -210,12 +264,7 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
                                 <ItineraryTimeline data={data} />
                             </div>
 
-                            <div style={{ padding: '60px 40px', textAlign: 'center', backgroundColor: 'var(--sky-light)', margin: '40px 0', border: '1px solid #e0eaf3' }}>
-                                <Reveal>
-                                    <div style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '3.5rem', color: 'var(--sky-text)', marginBottom: '10px' }}>Save the Date</div>
-                                    <div style={{ fontSize: '1.1rem', letterSpacing: '4px', fontWeight: 700, opacity: 0.6, color: 'var(--sky-blue)' }}>{data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase() : 'AUG 24, 2026'}</div>
-                                </Reveal>
-                            </div>
+                            <ScrapbookCalendar data={data} />
 
                             <Polaroid 
                                 src={data?.images?.image2 || "/photo_3.png"} 

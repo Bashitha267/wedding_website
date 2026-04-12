@@ -15,13 +15,32 @@ const FloatingDeco = ({ style }: { style: React.CSSProperties }) => (
   </div>
 );
 
+const FloatingHearts = ({ count = 20, color = 'var(--earthy-accent)' }: { count?: number, color?: string }) => (
+  <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
+    {[...Array(count)].map((_, i) => (
+      <div key={i} className="pulse" style={{
+        position: 'absolute',
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+        fontSize: `${Math.random() * 1.5 + 0.5}rem`,
+        opacity: 0.15,
+        color: color,
+        animationDelay: `${i * 0.5}s`,
+        animationDuration: `${4 + Math.random() * 4}s`
+      }}>
+        ❤
+      </div>
+    ))}
+  </div>
+);
+
 const InvitationEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: boolean }) => {
   return (
     <div
       style={{
         width: '100%',
         height: '100vh',
-        backgroundColor: 'white',
+        backgroundColor: '#f8f9f8',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -33,46 +52,94 @@ const InvitationEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: bo
         transform: isOpen ? 'scale(1.2) translateY(-100%)' : 'scale(1) translateY(0)',
         opacity: isOpen ? 0 : 1,
         cursor: 'pointer',
-        backgroundImage: 'url("/earthy_envelope.png")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        overflow: 'hidden',
+        backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")'
       }}
       onClick={onOpen}
     >
+      {/* Outer Envelope Face */}
+      <FloatingHearts count={15} color="#8a9a5b" />
       <div style={{
-        position: 'absolute',
-        bottom: '15vh',
-        textAlign: 'center',
-        width: '100%',
-        color: 'var(--earthy-brown)',
-        zIndex: 2
+        width: '90%',
+        maxWidth: '400px',
+        height: '550px',
+        backgroundColor: 'var(--earthy-accent)',
+        borderRadius: '15px',
+        position: 'relative',
+        boxShadow: '0 30px 70px rgba(0,0,0,0.2)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid rgba(255,255,255,0.1)'
       }}>
+        {/* Subtle texture for the envelope */}
         <div style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: '4.5rem',
-          marginBottom: '15px',
-          textShadow: '0 4px 20px rgba(255,255,255,0.8)'
-        }}>
-          Invitation
+           position: 'absolute',
+           top: 0, left: 0, right: 0, bottom: 0,
+           backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
+           opacity: 0.2,
+           zIndex: 1,
+           borderRadius: '15px'
+        }} />
+
+        {/* Decorative Sage Leaves */}
+        <div style={{ position: 'absolute', top: '-15px', left: '-25px', width: '160px', height: '160px', zIndex: 2, transform: 'rotate(-15deg)', opacity: 0.9 }}>
+             <Image src="/sage_leaves.png" alt="leaves" fill style={{ objectFit: 'contain' }} />
         </div>
+        <div style={{ position: 'absolute', bottom: '-15px', right: '-25px', width: '160px', height: '160px', zIndex: 2, transform: 'rotate(165deg)', opacity: 0.9 }}>
+             <Image src="/sage_leaves.png" alt="leaves" fill style={{ objectFit: 'contain' }} />
+        </div>
+
+        {/* Wax Seal */}
+        <div className="pulse" style={{ 
+            position: 'relative', 
+            zIndex: 4, 
+            width: '140px', 
+            height: '140px',
+            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))'
+        }}>
+            <Image src="/sage_wax_seal.png" alt="Wax Seal" fill style={{ objectFit: 'contain' }} />
+        </div>
+
+        {/* Elegant Tap Message */}
         <div className="bounce-soft" style={{
-          fontSize: '0.9rem',
-          letterSpacing: '5px',
-          opacity: 0.8,
-          fontWeight: 700
+            position: 'absolute',
+            bottom: '50px',
+            zIndex: 4,
+            color: 'white',
+            fontSize: '0.85rem',
+            letterSpacing: '5px',
+            fontWeight: 800,
+            opacity: 0.9,
+            textShadow: '0 2px 8px rgba(0,0,0,0.3)'
         }}>
-          TAP TO OPEN
+            TAP TO OPEN
         </div>
+        
+        {/* Decorative inner line */}
+        <div style={{
+            position: 'absolute',
+            top: '20px',
+            left: '20px',
+            right: '20px',
+            bottom: '20px',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: '10px',
+            pointerEvents: 'none',
+            zIndex: 2
+        }} />
       </div>
-      {/* Soft gradient overlay */}
+      
+      {/* Background depth gradient */}
       <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'linear-gradient(to top, rgba(255,255,255,0.4) 0%, transparent 40%)',
-        zIndex: 1
+        background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.05) 100%)',
+        zIndex: 0
       }} />
     </div>
   );
@@ -348,7 +415,7 @@ const EarthyCalendar = ({ data }: { data: any }) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: '2.8rem', 
-                    color: 'var(--earthy-accent)', 
+                    color: 'var(--earthy-brown)', 
                     zIndex: 1, 
                     pointerEvents: 'none',
                     lineHeight: 1
@@ -417,7 +484,8 @@ export default function EarthyTemplate({ data, orderId }: { data: any, orderId?:
         <InvitationEnvelope isOpen={isOpen} onOpen={handleOpen} />
 
         {isOpen && (
-          <div style={{ width: '100%' }}>
+          <div style={{ width: '100%', position: 'relative' }}>
+            <FloatingHearts count={30} color="var(--earthy-accent)" />
             <button onClick={toggleMusic} style={{ position: 'fixed', bottom: '25px', right: '25px', zIndex: 2000, width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.95)', border: '2px solid var(--earthy-accent)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.3rem', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0,0,0,0.15)' }}>
               {isMuted ? '🔇' : '🎵'}
             </button>

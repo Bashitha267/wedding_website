@@ -69,7 +69,7 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
                   <span style={{
                     position: 'absolute',
                     fontSize: '2.8rem',
-                    color: 'var(--rose-vibrant)',
+                    color: 'var(--rose-dark)',
                     zIndex: -1,
                     top: '50.5%',
                     left: '50%',
@@ -88,7 +88,7 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
           style={{
             backgroundColor: 'white',
             color: 'var(--rose-dark)',
-            border: '2px solid var(--rose-vibrant)',
+            border: '2px solid var(--rose-dark)',
             borderRadius: '30px',
             padding: '14px 28px',
             fontSize: '0.9rem',
@@ -112,9 +112,9 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
 
 const PhotoCarousel = ({ data }: { data?: any }) => {
     const [index, setIndex] = useState(0);
-    const photos = data?.images?.gallery?.length > 0 
+    const photos = (data?.images?.gallery?.length > 0 
       ? data.images.gallery 
-      : ['/home_hero_bg.png', '/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png'];
+      : ['/home_hero_bg.png', '/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png']) as string[];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -138,7 +138,6 @@ const PhotoCarousel = ({ data }: { data?: any }) => {
             style={{
               objectFit: 'cover',
               transition: 'all 1.2s cubic-bezier(0.4, 0, 0.2, 1)',
-              animation: 'cuteZoom 1.2s ease-out'
             }}
             key={index}
           />
@@ -147,7 +146,7 @@ const PhotoCarousel = ({ data }: { data?: any }) => {
         <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '25px' }}>
           {photos.map((_, i) => (
             <button
-              key={i}
+              key={`dot-${i}`}
               onClick={() => setIndex(i)}
               style={{
                 width: index === i ? '24px' : '10px',

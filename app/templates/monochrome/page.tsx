@@ -209,6 +209,102 @@ const MonochromeCountdown = ({ data }: { data: any }) => {
     );
 };
 
+const MonochromeCalendar = ({ data }: { data: any }) => {
+  const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
+  const year = eventDate.getFullYear();
+  const month = eventDate.getMonth();
+  const targetDay = eventDate.getDate();
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startDay = new Date(year, month, 1).getDay();
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+  const blanks = Array.from({ length: startDay }, (_, i) => i);
+  const monthName = eventDate.toLocaleString('en-US', { month: 'long' }).toUpperCase();
+
+  return (
+    <Reveal delay={200}>
+      <div style={{ 
+          padding: '80px 30px', 
+          textAlign: 'center', 
+          backgroundColor: 'white', 
+          border: '2px solid black', 
+          margin: '60px 0',
+          position: 'relative'
+      }}>
+        <div style={{ 
+            fontFamily: 'var(--font-display)', 
+            fontSize: '4.5rem', 
+            color: 'black', 
+            marginBottom: '10px',
+            lineHeight: 1
+        }}>
+            Save the Date
+        </div>
+        <div style={{ 
+            fontSize: '1.1rem', 
+            fontWeight: 800, 
+            color: 'black', 
+            marginBottom: '50px', 
+            letterSpacing: '10px',
+            opacity: 0.8
+        }}>
+            {monthName} {year}
+        </div>
+
+        <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(7, 1fr)', 
+            gap: '15px', 
+            maxWidth: '350px', 
+            margin: '0 auto',
+            borderTop: '1px solid #eee',
+            paddingTop: '30px'
+        }}>
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+            <div key={`${d}-${i}`} style={{ fontSize: '0.7rem', fontWeight: 900, opacity: 0.3 }}>{d}</div>
+          ))}
+          {blanks.map(b => <div key={`b-${b}`} />)}
+          {days.map(d => (
+            <div key={d} style={{ 
+                fontSize: '1.2rem', 
+                height: '45px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                position: 'relative',
+                color: d === targetDay ? 'white' : 'black',
+                fontWeight: d === targetDay ? 900 : 300
+            }}>
+                {d === targetDay && (
+                    <div style={{ 
+                        position: 'absolute', 
+                        top: 0, left: 0, right: 0, bottom: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '3rem', color: 'black', zIndex: 1, pointerEvents: 'none'
+                    }}>
+                        ❤
+                    </div>
+                )}
+                <span style={{ position: 'relative', zIndex: 2 }}>{d}</span>
+            </div>
+          ))}
+        </div>
+        
+        {/* Subtle decorative border */}
+        <div style={{
+            position: 'absolute',
+            top: '10px',
+            left: '10px',
+            right: '10px',
+            bottom: '10px',
+            border: '1px solid #eee',
+            pointerEvents: 'none'
+        }} />
+      </div>
+    </Reveal>
+  );
+};
+
 export default function MonochromeTemplate({ data, orderId }: { data: any, orderId?: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
@@ -315,14 +411,7 @@ export default function MonochromeTemplate({ data, orderId }: { data: any, order
                                 <ItineraryTimeline data={data} />
                             </div>
 
-                            <div style={{ padding: '80px 40px', backgroundColor: 'black', color: 'white', textAlign: 'center', clipPath: TORN_PATH_TOP, marginTop: '40px' }}>
-                                <Reveal>
-                                    <div style={{ fontFamily: 'var(--font-display)', fontSize: '4rem', marginBottom: '10px' }}>Save the Date</div>
-                                    <div style={{ fontSize: '1.2rem', letterSpacing: '6px', fontWeight: 300, opacity: 0.7 }}>
-                                        {data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase() : 'AUGUST 24, 2026'}
-                                    </div>
-                                </Reveal>
-                            </div>
+                            <MonochromeCalendar data={data} />
 
                             <SectionImage src={data?.images?.image2 || "/photo_3.png"} alt="Ceremony" height="400px" tornTop />
 
