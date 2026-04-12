@@ -5,12 +5,14 @@ import LandingHero from "@/components/LandingHero";
 import AboutSection from "@/components/AboutSection";
 import ProductsSection from "@/components/ProductsSection";
 import Reveal from "@/components/Reveal";
+import CartSidebar from "@/components/CartSidebar";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function Home() {
   return (
     <main style={{ backgroundColor: 'var(--bw-white)' }}>
+      <CartSidebar />
       <Navbar />
       
       <LandingHero />
@@ -65,6 +67,8 @@ export default function Home() {
                     <li><Link href="/" style={{ color: 'var(--bw-gray-dark)', textDecoration: 'none', fontSize: '0.9rem' }}>Home</Link></li>
                     <li><Link href="#products" style={{ color: 'var(--bw-gray-dark)', textDecoration: 'none', fontSize: '0.9rem' }}>Templates</Link></li>
                     <li><Link href="/contact" style={{ color: 'var(--bw-gray-dark)', textDecoration: 'none', fontSize: '0.9rem' }}>Contact</Link></li>
+                    <li><Link href="/admin/login" style={{ color: 'var(--bw-gray-dark)', textDecoration: 'none', fontSize: '0.9rem' }}>Admin Login</Link></li>
+                    <li><Link href="/client/login" style={{ color: 'var(--bw-gray-dark)', textDecoration: 'none', fontSize: '0.9rem' }}>Client Login</Link></li>
                 </ul>
             </div>
             <div>

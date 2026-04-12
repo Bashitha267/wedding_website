@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { ShoppingCart } from 'lucide-react';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -49,9 +50,17 @@ export default function Navbar() {
           </div>
         </Link>
 
-        <div style={{ display: 'flex', gap: '30px' }}>
+        <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
           <Link href="/" style={{ color: 'var(--bw-black)', textDecoration: 'none', fontSize: '0.9rem', letterSpacing: '1px', fontWeight: 500 }}>HOME</Link>
           <Link href="/contact" style={{ color: 'var(--bw-black)', textDecoration: 'none', fontSize: '0.9rem', letterSpacing: '1px', fontWeight: 500 }}>CONTACT</Link>
+          <button 
+            onClick={() => window.dispatchEvent(new CustomEvent('open-cart', { detail: null }))}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--bw-black)'
+            }}
+          >
+            <ShoppingCart size={20} />
+          </button>
         </div>
       </div>
     </nav>

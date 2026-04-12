@@ -11,11 +11,17 @@ import Image from 'next/image';
 const WEDDING_DATE = new Date(2026, 7, 24); // August 24, 2026
 const MUSIC_URL = "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3"; // Placeholder dynamic link
 
-const WeddingCalendar = ({ onAdd }: { onAdd: () => void }) => {
-  const daysInMonth = 31;
-  const startDay = 6; // Aug 1st 2026 is Saturday
+const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => {
+  const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
+  const year = eventDate.getFullYear();
+  const month = eventDate.getMonth();
+  const targetDay = eventDate.getDate();
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const startDay = new Date(year, month, 1).getDay(); // 0(Sun) to 6(Sat)
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const blanks = Array.from({ length: startDay }, (_, i) => i);
+  const monthName = eventDate.toLocaleString('default', { month: 'long' }).toUpperCase();
 
   return (
     <Reveal delay={200}>
@@ -31,7 +37,7 @@ const WeddingCalendar = ({ onAdd }: { onAdd: () => void }) => {
           Save the Date
         </div>
         <div style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '20px', letterSpacing: '2px' }}>
-          AUGUST 2026
+          {monthName} {year}
         </div>
 
         {/* Calendar Grid */}
@@ -54,11 +60,11 @@ const WeddingCalendar = ({ onAdd }: { onAdd: () => void }) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: d === 24 ? 'white' : 'inherit',
+              color: d === targetDay ? 'white' : 'inherit',
               zIndex: 1,
-              fontWeight: d === 24 ? 900 : 500
+              fontWeight: d === targetDay ? 900 : 500
             }}>
-              {d === 24 ? (
+              {d === targetDay ? (
                 <>
                   <span style={{
                     position: 'absolute',
@@ -104,9 +110,11 @@ const WeddingCalendar = ({ onAdd }: { onAdd: () => void }) => {
   );
 };
 
-const PhotoCarousel = () => {
+const PhotoCarousel = ({ data }: { data?: any }) => {
     const [index, setIndex] = useState(0);
-    const photos = ['/home_hero_bg.png', '/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png'];
+    const photos = data?.images?.gallery?.length > 0 
+      ? data.images.gallery 
+      : ['/home_hero_bg.png', '/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png'];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -265,7 +273,7 @@ const FloatingHearts = () => (
   </div>
 );
 
-export default function Home() {
+export default function ClassicTemplate({ data, orderId }: { data: any, orderId?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
@@ -287,10 +295,13 @@ export default function Home() {
   };
 
   const addToCalendar = () => {
-    const title = encodeURIComponent("Sarah & Mark's Wedding");
-    const dates = "20260824T150000/20260824T220000";
+    const title = encodeURIComponent(`${data?.brideName || 'Sarah'} & ${data?.groomName || 'Mark'}'s Wedding`);
+    const startStr = data?.eventDate 
+      ? new Date(data.eventDate).toISOString().replace(/-|:|\.\d\d\d/g, "") 
+      : "20260824T150000Z";
+    const dates = `${startStr}/${startStr}`;
     const details = encodeURIComponent("Join us for our special day!");
-    const location = encodeURIComponent("The Rose Garden Estates");
+    const location = encodeURIComponent(data?.location?.name || "The Rose Garden Estates");
     const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
     window.open(url, '_blank');
   };
@@ -299,7 +310,7 @@ export default function Home() {
     <div style={{ backgroundColor: '#f0f0f0', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
       <main className="invitation-container" style={{ position: 'relative', boxShadow: '0 0 50px rgba(0,0,0,0.1)' }}>
         <audio id="bg-music" loop>
-          <source src={MUSIC_URL} type="audio/mpeg" />
+          <source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" />
         </audio>
 
         {isOpen && (
@@ -333,7 +344,7 @@ export default function Home() {
           <div style={{ position: 'relative' }}>
             <FloatingHearts />
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <Hero />
+              <Hero data={data} />
 
               <div style={{ padding: '40px 20px' }}>
                 <Reveal delay={100}>
@@ -344,7 +355,7 @@ export default function Home() {
 
                 <Decoration />
 
-                <CountdownSection />
+                <CountdownSection data={data} />
 
                 <Reveal delay={200}>
                   <div style={{
@@ -422,19 +433,19 @@ export default function Home() {
                   </div>
                 </Reveal>
 
-                <SectionImage src="/photo_2.png" alt="Couple Kiss" height="350px" delay={400} />
+                <SectionImage src={data?.images?.image1 || "/photo_2.png"} alt="Couple Kiss" height="350px" delay={400} />
 
-                <ItineraryTimeline />
+                <ItineraryTimeline data={data} />
 
-                <WeddingCalendar onAdd={addToCalendar} />
+                <WeddingCalendar onAdd={addToCalendar} data={data} />
 
-                <SectionImage src="/photo_3.png" alt="Hands" height="250px" />
+                <SectionImage src={data?.images?.image2 || "/photo_3.png"} alt="Hands" height="250px" />
 
                 <section style={{ padding: '40px 0', textAlign: 'center' }}>
                   <Reveal delay={200}>
                     <div className="subheading" style={{ marginBottom: '15px' }}>LOCATION</div>
-                    <h2 style={{ fontSize: '1.8rem', marginBottom: '10px' }}>The Rose Garden Estates</h2>
-                    <p style={{ marginBottom: '25px', opacity: 0.8, fontSize: '0.9rem' }}>123 Romance Lane, Loving Valley</p>
+                    <h2 style={{ fontSize: '1.8rem', marginBottom: '10px' }}>{data?.location?.name || 'The Rose Garden Estates'}</h2>
+                    <p style={{ marginBottom: '25px', opacity: 0.8, fontSize: '0.9rem' }}>{data?.location?.address || '123 Romance Lane, Loving Valley'}</p>
 
                     <div style={{ height: '250px', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 5px 15px rgba(0,0,0,0.1)', marginBottom: '20px' }}>
                       <iframe
@@ -446,11 +457,11 @@ export default function Home() {
                   </Reveal>
                 </section>
 
-                <PhotoCarousel />
+                <PhotoCarousel data={data} />
 
                 <Decoration />
 
-                <RSVPFooter />
+                <RSVPFooter orderId={orderId} data={data} />
               </div>
             </div>
           </div>

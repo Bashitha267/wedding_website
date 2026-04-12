@@ -1,8 +1,78 @@
 'use client';
 
+import { useState } from 'react';
 import Reveal from './Reveal';
+import { supabase } from '@/lib/supabase';
 
-const RSVPFooter = () => {
+const RSVPFooter = ({ orderId, data }: { orderId?: string, data?: any }) => {
+  const [formOpen, setFormOpen] = useState(false);
+  const [formData, setFormData] = useState({ name: '', contact: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const [successMsg, setSuccessMsg] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!orderId) {
+      alert("Test Mode: RSVP is disabled unless viewed on a real invitation link.");
+      return;
+    }
+
+    setStatus('loading');
+    
+    // Check if they are already registered
+    const { data: existingRSVP } = await supabase
+      .from('rsvps')
+      .select('*')
+      .eq('order_id', orderId)
+      .eq('contact_number', formData.contact)
+      .single();
+
+    if (existingRSVP) {
+      if (existingRSVP.table_number) {
+        // Find other people at the same table
+        const { data: tableMates } = await supabase
+          .from('rsvps')
+          .select('name')
+          .eq('order_id', orderId)
+          .eq('table_number', existingRSVP.table_number)
+          .neq('id', existingRSVP.id);
+          
+        const othersNames = tableMates && tableMates.length > 0 
+           ? tableMates.map(t => t.name).join(', ') 
+           : '';
+           
+        if (othersNames) {
+          setSuccessMsg(`You are confirmed at Table ${existingRSVP.table_number}! Sharing table with: ${othersNames}`);
+        } else {
+          setSuccessMsg(`You are confirmed at Table ${existingRSVP.table_number}!`);
+        }
+      } else {
+        setSuccessMsg("Your RSVP is confirmed! You are not currently assigned to a table yet.");
+      }
+      setStatus('success');
+      setFormOpen(false);
+      return;
+    }
+
+    // Save completely new RSVP to Supabase
+    const { error } = await supabase.from('rsvps').insert({
+      order_id: orderId,
+      name: formData.name,
+      contact_number: formData.contact
+    });
+
+    if (error) {
+      console.error(error);
+      setStatus('error');
+      alert("Failed to submit RSVP.");
+    } else {
+      setSuccessMsg("Thank you! We can't wait to see you there. 💖");
+      setStatus('success');
+      setFormOpen(false);
+    }
+  };
+
   return (
     <footer style={{ 
       padding: '60px 40px 100px', 
@@ -10,38 +80,67 @@ const RSVPFooter = () => {
       backgroundColor: 'var(--bg-cream)',
       marginTop: '40px'
     }}>
-      <Reveal delay={200}>
-        <div style={{ marginBottom: '60px' }}>
-            <div style={{ fontSize: '2rem', marginBottom: '10px' }}>🎁</div>
-            <div className="subheading" style={{ marginBottom: '15px' }}>GIFT SUGGESTIONS</div>
-            <p style={{ fontSize: '0.9rem', opacity: 0.8, maxWidth: '280px', margin: '0 auto' }}>
-                Your presence is our greatest gift, but should you wish to honor us with a gift, a contribution to our future together would be warmly appreciated.
-            </p>
-            <div style={{ marginTop: '20px', fontWeight: 600, color: 'var(--rose-dark)' }}>HONEYMOON FUND</div>
-        </div>
-      </Reveal>
-
-      <Reveal delay={400}>
-        <div style={{ marginBottom: '60px' }}>
-            <div style={{ fontSize: '2rem', marginBottom: '10px' }}>🏨</div>
-            <div className="subheading" style={{ marginBottom: '15px' }}>WHERE TO STAY</div>
-            <div style={{ marginBottom: '15px' }}>
-                <div style={{ fontWeight: 600 }}>Hotel Regina Resort</div>
-                <button className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.8rem', marginTop: '5px' }}>More Info</button>
-            </div>
-            <div>
-                <div style={{ fontWeight: 600 }}>The Boutique House</div>
-                <button className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.8rem', marginTop: '5px' }}>More Info</button>
-            </div>
-        </div>
-      </Reveal>
+      {data?.announcements && data.announcements.trim() !== '' && (
+        <Reveal delay={200}>
+          <div style={{ marginBottom: '60px' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '10px' }}>📢</div>
+              <div className="subheading" style={{ marginBottom: '15px' }}>ANNOUNCEMENTS</div>
+              <p style={{ fontSize: '0.95rem', opacity: 0.8, maxWidth: '320px', margin: '0 auto', whiteSpace: 'pre-wrap', lineHeight: 1.7, color: 'var(--text-main)' }}>
+                  {data.announcements}
+              </p>
+          </div>
+        </Reveal>
+      )}
       
       <Reveal delay={600}>
         <div style={{ marginBottom: '60px' }}>
             <div className="subheading" style={{ marginBottom: '20px' }}>PLEASE RSVP</div>
-            <button className="btn-primary" style={{ padding: '16px 48px' }}>
-            RSVP HERE
-            </button>
+            
+            {!formOpen && status !== 'success' && (
+              <button onClick={() => setFormOpen(true)} className="btn-primary" style={{ padding: '16px 48px' }}>
+                RSVP HERE
+              </button>
+            )}
+
+            {formOpen && status !== 'success' && (
+              <form onSubmit={handleSubmit} style={{ 
+                maxWidth: '300px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '15px',
+                padding: '20px', backgroundColor: 'white', borderRadius: '10px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+              }}>
+                <input 
+                  type="text" 
+                  placeholder="Your Full Name" 
+                  required 
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  style={{
+                    padding: '12px', border: '1px solid #ccc', borderRadius: '4px'
+                  }}
+                />
+                <input 
+                  type="tel" 
+                  placeholder="Contact Number" 
+                  required 
+                  value={formData.contact}
+                  onChange={(e) => setFormData({...formData, contact: e.target.value})}
+                  style={{
+                    padding: '12px', border: '1px solid #ccc', borderRadius: '4px'
+                  }}
+                />
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button type="button" onClick={() => setFormOpen(false)} className="btn-outline" style={{ flex: 1, padding: '10px' }}>Cancel</button>
+                  <button type="submit" className="btn-primary" style={{ flex: 1, padding: '10px' }} disabled={status === 'loading'}>
+                    {status === 'loading' ? 'Saving...' : 'Confirm'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {status === 'success' && (
+              <div style={{ color: 'var(--rose-dark)', fontWeight: 600, fontSize: '0.9rem', padding: '20px', backgroundColor: 'var(--rose-light)', borderRadius: '10px', maxWidth: '300px', margin: '0 auto', lineHeight: 1.5 }}>
+                {successMsg}
+              </div>
+            )}
         </div>
       </Reveal>
 
@@ -52,7 +151,7 @@ const RSVPFooter = () => {
           height: '500px',
           width: 'calc(100% + 80px)',
           margin: '60px -40px -100px',
-          backgroundImage: 'url("/photo_5.png")',
+          backgroundImage: `url("${data?.images?.thankYouImage || '/photo_5.png'}")`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           display: 'flex',
@@ -83,8 +182,8 @@ const RSVPFooter = () => {
                 }}>
                     Thank You
                 </div>
-                <div className="subheading" style={{ marginTop: '10px', letterSpacing: '6px', color: 'var(--rose-vibrant)', fontWeight: 800, textShadow: '0 2px 10px rgba(0,0,0,0.6)' }}>
-                    SARAH & MARK • 2026
+                <div className="subheading" style={{ marginTop: '10px', letterSpacing: '6px', color: 'var(--rose-vibrant)', fontWeight: 800, textShadow: '0 2px 10px rgba(0,0,0,0.6)', textTransform: 'uppercase' }}>
+                    {data?.brideName || 'SARAH'} & {data?.groomName || 'MARK'} • {data?.eventDate ? new Date(data.eventDate).getFullYear() : '2026'}
                 </div>
             </div>
         </div>

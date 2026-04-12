@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Reveal from './Reveal';
 
-const CountdownSection = () => {
+const CountdownSection = ({ data }: { data?: any }) => {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -12,7 +12,9 @@ const CountdownSection = () => {
   });
 
   useEffect(() => {
-    const targetDate = new Date('August 24, 2026 15:00:00').getTime();
+    const targetDate = data?.eventDate 
+      ? new Date(data.eventDate).getTime() 
+      : new Date('August 24, 2026 15:00:00').getTime();
 
     const timer = setInterval(() => {
       const now = new Date().getTime();

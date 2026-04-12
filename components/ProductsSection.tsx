@@ -53,10 +53,14 @@ export default function ProductsSection() {
                 <div style={{ padding: '25px', textAlign: 'center' }}>
                   <h3 style={{ fontSize: '1.4rem', marginBottom: '10px' }}>{template.name}</h3>
                   <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '20px' }}>
-                    <button className="btn-primary" style={{ padding: '8px 20px', fontSize: '0.8rem' }}>
+                    <button 
+                      className="btn-primary" 
+                      style={{ padding: '8px 20px', fontSize: '0.8rem' }}
+                      onClick={() => window.dispatchEvent(new CustomEvent('open-cart', { detail: template }))}
+                    >
                       ADD TO CART
                     </button>
-                    <Link href={`/templates/${template.id === '1' ? 'classic' : 'classic'}`} className="btn-outline" style={{ padding: '8px 20px', fontSize: '0.8rem', textDecoration: 'none' }}>
+                    <Link href={`/templates/${template.id}`} className="btn-outline" style={{ padding: '8px 20px', fontSize: '0.8rem', textDecoration: 'none' }}>
                       VIEW
                     </Link>
                   </div>

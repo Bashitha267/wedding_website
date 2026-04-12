@@ -8,6 +8,33 @@
   --rose-vibrant: #e36387;
   --text-main: #5a4a4a;
   
+  /* Earthy Theme (Refined) */
+  --earthy-brown: #3e4a3e; /* Dark Green for text/accents */
+  --earthy-tan: #f0f4f0;   /* Light Greenish White */
+  --earthy-cream: #ffffff; /* Pure White background */
+  --earthy-accent: #8a9a5b; /* Sage Green */
+  --earthy-text: #1a1a1a;  /* Dark Text */
+
+  /* Monochrome Theme (New) */
+  --mono-black: #000000;
+  --mono-white: #ffffff;
+  --mono-gray: #eeeeee;
+  --mono-text: #111111;
+
+  /* Icy Royal Theme (New) */
+  --icy-blue: #6a7b8a;
+  --icy-frost: #f0f4f7;
+  --icy-silver: #c0c0c0;
+  --icy-dark: #2c3e50;
+  --icy-accent: #a5b5c5;
+
+  /* Scrapbook Theme (New) */
+  --sky-blue: #a2c2e0;
+  --sky-light: #e6f0f7;
+  --sky-text: #2c3e50;
+  --polaroid-white: #ffffff;
+  --paper-clip: #95a5a6;
+
   /* Landing Page Theme (Black & White) */
   --bw-black: #111111;
   --bw-white: #ffffff;

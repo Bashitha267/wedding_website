@@ -2,14 +2,29 @@
 
 import Reveal from './Reveal';
 
-const ItineraryTimeline = () => {
-  const events = [
+const ItineraryTimeline = ({ data }: { data?: any }) => {
+  const defaultEvents = [
     { time: '3:00 PM', name: 'CEREMONY', icon: '💍', desc: 'The Rose Garden' },
     { time: '4:30 PM', name: 'COCKTAILS', icon: '🍸', desc: 'Main Terrace' },
     { time: '6:00 PM', name: 'DINNER', icon: '🍽️', desc: 'Victoria Hall' },
     { time: '9:00 PM', name: 'PARTY', icon: '💃', desc: 'Dance Floor' },
     { time: '11:00 PM', name: 'SEND OFF', icon: '✨', desc: 'Grand Exit' }
   ];
+
+  let events: { time: string; name: string; icon: string; desc: string }[] = [];
+  if (data?.timeline && data.timeline.length > 0) {
+    events = data.timeline.map((t: any) => ({
+      time: t.time || '',
+      name: t.title || '',
+      icon: t.icon || '✨',
+      desc: t.location || ''
+    }));
+  } else if (!data) {
+    // Show defaults only on marketing preview page, not on live client sites
+    events = defaultEvents;
+  }
+
+  if (events.length === 0) return null;
 
   return (
     <section className="itinerary-section" style={{ padding: '60px 10px', backgroundColor: 'var(--card-bg)' }}>
@@ -94,14 +109,23 @@ const ItineraryTimeline = () => {
         </div>
       </div>
 
-      <div style={{ marginTop: '80px', textAlign: 'center' }}>
-          <Reveal delay={1000}>
-                <div className="subheading" style={{ marginBottom: '15px' }}>DRESS CODE</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 300, marginBottom: '10px' }}>Formal Attire</div>
-                <div style={{ fontSize: '2.5rem' }}>🤵‍♂️  👰‍♀️</div>
-                <p style={{ fontSize: '0.8rem', marginTop: '10px', opacity: 0.7 }}>Kindly request that guests avoid wearing white.</p>
-          </Reveal>
-      </div>
+      {/* Only show dresscode if client entered it or if it is the preview store catalog (!data) */}
+      {((data && (data?.dressCode?.title || data?.dressCode?.description)) || !data) && (
+        <div style={{ marginTop: '80px', textAlign: 'center' }}>
+            <Reveal delay={1000}>
+                  <div className="subheading" style={{ marginBottom: '15px' }}>DRESS CODE</div>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 300, marginBottom: '10px' }}>
+                     {data?.dressCode?.title || (!data ? 'Formal Attire' : '')}
+                  </div>
+                  <div style={{ fontSize: '2.5rem' }}>
+                     {data?.dressCode?.icon || (!data ? '🤵‍♂️  👰‍♀️' : '')}
+                  </div>
+                  <p style={{ fontSize: '0.8rem', marginTop: '10px', opacity: 0.7 }}>
+                     {data?.dressCode?.description || (!data ? 'Kindly request that guests avoid wearing white.' : '')}
+                  </p>
+            </Reveal>
+        </div>
+      )}
     </section>
   );
 };

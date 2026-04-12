@@ -2,13 +2,13 @@
 
 import Reveal from './Reveal';
 
-const Hero = () => {
+const Hero = ({ data }: { data?: any }) => {
   return (
     <section className="hero-section" style={{ 
       height: '85vh',
       width: '100%',
       position: 'relative',
-      backgroundImage: 'url("/home_hero_bg.png")',
+      backgroundImage: `url("${data?.images?.heroImage || '/home_hero_bg.png'}")`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       display: 'flex',
@@ -42,7 +42,7 @@ const Hero = () => {
               0 0 10px rgba(227, 99, 135, 0.4)
             `
           }}>
-            Sarah & Mark
+            {data?.brideName || 'Sarah'} & {data?.groomName || 'Mark'}
           </h1>
         </Reveal>
 
@@ -67,7 +67,7 @@ const Hero = () => {
             fontWeight: 700,
             textShadow: '0 2px 10px rgba(0,0,0,0.8)'
           }}>
-            AUGUST 24, 2026
+            {data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase() : 'AUGUST 24, 2026'}
           </div>
         </Reveal>
       </div>
