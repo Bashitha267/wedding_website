@@ -7,6 +7,11 @@ import EarthyTemplate from '@/app/templates/earthy/page';
 import MonochromeTemplate from '@/app/templates/monochrome/page';
 import IcyTemplate from '@/app/templates/icy/page';
 import ScrapbookTemplate from '@/app/templates/scrapbook/page';
+import KandyanTemplate from '@/app/templates/kandyan/page';
+import OutbackTemplate from '@/app/templates/outback/page';
+import CeylonTemplate from '@/app/templates/ceylon/page';
+import SydneyTemplate from '@/app/templates/sydney/page';
+import FusionTemplate from '@/app/templates/fusion/page';
 
 // We map template IDs from the database to the actual React Components
 const templateMap: Record<string, React.ElementType> = {
@@ -15,6 +20,11 @@ const templateMap: Record<string, React.ElementType> = {
   'monochrome': MonochromeTemplate,
   'icy': IcyTemplate,
   'scrapbook': ScrapbookTemplate,
+  'kandyan': KandyanTemplate,
+  'outback': OutbackTemplate,
+  'ceylon': CeylonTemplate,
+  'sydney': SydneyTemplate,
+  'fusion': FusionTemplate,
 };
 
 type Props = {

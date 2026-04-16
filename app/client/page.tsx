@@ -214,6 +214,18 @@ export default function ClientDashboard() {
           >
             <Users size={18} /> RSVPs ({rsvps.length})
           </button>
+          <button 
+            onClick={() => setActiveTab('seating')}
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
+              backgroundColor: activeTab === 'seating' ? 'var(--rose-light)' : 'transparent',
+              color: activeTab === 'seating' ? 'var(--rose-dark)' : 'var(--text-main)', 
+              border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
+              fontWeight: activeTab === 'seating' ? 600 : 400
+            }}
+          >
+            <Disc size={18} /> Seating Chart
+          </button>
         </nav>
         <div style={{ position: 'absolute', bottom: '20px', padding: '0 20px' }}>
             <button 
@@ -228,15 +240,28 @@ export default function ClientDashboard() {
       {/* Main Content */}
       <main style={{ flex: 1, padding: '40px', overflowY: 'auto', height: '100vh', paddingBottom: '100px' }}>
         
-        {/* Universal Top Bar for Client URL */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea', marginBottom: '30px' }}>
-            <div>
-               <div style={{ fontSize: '0.8rem', color: 'var(--rose-medium)', fontWeight: 600, letterSpacing: '1px' }}>YOUR LIVE INVITATION URL</div>
-               <div style={{ fontSize: '1.2rem', fontWeight: 500 }}>{typeof window !== 'undefined' ? window.location.host : 'localhost:3000'}/{order.slug}</div>
+        {/* Universal Top Bar for Client URL & Stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '20px', marginBottom: '30px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
+                <div>
+                   <div style={{ fontSize: '0.8rem', color: 'var(--rose-medium)', fontWeight: 600, letterSpacing: '1px' }}>YOUR LIVE INVITATION URL</div>
+                   <div style={{ fontSize: '1.2rem', fontWeight: 500 }}>{typeof window !== 'undefined' ? window.location.host : 'localhost:3000'}/{order.slug}</div>
+                </div>
+                <button className="btn-outline" onClick={handleCopyLink} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', fontSize: '0.9rem' }}>
+                    {copied ? <><CheckCircle size={16} /> Copied!</> : <><Copy size={16} /> Share Link</>}
+                </button>
             </div>
-            <button className="btn-outline" onClick={handleCopyLink} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', fontSize: '0.9rem' }}>
-                {copied ? <><CheckCircle size={16} /> Copied!</> : <><Copy size={16} /> Share Link</>}
-            </button>
+
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <div style={{ backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', border: '1px solid #fee6ea', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', color: '#888', fontWeight: 600 }}>TOTAL GUESTS</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--rose-dark)' }}>{rsvps.length}</div>
+                </div>
+                <div style={{ backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', border: '1px solid #fee6ea', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.7rem', color: '#888', fontWeight: 600 }}>TOTAL TABLES</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--rose-dark)' }}>{templateDraft?.tables?.length || 0}</div>
+                </div>
+            </div>
         </div>
 
         {activeTab === 'template' && (
@@ -446,132 +471,211 @@ export default function ClientDashboard() {
 
         {activeTab === 'confirms' && (
           <div>
-            <h1 style={{ marginBottom: '30px', color: 'var(--rose-dark)' }}>RSVPs & Table Assignments</h1>
-            
-            <div style={{ display: 'flex', gap: '40px' }}>
-              {/* RSVP List Table */}
-              <div style={{ flex: 2, backgroundColor: 'white', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea', overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                  <thead style={{ backgroundColor: 'var(--rose-light)' }}>
-                    <tr>
-                      <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Guest Name</th>
-                      <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Contact Number</th>
-                      <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Table No.</th>
-                      <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rsvps.length === 0 && (
-                      <tr>
-                        <td colSpan={4} style={{ padding: '30px', textAlign: 'center', color: '#888' }}>
-                           No RSVPs yet. Share your URL!
-                        </td>
-                      </tr>
-                    )}
-                    {rsvps.map(rsvp => (
-                      <tr key={rsvp.id} style={{ borderBottom: '1px solid #fee6ea' }}>
-                        <td style={{ padding: '15px 20px' }}>{rsvp.name}</td>
-                        <td style={{ padding: '15px 20px', color: '#666' }}>{rsvp.contact_number}</td>
-                        <td style={{ padding: '15px 20px' }}>
-                          <input 
-                            type="text" 
-                            value={rsvp.table_number || ''} 
-                            onChange={(e) => handleTableAssign(rsvp.id, e.target.value)}
-                            placeholder="Assign..."
-                            style={{ 
-                              width: '80px', padding: '5px', textAlign: 'center', 
-                              border: '1px solid #ccc', borderRadius: '4px' 
-                            }}
-                          />
-                        </td>
-                        <td style={{ padding: '15px 20px' }}>
-                          <button 
-                            onClick={() => setSelectedTableGuest(rsvp)}
-                            className="btn-outline" 
-                            style={{ 
-                                padding: '6px 12px', fontSize: '0.8rem', 
-                                backgroundColor: selectedTableGuest?.id === rsvp.id ? 'var(--rose-dark)' : 'transparent', 
-                                color: selectedTableGuest?.id === rsvp.id ? 'white' : 'var(--bw-black)' 
-                            }}
-                            disabled={!rsvp.table_number}
-                          >
-                            View Table
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Table View Visualizer */}
-              <div style={{ flex: 1, backgroundColor: 'white', padding: '30px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <h3 style={{ marginBottom: '30px', color: 'var(--rose-dark)' }}>Table Visualizer</h3>
-                
-                {selectedTableGuest && selectedTableGuest.table_number ? (
-                  <div style={{ position: 'relative', width: '250px', height: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
-                    {/* The Table (Circle) */}
-                    <div style={{ 
-                      width: '120px', height: '120px', borderRadius: '50%', 
-                      backgroundColor: 'var(--rose-light)', border: '2px dashed var(--rose-dark)',
-                      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 10
-                    }}>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--rose-dark)', fontWeight: 600 }}>TABLE</span>
-                      <span style={{ fontSize: '2rem', color: 'var(--rose-dark)', fontWeight: 800 }}>{selectedTableGuest.table_number}</span>
-                    </div>
-
-                    {/* The Guests (Around the table) */}
-                    {getTableGuests(selectedTableGuest.table_number).map((guest, index, arr) => {
-                      const angle = (index / arr.length) * Math.PI * 2;
-                      const radius = 100;
-                      const x = Math.cos(angle) * radius;
-                      const y = Math.sin(angle) * radius;
-                      
-                      const isSelected = guest.id === selectedTableGuest.id;
-
-                      return (
-                        <div key={guest.id} style={{
-                          position: 'absolute',
-                          transform: `translate(${x}px, ${y}px)`,
-                          display: 'flex', flexDirection: 'column', alignItems: 'center',
-                          zIndex: 20
+            <h1 style={{ marginBottom: '30px', color: 'var(--rose-dark)' }}>RSVP Responses</h1>
+            <div style={{ backgroundColor: 'white', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea', overflow: 'hidden' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead style={{ backgroundColor: 'var(--rose-light)' }}>
+                  <tr>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Guest Name</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Contact Number</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Attendance</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Assigned Table</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rsvps.map(rsvp => (
+                    <tr key={rsvp.id} style={{ borderBottom: '1px solid #fee6ea' }}>
+                      <td style={{ padding: '15px 20px' }}>{rsvp.name}</td>
+                      <td style={{ padding: '15px 20px', color: '#666' }}>{rsvp.contact_number}</td>
+                      <td style={{ padding: '15px 20px' }}>
+                        <span style={{ 
+                          padding: '4px 10px', borderRadius: '20px', fontSize: '0.8rem',
+                          backgroundColor: rsvp.is_attending ? '#e6fffa' : '#fff5f5',
+                          color: rsvp.is_attending ? '#2c7a7b' : '#c53030',
+                          fontWeight: 600
                         }}>
-                          <div style={{
-                            width: '40px', height: '40px', borderRadius: '50%',
-                            backgroundColor: isSelected ? 'var(--rose-vibrant)' : 'var(--text-main)',
-                            color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            fontSize: '0.8rem', fontWeight: 'bold', boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-                          }}>
-                            {guest.name.charAt(0)}
-                          </div>
-                          <span style={{ 
-                            fontSize: '0.7rem', 
-                            marginTop: '5px', 
-                            backgroundColor: 'white', 
-                            padding: '2px 5px', 
-                            borderRadius: '4px',
-                            fontWeight: isSelected ? 600 : 400,
-                            color: isSelected ? 'var(--rose-dark)' : 'var(--text-main)',
-                            whiteSpace: 'nowrap',
-                            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
-                          }}>
-                            {guest.name}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '200px', opacity: 0.5, textAlign: 'center' }}>
-                    <Disc size={40} style={{ marginBottom: '10px' }} />
-                    <p>Select a guest to view their table placement.</p>
-                  </div>
-                )}
-              </div>
+                          {rsvp.is_attending ? '✅ ATTENDING' : '❌ DECLINED'}
+                        </span>
+                      </td>
+                      <td style={{ padding: '15px 20px' }}>
+                        {rsvp.table_number ? `Table ${rsvp.table_number}` : <span style={{ opacity: 0.4 }}>Not assigned</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
+        )}
+
+        {activeTab === 'seating' && (
+          <SeatingChart 
+            rsvps={rsvps} 
+            templateDraft={templateDraft} 
+            onUpdateDraft={setTemplateDraft}
+            onAssignGuest={handleTableAssign}
+            onSave={saveTemplateChanges}
+          />
         )}
       </main>
     </div>
   );
 }
+
+const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSave }: any) => {
+  const tables = templateDraft.tables || [];
+  const unassignedGuests = rsvps.filter((r: any) => !r.table_number);
+  const [showAssignModal, setShowAssignModal] = useState<{ tableId: string, seatIdx: number } | null>(null);
+
+  const addNewTable = () => {
+    const newTables = [...tables, { id: `table-${Date.now()}`, name: `Table ${tables.length + 1}`, seats: 8 }];
+    onUpdateDraft({ ...templateDraft, tables: newTables });
+  };
+
+  const addSeatToTable = (tableId: string) => {
+    const newTables = tables.map((t: any) => t.id === tableId ? { ...t, seats: (t.seats || 0) + 1 } : t);
+    onUpdateDraft({ ...templateDraft, tables: newTables });
+  };
+
+  const removeGuestFromSeat = (guestId: string) => {
+    onAssignGuest(guestId, '');
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 style={{ color: 'var(--rose-dark)' }}>Seating Arrangement</h1>
+        <button className="btn-primary" onClick={addNewTable}>+ Create New Table</button>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '40px' }}>
+        {tables.map((table: any) => {
+          const guestsAtTable = rsvps.filter((r: any) => r.table_number === table.name);
+          
+          return (
+            <div key={table.id} style={{ 
+                backgroundColor: 'white', padding: '30px', borderRadius: '15px', 
+                boxShadow: '0 10px 30px rgba(0,0,0,0.05)', border: '1px solid #fee6ea',
+                display: 'flex', flexDirection: 'column', alignItems: 'center'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '20px', alignItems: 'center' }}>
+                <input 
+                  type="text" 
+                  value={table.name} 
+                  onChange={(e) => {
+                    const newTables = tables.map((t: any) => t.id === table.id ? { ...t, name: e.target.value } : t);
+                    onUpdateDraft({ ...templateDraft, tables: newTables });
+                  }}
+                  style={{ fontWeight: 700, fontSize: '1.2rem', border: 'none', color: 'var(--rose-dark)', width: '120px' }}
+                />
+                <button onClick={() => addSeatToTable(table.id)} style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd', cursor: 'pointer' }}>+ Add Seat</button>
+              </div>
+
+              <div style={{ position: 'relative', width: '220px', height: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {/* Visual Table */}
+                <div style={{ 
+                  width: '100px', height: '100px', borderRadius: '50%', 
+                  backgroundColor: 'var(--rose-light)', border: '2px dashed var(--rose-dark)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5
+                }}>
+                  <span style={{ fontWeight: 800, color: 'var(--rose-dark)' }}>{guestsAtTable.length} / {table.seats}</span>
+                </div>
+
+                {/* Seats */}
+                {[...Array(table.seats)].map((_, i) => {
+                  const angle = (i / table.seats) * Math.PI * 2;
+                  const radius = 85;
+                  const x = Math.cos(angle) * radius;
+                  const y = Math.sin(angle) * radius;
+                  const guestAtSeat = guestsAtTable[i];
+
+                  return (
+                    <div 
+                      key={i} 
+                      onClick={() => {
+                        if (guestAtSeat) {
+                          removeGuestFromSeat(guestAtSeat.id);
+                        } else {
+                          setShowAssignModal({ tableId: table.name, seatIdx: i });
+                        }
+                      }}
+                      style={{
+                        position: 'absolute',
+                        transform: `translate(${x}px, ${y}px)`,
+                        width: '35px', height: '35px', borderRadius: '50%',
+                        backgroundColor: guestAtSeat ? 'var(--rose-vibrant)' : '#eee',
+                        border: guestAtSeat ? 'none' : '2px solid #ddd',
+                        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        zIndex: 10, transition: 'all 0.2s ease',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                      }}
+                      title={guestAtSeat ? `Remove ${guestAtSeat.name}` : "Assign Guest"}
+                    >
+                      {guestAtSeat ? (
+                        <span style={{ color: 'white', fontSize: '0.8rem', fontWeight: 700 }}>{guestAtSeat.name.charAt(0)}</span>
+                      ) : (
+                        <span style={{ color: '#aaa', fontSize: '0.8rem' }}>+</span>
+                      )}
+                      
+                      {guestAtSeat && (
+                        <div style={{ 
+                          position: 'absolute', top: '40px', left: '50%', transform: 'translateX(-50%)',
+                          backgroundColor: 'rgba(0,0,0,0.8)', color: 'white', padding: '2px 8px',
+                          borderRadius: '4px', fontSize: '0.6rem', whiteSpace: 'nowrap', pointerEvents: 'none'
+                        }}>
+                          {guestAtSeat.name}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Assignment Modal (Simple) */}
+      {showAssignModal && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '15px', width: '400px', maxHeight: '500px', overflowY: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0, color: 'var(--rose-dark)' }}>Assign Guest</h2>
+              <button onClick={() => setShowAssignModal(null)} style={{ border: 'none', background: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+            </div>
+            
+            <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '15px' }}>Select an unassigned guest for {showAssignModal.tableId}:</p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {unassignedGuests.length === 0 && <p style={{ textAlign: 'center', opacity: 0.5 }}>No unassigned guests available.</p>}
+              {unassignedGuests.map((guest: any) => (
+                <button 
+                  key={guest.id}
+                  onClick={() => {
+                    onAssignGuest(guest.id, showAssignModal.tableId);
+                    setShowAssignModal(null);
+                  }}
+                  style={{ 
+                    padding: '12px', textAlign: 'left', borderRadius: '8px', 
+                    border: '1px solid #fee6ea', backgroundColor: '#fff', cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--rose-light)'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+                >
+                  <div style={{ fontWeight: 600 }}>{guest.name}</div>
+                  <div style={{ fontSize: '0.7rem', opacity: 0.6 }}>{guest.contact_number || 'No contact info'}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div style={{ marginTop: '40px', padding: '20px', backgroundColor: 'var(--rose-light)', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 500, color: 'var(--rose-dark)' }}>Don't forget to save your seating plan configuration!</p>
+        <button className="btn-primary" onClick={onSave} style={{ padding: '10px 25px' }}>Save Layout Changes</button>
+      </div>
+    </div>
+  );
+};
