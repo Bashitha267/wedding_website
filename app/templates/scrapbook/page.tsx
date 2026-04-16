@@ -5,8 +5,25 @@ import Reveal from '@/components/Reveal';
 import Image from 'next/image';
 import ItineraryTimeline from "@/components/ItineraryTimeline";
 import RSVPFooter from "@/components/RSVPFooter";
+import CountdownSection from "@/components/CountdownSection";
 
 const MUSIC_URL = "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3";
+
+const WashiTape = ({ color = "#a2c2e0", rotate = 0, style = {} }: { color?: string, rotate?: number, style?: React.CSSProperties }) => (
+    <div style={{
+        width: '100px',
+        height: '30px',
+        backgroundColor: color,
+        opacity: 0.6,
+        transform: `rotate(${rotate}deg)`,
+        boxShadow: '2px 2px 5px rgba(0,0,0,0.1)',
+        position: 'absolute',
+        zIndex: 5,
+        maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+        ...style
+    }} />
+);
 
 const PaperClip = ({ style }: { style?: React.CSSProperties }) => (
     <svg 
@@ -17,31 +34,33 @@ const PaperClip = ({ style }: { style?: React.CSSProperties }) => (
     </svg>
 );
 
-const Polaroid = ({ src, alt, label, rotation = 0, delay = 200 }: { src: string, alt: string, label?: string, rotation?: number, delay?: number }) => (
+const Polaroid = ({ src, alt, label, rotation = 0, delay = 200, children }: { src?: string, alt?: string, label?: string, rotation?: number, delay?: number, children?: React.ReactNode }) => (
   <Reveal delay={delay}>
     <div style={{
-      padding: '15px 15px 40px',
+      padding: '15px 15px 50px',
       backgroundColor: 'white',
-      boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+      boxShadow: '5px 15px 35px rgba(0,0,0,0.1)',
       transform: `rotate(${rotation}deg)`,
       position: 'relative',
       margin: '40px auto',
-      width: '85%',
+      width: '90%',
       display: 'flex',
       flexDirection: 'column',
-      gap: '15px'
+      gap: '15px',
+      border: '1px solid #f0f0f0'
     }}>
-      <PaperClip style={{ position: 'absolute', top: '-15px', right: '20px', zIndex: 10 }} />
-      <div style={{ width: '100%', height: '300px', position: 'relative', overflow: 'hidden' }}>
-        <Image src={src} alt={alt} fill style={{ objectFit: 'cover' }} />
+      <WashiTape color="#fbc2eb" rotate={-10} style={{ top: '-10px', left: '-20px' }} />
+      <div style={{ width: '100%', height: '300px', position: 'relative', overflow: 'hidden', backgroundColor: '#f9f9f9' }}>
+        {src ? <Image src={src} alt={alt || ""} fill style={{ objectFit: 'cover' }} /> : children}
       </div>
       {label && (
           <div style={{ 
               fontFamily: 'var(--font-alex-brush)', 
-              fontSize: '1.8rem', 
+              fontSize: '2rem', 
               textAlign: 'center', 
-              color: 'var(--sky-text)',
-              opacity: 0.8
+              color: '#4a4a4a',
+              opacity: 0.8,
+              marginTop: '5px'
           }}>
               {label}
           </div>
@@ -50,88 +69,37 @@ const Polaroid = ({ src, alt, label, rotation = 0, delay = 200 }: { src: string,
   </Reveal>
 );
 
-const ScrapbookHero = ({ data }: { data: any }) => (
-  <section style={{ 
-    padding: '80px 20px',
-    textAlign: 'center',
-    backgroundColor: 'var(--sky-light)',
-    position: 'relative',
-    overflow: 'hidden'
-  }}>
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.05, backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")' }} />
-    
-    <Reveal>
-        <div style={{ fontSize: '0.9rem', letterSpacing: '8px', color: 'var(--sky-blue)', marginBottom: '30px', fontWeight: 800 }}>OUR KNOT STORY</div>
-        <h1 style={{ 
-          fontFamily: 'var(--font-alex-brush)', 
-          fontSize: '5rem', 
-          color: 'var(--sky-text)',
-          marginBottom: '10px'
-        }}>
-          {data?.brideName || 'Sarah'}
-        </h1>
-        <div style={{ fontSize: '1.5rem', opacity: 0.4, margin: '10px 0' }}>+</div>
-        <h1 style={{ 
-          fontFamily: 'var(--font-alex-brush)', 
-          fontSize: '5rem', 
-          color: 'var(--sky-text)',
-          marginBottom: '30px'
-        }}>
-          {data?.groomName || 'Mark'}
-        </h1>
-    </Reveal>
-
-    <Polaroid 
-        src={data?.images?.heroImage || '/home_hero_bg.png'} 
-        alt="Couple" 
-        label="Ever After"
-        rotation={-2}
-    />
-  </section>
-);
-
-const Countdown = ({ data }: { data: any }) => {
-    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
+const PhotoCarousel = ({ data }: { data?: any }) => {
+    const [index, setIndex] = useState(0);
+    const photos = (data?.images?.gallery?.length > 0 
+      ? data.images.gallery 
+      : ['/home_hero_bg.png', '/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png']) as string[];
+  
     useEffect(() => {
-        const target = data?.eventDate ? new Date(data.eventDate).getTime() : new Date('2026-08-24T15:00:00').getTime();
-        const interval = setInterval(() => {
-            const now = new Date().getTime();
-            const distance = target - now;
-            if (distance < 0) {
-                clearInterval(interval);
-                return;
-            }
-            setTimeLeft({
-                days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-                hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-                seconds: Math.floor((distance % (1000 * 60)) / 1000)
-            });
-        }, 1000);
-        return () => clearInterval(interval);
-    }, [data]);
-
+      const interval = setInterval(() => {
+        setIndex((prev) => (prev === photos.length - 1 ? 0 : prev + 1));
+      }, 4000);
+      return () => clearInterval(interval);
+    }, [photos.length]);
+  
     return (
-        <section style={{ padding: '60px 20px', textAlign: 'center', backgroundColor: 'white' }}>
-            <Reveal>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
-                    <div style={{ height: '1px', flex: 1, backgroundColor: 'var(--sky-blue)', opacity: 0.3 }}></div>
-                    <div style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '2.5rem', color: 'var(--sky-blue)' }}>Count the days</div>
-                    <div style={{ height: '1px', flex: 1, backgroundColor: 'var(--sky-blue)', opacity: 0.3 }}></div>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '25px', marginTop: '40px' }}>
-                    {[{l: 'Days', v: timeLeft.days}, {l: 'Hrs', v: timeLeft.hours}, {l: 'Min', v: timeLeft.minutes}, {l: 'Sec', v: timeLeft.seconds}].map((t, i) => (
-                        <div key={t.l} style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '2.5rem', fontWeight: 300, color: 'var(--sky-text)' }}>
-                                {t.v.toString().padStart(2, '0')}
-                            </div>
-                            <div style={{ fontSize: '0.6rem', marginTop: '5px', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '2px' }}>{t.l}</div>
-                        </div>
-                    ))}
-                </div>
-            </Reveal>
-        </section>
+      <Polaroid label="Our Love Story" rotation={2}>
+        <Image
+          src={photos[index]}
+          alt="Wedding Moment"
+          fill
+          style={{
+            objectFit: 'cover',
+            transition: 'all 1.2s ease-in-out',
+          }}
+          key={index}
+        />
+        <div style={{ position: 'absolute', bottom: '10px', left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: '8px', zIndex: 10 }}>
+            {photos.map((_, i) => (
+                <div key={i} style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: index === i ? 'white' : 'rgba(255,255,255,0.5)' }} />
+            ))}
+        </div>
+      </Polaroid>
     );
 };
 
@@ -149,33 +117,44 @@ const ScrapbookCalendar = ({ data }: { data: any }) => {
 
   return (
     <Reveal delay={200}>
-      <div style={{ padding: '60px 30px', textAlign: 'center', backgroundColor: 'white', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', margin: '40px auto', width: '90%', position: 'relative', border: '1px solid #eee' }}>
-        <PaperClip style={{ position: 'absolute', top: '-15px', right: '20px', zIndex: 10, transform: 'rotate(15deg)' }} />
-        <div style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '3.5rem', color: 'var(--sky-text)', marginBottom: '10px' }}>Save the Date</div>
-        <div style={{ fontSize: '1.1rem', letterSpacing: '4px', fontWeight: 700, opacity: 0.6, color: 'var(--sky-blue)', marginBottom: '35px' }}>{monthName} {year}</div>
+      <div style={{ 
+          padding: '50px 30px', 
+          textAlign: 'center', 
+          backgroundColor: '#fff', 
+          boxShadow: '0 10px 40px rgba(0,0,0,0.05)', 
+          margin: '60px auto', 
+          width: '95%', 
+          position: 'relative', 
+          border: '1px solid #eee',
+          backgroundImage: 'linear-gradient(#f0f0f0 1px, transparent 1px)',
+          backgroundSize: '100% 30px'
+      }}>
+        <PaperClip style={{ position: 'absolute', top: '-15px', right: '30px', zIndex: 10, transform: 'rotate(15deg)' }} />
+        <WashiTape color="#a2c2e0" rotate={5} style={{ top: '-15px', left: '20px' }} />
+        
+        <div style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '3.5rem', color: '#4a4a4a', marginBottom: '10px' }}>Mark the Date</div>
+        <div style={{ fontSize: '1.1rem', letterSpacing: '5px', fontWeight: 800, opacity: 0.6, color: '#a2c2e0', marginBottom: '35px' }}>{monthName} {year}</div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px', maxWidth: '300px', margin: '0 auto' }}>
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-            <div key={`${d}-${i}`} style={{ fontSize: '0.7rem', fontWeight: 900, opacity: 0.4, color: 'var(--sky-blue)' }}>{d}</div>
+            <div key={`${d}-${i}`} style={{ fontSize: '0.8rem', fontWeight: 900, opacity: 0.4, color: '#a2c2e0' }}>{d}</div>
           ))}
           {blanks.map(b => <div key={`b-${b}`} />)}
           {days.map(d => (
             <div key={d} style={{ 
-                fontSize: '1.1rem', 
+                fontSize: '1.2rem', 
                 height: '40px', 
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
                 position: 'relative',
-                color: d === targetDay ? 'white' : 'var(--sky-text)',
+                color: d === targetDay ? '#ff6b6b' : '#4a4a4a',
                 fontWeight: d === targetDay ? 900 : 400
             }}>
                 {d === targetDay && (
                     <div style={{ 
                         position: 'absolute', 
-                        top: 0, left: 0, right: 0, bottom: 0,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '2.5rem', color: 'var(--sky-text)', zIndex: 1, pointerEvents: 'none'
+                        fontSize: '3rem', color: '#ff6b6b', zIndex: 0, opacity: 0.2
                     }}>
                         ❤
                     </div>
@@ -191,6 +170,14 @@ const ScrapbookCalendar = ({ data }: { data: any }) => {
 
 export default function ScrapbookTemplate({ data, orderId }: { data: any, orderId?: string }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isMuted, setIsMuted] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) return <div style={{ minHeight: '100vh', backgroundColor: '#f5f8fa' }} />;
 
     const handleOpen = () => {
         setIsOpen(true);
@@ -198,67 +185,119 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
         if (audio) { audio.play().catch(e => console.log("Audio play blocked", e)); }
     };
 
+    const toggleMusic = () => {
+        const audio = document.getElementById('bg-music') as HTMLAudioElement;
+        if (audio) {
+            audio.muted = !isMuted;
+            setIsMuted(!isMuted);
+        }
+    };
+
     return (
-        <div style={{ backgroundColor: '#f5f8fa', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
-            <main className="invitation-container scrapbook-theme" style={{ position: 'relative', backgroundColor: 'white', boxShadow: '0 0 50px rgba(0,0,0,0.05)' }}>
+        <div style={{ backgroundColor: '#eef2f5', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
+            <main className="invitation-container scrapbook-theme" style={{ 
+                position: 'relative', 
+                backgroundColor: '#ffffff', 
+                boxShadow: '0 0 50px rgba(0,0,0,0.1)',
+                backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
+                maxWidth: '500px',
+                width: '100%'
+            }}>
                 <style jsx global>{`
-                    .scrapbook-theme .subheading { color: var(--sky-blue) !important; font-weight: 800 !important; letter-spacing: 5px !important; text-transform: uppercase !important; }
-                    .scrapbook-theme .itinerary-section { background-color: #f9fcff !important; padding: 60px 20px !important; position: relative; }
+                    .scrapbook-theme { font-family: 'Handlee', cursive, sans-serif; }
+                    .scrapbook-theme .subheading { color: #a2c2e0 !important; font-weight: 800 !important; letter-spacing: 5px !important; text-transform: uppercase !important; }
                     .scrapbook-theme .btn-primary { 
-                        background-color: var(--sky-blue) !important; 
-                        border-radius: 5px !important; 
-                        padding: 12px 35px !important;
+                        background-color: #a2c2e0 !important; 
+                        border-radius: 0px !important; 
+                        padding: 15px 40px !important;
                         font-weight: 700 !important;
-                        box-shadow: 0 5px 15px rgba(162, 194, 224, 0.4) !important;
+                        box-shadow: 3px 3px 0px #7b9ebc !important;
+                        color: white !important;
+                        text-decoration: none;
+                        display: inline-block;
+                        transition: transform 0.2s;
                     }
-                    /* Custom Timeline override for wavy look */
-                    .scrapbook-theme div[style*="backgroundColor: var(--rose-light)"] { background-color: #e6f0f7 !important; border-radius: 10px; }
-                    .scrapbook-theme div[style*="color: var(--rose-medium)"] { color: var(--sky-blue) !important; }
+                    .scrapbook-theme .btn-primary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #7b9ebc !important; }
                 `}</style>
 
                 <audio id="bg-music" loop>
                    <source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" />
                 </audio>
 
+                {isOpen && (
+                    <button
+                        onClick={toggleMusic}
+                        style={{
+                            position: 'fixed',
+                            bottom: '20px',
+                            right: '20px',
+                            zIndex: 2000,
+                            width: '45px',
+                            height: '45px',
+                            borderRadius: '50%',
+                            backgroundColor: 'white',
+                            border: `2px solid #a2c2e0`,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                        }}
+                    >
+                        {isMuted ? '🔇' : '🎵'}
+                    </button>
+                )}
+
                 {!isOpen ? (
-                    <div onClick={handleOpen} style={{ width: '100%', height: '100vh', backgroundColor: 'var(--sky-light)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', textAlign: 'center', padding: '40px' }}>
+                    <div onClick={handleOpen} style={{ width: '100%', height: '100vh', backgroundColor: '#f9fcff', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', textAlign: 'center', padding: '40px', position: 'relative' }}>
+                        <div style={{ position: 'absolute', top: '20px', left: '20px', fontSize: '2rem' }}>✂️</div>
+                        <div style={{ position: 'absolute', bottom: '20px', right: '20px', fontSize: '2rem' }}>🎨</div>
                         <Reveal>
                             <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🎞️</div>
-                            <h2 style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '5rem', color: 'var(--sky-text)' }}>Our Gallery</h2>
-                            <p className="bounce-soft" style={{ letterSpacing: '5px', opacity: 0.6, fontSize: '0.8rem', fontWeight: 800, color: 'var(--sky-blue)' }}>TAP TO UNROLL</p>
+                            <h2 style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '5rem', color: '#4a4a4a' }}>Our Scrapbook</h2>
+                            <p style={{ letterSpacing: '5px', opacity: 0.6, fontSize: '0.9rem', fontWeight: 800, color: '#a2c2e0', marginTop: '20px' }}>TAP TO OPEN</p>
                         </Reveal>
                     </div>
                 ) : (
-                    <div style={{ width: '100%' }}>
-                        <ScrapbookHero data={data} />
+                    <div style={{ width: '100%', padding: '20px' }}>
+                        {/* Hero Polaroid */}
+                        <Polaroid 
+                            src={data?.images?.heroImage || '/home_hero_bg.png'} 
+                            alt="Couple" 
+                            label={`${data?.brideName || 'Sarah'} & ${data?.groomName || 'Mark'}`}
+                            rotation={-3}
+                        />
 
                         <div style={{ padding: '40px 0' }}>
                            <Reveal>
-                                <div style={{ textAlign: 'center', padding: '0 40px', color: 'var(--sky-text)', marginBottom: '40px' }}>
-                                    <div style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '2rem', marginBottom: '20px' }}>The beginning of forever</div>
-                                    <p style={{ fontSize: '1rem', lineHeight: 1.8, opacity: 0.7 }}>
-                                        "Two souls with but a single thought, two hearts that beat as one."
+                                <div style={{ textAlign: 'center', padding: '0 20px', color: '#4a4a4a', marginBottom: '40px' }}>
+                                    <div style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '2.5rem', marginBottom: '15px' }}>Adventure Begins</div>
+                                    <p style={{ fontSize: '1.1rem', lineHeight: 1.8, opacity: 0.8 }}>
+                                        "Life is a beautiful journey, and we want you to be part of our favorite chapter yet."
                                     </p>
                                 </div>
                             </Reveal>
 
-                            <Countdown data={data} />
-
-                            <div style={{ padding: '80px 40px', textAlign: 'center', backgroundColor: '#fdfdfd', borderTop: '1px dashed #eee', borderBottom: '1px dashed #eee', margin: '40px 0' }}>
-                                <Reveal>
-                                    <h2 style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '4.5rem', color: 'var(--sky-text)' }}>Mr. Guest</h2>
-                                    <p style={{ marginTop: '20px', fontSize: '1rem', color: 'var(--sky-blue)', fontStyle: 'italic' }}>
-                                        join us as we celebrate this precious milestone.
+                            <Reveal delay={200}>
+                                <div style={{
+                                    padding: '50px 20px',
+                                    textAlign: 'center',
+                                    backgroundColor: '#fff',
+                                    margin: '40px 0',
+                                    position: 'relative',
+                                    border: '1px dashed #ccc'
+                                }}>
+                                    <div style={{ fontSize: '0.9rem', letterSpacing: '4px', textTransform: 'uppercase', color: '#a2c2e0', fontWeight: 800, marginBottom: '25px' }}>
+                                        INVITATION FOR
+                                    </div>
+                                    <h2 style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '4.5rem', color: '#4a4a4a', margin: '10px 0' }}>Mr. Guest</h2>
+                                    <p style={{ marginTop: '20px', fontSize: '1.1rem', color: '#a2c2e0', fontWeight: 600 }}>
+                                        Join us for a day of joy and memories!
                                     </p>
-                                </Reveal>
-                            </div>
+                                </div>
+                            </Reveal>
 
-                            <Polaroid 
-                                src={data?.images?.image1 || "/photo_2.png"} 
-                                alt="Memory" 
-                                label="Sweet Moments"
-                                rotation={3}
-                            />
+                            <CountdownSection data={data} />
 
                             <div style={{ margin: '60px 0' }}>
                                 <ItineraryTimeline data={data} />
@@ -267,27 +306,33 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
                             <ScrapbookCalendar data={data} />
 
                             <Polaroid 
-                                src={data?.images?.image2 || "/photo_3.png"} 
-                                alt="Ceremony" 
-                                label="The Location"
-                                rotation={-1}
+                                src={data?.images?.image1 || "/photo_2.png"} 
+                                alt="Memory" 
+                                label="Sweet Moments"
+                                rotation={3}
                             />
 
-                            <section style={{ padding: '60px 30px', textAlign: 'center' }}>
+                            <section style={{ padding: '60px 10px', textAlign: 'center', position: 'relative' }}>
+                                <WashiTape color="#ffcc33" rotate={-5} style={{ top: '0', right: '10%' }} />
                                 <Reveal>
-                                    <div style={{ fontSize: '0.8rem', letterSpacing: '6px', color: 'var(--sky-blue)', marginBottom: '15px', fontWeight: 800 }}>LOCATION</div>
-                                    <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-alex-brush)', color: 'var(--sky-text)', marginBottom: '15px' }}>{data?.location?.name || 'The Rose Garden Estates'}</h2>
-                                    <p style={{ marginBottom: '40px', opacity: 0.7, fontSize: '0.95rem' }}>{data?.location?.address || '123 Romance Lane, Loving Valley'}</p>
-                                    <a href={data?.location?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none', color: 'white' }}>View Location</a>
+                                    <div style={{ fontSize: '0.8rem', letterSpacing: '6px', color: '#a2c2e0', marginBottom: '15px', fontWeight: 800 }}>THE DESTINATION</div>
+                                    <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-alex-brush)', color: '#4a4a4a', marginBottom: '15px' }}>{data?.location?.name || 'The Rose Garden Estates'}</h2>
+                                    <p style={{ marginBottom: '40px', opacity: 0.8, fontSize: '1rem', color: '#4a4a4a' }}>{data?.location?.address || '123 Romance Lane, Loving Valley'}</p>
+                                    
+                                    <div style={{ height: '350px', borderRadius: '15px', overflow: 'hidden', border: '8px solid white', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', marginBottom: '40px' }}>
+                                        <iframe
+                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.084897042588!2d80.635832!3d7.290572!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3662c95333f21%3A0x6a0a09e072f9602f!2sThe%20Grand%20Kandyan!5e0!3m2!1sen!2slk!4v1620000000000!5m2!1sen!2slk"
+                                            width="100%" height="100%" style={{ border: 0 }} loading="lazy"
+                                        ></iframe>
+                                    </div>
+
+                                    <a href="#" target="_blank" className="btn-primary">OPEN IN MAPS</a>
                                 </Reveal>
                             </section>
 
-                            <Polaroid 
-                                src={data?.images?.gallery?.[0] || "/photo_4.png"} 
-                                alt="Gallery" 
-                                label="With Pure Love"
-                                rotation={2}
-                            />
+                            <PhotoCarousel data={data} />
+
+                            <div style={{ textAlign: 'center', padding: '60px 0', fontSize: '3rem' }}>✨ 💍 ✨</div>
 
                             <RSVPFooter orderId={orderId} data={data} />
                         </div>
