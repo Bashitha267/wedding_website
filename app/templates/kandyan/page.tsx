@@ -153,12 +153,12 @@ export default function KandyanTemplate({ data, orderId }: { data: any, orderId?
   useEffect(() => {
     setIsMounted(true);
     // Generate positions only on client-side to avoid hydration mismatch
-    const positions = [...Array(12)].map((_, i) => ({
-      top: `${(i * 8) + (Math.random() * 5)}%`,
-      left: `${(i % 2 === 0 ? 0 : 70) + (Math.random() * 10)}%`,
-      width: `${120 + Math.random() * 80}px`,
-      height: `${150 + Math.random() * 100}px`,
-      rotate: `${Math.random() * 30 - 15}deg`,
+    const positions = [...Array(24)].map((_, i) => ({
+      top: `${(i * 4) + (Math.random() * 4)}%`,
+      left: `${(i % 2 === 0 ? -5 : 75) + (Math.random() * 15)}%`,
+      width: `${150 + Math.random() * 100}px`,
+      height: `${180 + Math.random() * 120}px`,
+      rotate: `${Math.random() * 40 - 20}deg`,
     }));
     setDancingPositions(positions);
   }, []);
@@ -235,9 +235,11 @@ export default function KandyanTemplate({ data, orderId }: { data: any, orderId?
           </button>
         )}
 
-        {!isOpen && (
-          <div style={{
-            position: 'absolute',
+        {/* Welcome Screen / Cover */}
+        <div 
+          onClick={handleOpen} 
+          style={{
+            position: 'fixed',
             inset: 0,
             zIndex: 1000,
             backgroundColor: '#fffcf2',
@@ -246,34 +248,82 @@ export default function KandyanTemplate({ data, orderId }: { data: any, orderId?
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
-            padding: '20px'
-          }}>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: KANDYAN_RED, marginBottom: '20px' }}>
-              You are invited to the Royal Wedding
-            </h2>
-            <button
-              onClick={handleOpen}
-              style={{
-                backgroundColor: KANDYAN_RED,
-                color: 'white',
-                padding: '15px 40px',
-                border: `2px solid ${KANDYAN_GOLD}`,
-                fontSize: '1.1rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                letterSpacing: '2px'
-              }}
-            >
-              OPEN INVITATION
-            </button>
-          </div>
-        )}
+            padding: '20px',
+            cursor: 'pointer',
+            overflow: 'hidden',
+            transition: 'transform 1.5s cubic-bezier(0.87, 0, 0.13, 1)',
+            transform: isOpen ? 'translateY(100%)' : 'translateY(0)',
+            pointerEvents: isOpen ? 'none' : 'auto'
+          }}
+        >
+           {/* Decorative Background for Welcome Screen */}
+           <div style={{ position: 'absolute', inset: 0, opacity: 0.1, pointerEvents: 'none', zIndex: 0 }}>
+              <div style={{ position: 'absolute', top: '10%', left: '5%', width: '150px', height: '200px' }}>
+                <Image src="/dancing.png" alt="Dance" fill style={{ objectFit: 'contain' }} />
+              </div>
+              <div style={{ position: 'absolute', top: '15%', right: '5%', width: '120px', height: '180px', transform: 'scaleX(-1)' }}>
+                <Image src="/dancing.png" alt="Dance" fill style={{ objectFit: 'contain' }} />
+              </div>
+              <div style={{ position: 'absolute', bottom: '20%', left: '10%', width: '130px', height: '190px', transform: 'rotate(10deg)' }}>
+                <Image src="/dancing.png" alt="Dance" fill style={{ objectFit: 'contain' }} />
+              </div>
+              <div style={{ position: 'absolute', bottom: '25%', right: '10%', width: '140px', height: '210px', transform: 'rotate(-10deg) scaleX(-1)' }}>
+                <Image src="/dancing.png" alt="Dance" fill style={{ objectFit: 'contain' }} />
+              </div>
+           </div>
+
+           <div style={{ position: 'relative', zIndex: 1 }}>
+            <Reveal>
+                <div style={{ fontSize: '1rem', letterSpacing: '8px', color: KANDYAN_GOLD, marginBottom: '20px', fontWeight: 600 }}>THE ROYAL WEDDING OF</div>
+                <h1 style={{ 
+                    fontFamily: 'var(--font-display)', 
+                    fontSize: '5rem', 
+                    color: KANDYAN_RED, 
+                    marginBottom: '10px',
+                    lineHeight: 1.1
+                }}>
+                    {data?.brideName || 'Sarah'} & {data?.groomName || 'Mark'}
+                </h1>
+                <div style={{ height: '2px', width: '80px', backgroundColor: KANDYAN_GOLD, margin: '20px auto' }}></div>
+                <div style={{ fontSize: '0.9rem', letterSpacing: '4px', textTransform: 'uppercase', color: KANDYAN_GOLD, fontWeight: 700 }}>
+                    You are invited to witness our love
+                </div>
+            </Reveal>
+           </div>
+
+            <div style={{ position: 'absolute', bottom: '80px', left: 0, right: 0, zIndex: 2 }}>
+              <Reveal delay={800}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+                    <div style={{ width: '40px', height: '40px', position: 'relative', opacity: 0.6 }} className="bounce-soft">
+                        <Image src="/dancing.png" alt="Icon" fill style={{ objectFit: 'contain' }} />
+                    </div>
+                    <button
+                        onClick={handleOpen}
+                        style={{
+                            backgroundColor: KANDYAN_RED,
+                            color: 'white',
+                            padding: '16px 45px',
+                            border: `2px solid ${KANDYAN_GOLD}`,
+                            fontSize: '0.9rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            letterSpacing: '3px',
+                            boxShadow: '0 10px 25px rgba(138, 3, 3, 0.3)',
+                            textTransform: 'uppercase'
+                        }}
+                    >
+                        TAP TO OPEN
+                    </button>
+                </div>
+              </Reveal>
+            </div>
+        </div>
 
         <div style={{ position: 'relative', zIndex: 1, padding: '20px' }}>
           {/* Hero Section with Full Screen Background */}
           <div style={{
             position: 'relative',
-            minHeight: '100vh',
+            height: '100vh',
             margin: '-20px -20px 40px -20px',
             overflow: 'hidden',
             display: 'flex',
@@ -366,7 +416,7 @@ export default function KandyanTemplate({ data, orderId }: { data: any, orderId?
                   left: pos.left,
                   width: pos.width,
                   height: pos.height,
-                  opacity: 0.15,
+                  opacity: 0.2,
                   transform: `rotate(${pos.rotate})`,
                 }}>
                   <Image src="/dancing.png" alt="Dancing" fill style={{ objectFit: 'contain' }} />

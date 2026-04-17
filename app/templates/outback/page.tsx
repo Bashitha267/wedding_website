@@ -282,7 +282,7 @@ export default function OutbackTemplate({ data, orderId }: { data: any, orderId?
         )}
 
         {!isOpen && (
-          <div style={{
+          <div onClick={handleOpen} style={{
             position: 'absolute',
             inset: 0,
             zIndex: 1000,
@@ -294,29 +294,44 @@ export default function OutbackTemplate({ data, orderId }: { data: any, orderId?
             textAlign: 'center',
             padding: '40px',
             color: 'white',
-            backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")'
+            backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")',
+            cursor: 'pointer'
           }}>
              <Reveal>
-              <div style={{ marginBottom: '30px', fontSize: '4rem' }}>🌄</div>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', marginBottom: '10px' }}>Join the Adventure</h2>
-              <p style={{ letterSpacing: '5px', opacity: 0.8, marginBottom: '40px' }}>{data?.brideName} & {data?.groomName}</p>
-              <button
-                onClick={handleOpen}
-                style={{
-                  backgroundColor: OUTBACK_SAGE,
-                  color: 'white',
-                  padding: '16px 45px',
-                  border: 'none',
-                  fontSize: '1.2rem',
-                  fontWeight: 900,
-                  cursor: 'pointer',
-                  letterSpacing: '3px',
-                  boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
-                }}
-              >
-                HEAR THE WILD
-              </button>
+              <div style={{ marginBottom: '20px', fontSize: '3.5rem' }}>🌄</div>
+              <h1 style={{ 
+                fontFamily: 'var(--font-display)', 
+                fontSize: '4rem', 
+                marginBottom: '5px',
+                color: OUTBACK_CREAM,
+                lineHeight: 1.1
+              }}>
+                {data?.brideName || 'Bride'} & {data?.groomName || 'Groom'}
+              </h1>
+              <div style={{ letterSpacing: '6px', opacity: 0.8, fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase' }}>Wedding Invitation</div>
             </Reveal>
+
+            <div style={{ position: 'absolute', bottom: '60px', left: 0, right: 0 }}>
+              <Reveal delay={800}>
+                <button
+                  onClick={handleOpen}
+                  className="bounce-soft"
+                  style={{
+                    backgroundColor: OUTBACK_SAGE,
+                    color: 'white',
+                    padding: '16px 45px',
+                    border: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 900,
+                    cursor: 'pointer',
+                    letterSpacing: '3px',
+                    boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+                  }}
+                >
+                  HEAR THE WILD
+                </button>
+              </Reveal>
+            </div>
           </div>
         )}
 

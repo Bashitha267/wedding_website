@@ -287,7 +287,7 @@ export default function FusionTemplate({ data, orderId }: { data: any, orderId?:
         )}
 
         {!isOpen && (
-          <div style={{
+          <div onClick={handleOpen} style={{
             position: 'absolute',
             inset: 0,
             zIndex: 1000,
@@ -298,35 +298,50 @@ export default function FusionTemplate({ data, orderId }: { data: any, orderId?:
             justifyContent: 'center',
             textAlign: 'center',
             padding: '20px',
-            backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")'
+            backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
+            cursor: 'pointer',
+            overflow: 'hidden'
           }}>
              <Reveal>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px', justifyContent: 'center' }}>
                 <div style={{ width: '30px', height: '1px', backgroundColor: FUSION_SG }}></div>
                 <span style={{ fontSize: '0.8rem', letterSpacing: '3px', color: FUSION_TEXT }}>A CELEBRATION OF LOVE</span>
                 <div style={{ width: '30px', height: '1px', backgroundColor: FUSION_SG }}></div>
               </div>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', color: FUSION_TEXT, marginBottom: '40px' }}>
-                {data?.brideName} & {data?.groomName}
-              </h2>
-              <button
-                onClick={handleOpen}
-                style={{
-                  backgroundColor: '#e0aeb4',
-                  color: 'white',
-                  padding: '16px 40px',
-                  border: 'none',
-                  fontSize: '1.1rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  letterSpacing: '2px',
-                  borderRadius: '50px',
-                  boxShadow: '0 10px 25px rgba(224, 174, 180, 0.4)'
-                }}
-              >
-                OPEN HEART
-              </button>
+              <h1 style={{ 
+                fontFamily: 'var(--font-display)', 
+                fontSize: '4rem', 
+                color: FUSION_TEXT, 
+                marginBottom: '10px',
+                lineHeight: 1.1
+              }}>
+                {data?.brideName || 'Bride'} <span style={{ color: '#e0aeb4' }}>&</span> {data?.groomName || 'Groom'}
+              </h1>
+              <div style={{ fontSize: '0.9rem', letterSpacing: '6px', fontWeight: 600, color: '#e0aeb4', textTransform: 'uppercase' }}>Wedding Invitation</div>
             </Reveal>
+
+            <div style={{ position: 'absolute', bottom: '60px', left: 0, right: 0 }}>
+              <Reveal delay={800}>
+                <button
+                  onClick={handleOpen}
+                  className="bounce-soft"
+                  style={{
+                    backgroundColor: '#e0aeb4',
+                    color: 'white',
+                    padding: '16px 45px',
+                    border: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    letterSpacing: '2px',
+                    borderRadius: '50px',
+                    boxShadow: '0 10px 25px rgba(224, 174, 180, 0.4)'
+                  }}
+                >
+                  OPEN HEART
+                </button>
+              </Reveal>
+            </div>
           </div>
         )}
 

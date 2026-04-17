@@ -168,6 +168,25 @@ const ScrapbookCalendar = ({ data }: { data: any }) => {
   );
 };
 
+const DrawnHeart = ({ style, color = "currentColor" }: { style?: React.CSSProperties, color?: string }) => (
+    <svg viewBox="0 0 100 100" style={{ width: '40px', height: '40px', fill: 'none', stroke: color, strokeWidth: 1.5, strokeLinecap: 'round', ...style }}>
+        <path d="M50 85 C10 65 -5 35 15 15 C35 -5 45 20 50 25 C55 20 65 -5 85 15 C105 35 90 65 50 85" />
+    </svg>
+);
+
+const DrawnStar = ({ style, color = "currentColor" }: { style?: React.CSSProperties, color?: string }) => (
+    <svg viewBox="0 0 100 100" style={{ width: '30px', height: '30px', fill: 'none', stroke: color, strokeWidth: 1.5, strokeLinecap: 'round', ...style }}>
+        <path d="M50 5 L63 35 L95 40 L70 65 L76 95 L50 80 L24 95 L30 65 L5 40 L37 35 Z" />
+    </svg>
+);
+
+const DrawnFloral = ({ style, color = "currentColor" }: { style?: React.CSSProperties, color?: string }) => (
+    <svg viewBox="0 0 100 100" style={{ width: '50px', height: '50px', fill: 'none', stroke: color, strokeWidth: 1.5, strokeLinecap: 'round', ...style }}>
+        <path d="M50 50 Q60 20 50 5 Q40 20 50 50 M50 50 Q80 40 95 50 Q80 60 50 50 M50 50 Q60 80 50 95 Q40 80 50 50 M50 50 Q20 40 5 50 Q20 60 50 50" />
+        <circle cx="50" cy="50" r="3" />
+    </svg>
+);
+
 export default function ScrapbookTemplate({ data, orderId }: { data: any, orderId?: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
@@ -201,7 +220,8 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
                 boxShadow: '0 0 50px rgba(0,0,0,0.1)',
                 backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
                 maxWidth: '500px',
-                width: '100%'
+                width: '100%',
+                overflow: 'hidden'
             }}>
                 <style jsx global>{`
                     .scrapbook-theme { font-family: 'Handlee', cursive, sans-serif; }
@@ -211,13 +231,13 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
                         border-radius: 0px !important; 
                         padding: 15px 40px !important;
                         font-weight: 700 !important;
-                        box-shadow: 3px 3px 0px #7b9ebc !important;
+                        box-shadow: 4px 4px 0px #7b9ebc !important;
                         color: white !important;
                         text-decoration: none;
                         display: inline-block;
-                        transition: transform 0.2s;
+                        transition: all 0.2s;
                     }
-                    .scrapbook-theme .btn-primary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #7b9ebc !important; }
+                    .scrapbook-theme .btn-primary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #7b9ebc !important; }
                 `}</style>
 
                 <audio id="bg-music" loop>
@@ -248,17 +268,73 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
                     </button>
                 )}
 
-                {!isOpen ? (
-                    <div onClick={handleOpen} style={{ width: '100%', height: '100vh', backgroundColor: '#f9fcff', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', textAlign: 'center', padding: '40px', position: 'relative' }}>
-                        <div style={{ position: 'absolute', top: '20px', left: '20px', fontSize: '2rem' }}>✂️</div>
-                        <div style={{ position: 'absolute', bottom: '20px', right: '20px', fontSize: '2rem' }}>🎨</div>
+                <div 
+                    onClick={handleOpen} 
+                    style={{ 
+                        width: '100%', 
+                        height: '100vh', 
+                        backgroundColor: '#fffcf7', 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                        cursor: 'pointer', 
+                        textAlign: 'center', 
+                        padding: '40px', 
+                        position: 'fixed',
+                        top: 0, left: 0,
+                        zIndex: 1000,
+                        transition: 'transform 1.2s cubic-bezier(0.87, 0, 0.13, 1)',
+                        transform: isOpen ? 'translateY(-100%)' : 'translateY(0)',
+                        overflow: 'hidden',
+                        backgroundImage: 'url("https://www.transparenttextures.com/patterns/notebook.png")'
+                    }}
+                >
+                    {/* Decorative Elements on Welcome Screen */}
+                    <DrawnHeart style={{ position: 'absolute', top: '15%', left: '15%', transform: 'rotate(-15deg)', opacity: 0.2 }} color="#ff6b6b" />
+                    <DrawnStar style={{ position: 'absolute', top: '20%', right: '20%', transform: 'rotate(20deg)', opacity: 0.2 }} color="#a2c2e0" />
+                    <DrawnFloral style={{ position: 'absolute', bottom: '25%', left: '20%', transform: 'rotate(-10deg)', opacity: 0.15 }} color="#7fb069" />
+                    <DrawnHeart style={{ position: 'absolute', bottom: '15%', right: '15%', transform: 'rotate(10deg)', opacity: 0.2 }} color="#ff6b6b" />
+                    
+                    <WashiTape color="#fbc2eb" rotate={-5} style={{ top: '10%', right: '-30px', width: '150px' }} />
+                    <WashiTape color="#a2c2e0" rotate={10} style={{ bottom: '15%', left: '-30px', width: '180px' }} />
+
+                    <div style={{ position: 'relative', zIndex: 1 }}>
                         <Reveal>
-                            <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🎞️</div>
-                            <h2 style={{ fontFamily: 'var(--font-alex-brush)', fontSize: '5rem', color: '#4a4a4a' }}>Our Scrapbook</h2>
-                            <p style={{ letterSpacing: '5px', opacity: 0.6, fontSize: '0.9rem', fontWeight: 800, color: '#a2c2e0', marginTop: '20px' }}>TAP TO OPEN</p>
+                            <div style={{ padding: '40px', backgroundColor: 'white', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', border: '1px solid #eee', position: 'relative' }}>
+                                <PaperClip style={{ position: 'absolute', top: '-15px', right: '10px' }} />
+                                <div style={{ fontSize: '0.8rem', letterSpacing: '8px', color: '#a2c2e0', marginBottom: '20px', fontWeight: 800 }}>OUR SAVED MOMENTS</div>
+                                <h1 style={{ 
+                                    fontFamily: 'var(--font-alex-brush)', 
+                                    fontSize: '4.5rem', 
+                                    color: '#4a4a4a',
+                                    marginBottom: '10px',
+                                    lineHeight: 1.1
+                                }}>
+                                    {data?.brideName || 'Sarah'} & {data?.groomName || 'Mark'}
+                                </h1>
+                                <div style={{ height: '1px', width: '60px', backgroundColor: '#eee', margin: '20px auto' }}></div>
+                                <div style={{ 
+                                    fontSize: '0.9rem', 
+                                    letterSpacing: '5px', 
+                                    color: '#4a4a4a', 
+                                    opacity: 0.6,
+                                    textTransform: 'uppercase',
+                                    fontWeight: 700
+                                }}>Wedding Invitation</div>
+                            </div>
                         </Reveal>
                     </div>
-                ) : (
+
+                    <div style={{ position: 'absolute', bottom: '60px', left: 0, right: 0 }}>
+                        <Reveal delay={800}>
+                            <div className="bounce-soft" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                                <DrawnHeart style={{ width: '25px', height: '25px', opacity: 0.5 }} color="#ff6b6b" />
+                                <p style={{ letterSpacing: '8px', opacity: 0.6, fontSize: '0.8rem', fontWeight: 800, color: '#4a4a4a' }}>TAP TO OPEN</p>
+                            </div>
+                        </Reveal>
+                    </div>
+                </div>
                     <div style={{ width: '100%', padding: '20px' }}>
                         {/* Hero Polaroid */}
                         <Polaroid 
@@ -332,12 +408,15 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
 
                             <PhotoCarousel data={data} />
 
-                            <div style={{ textAlign: 'center', padding: '60px 0', fontSize: '3rem' }}>✨ 💍 ✨</div>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '30px', padding: '60px 0', opacity: 0.2 }}>
+                                <DrawnStar color="#ffcc33" />
+                                <DrawnFloral color="#7fb069" />
+                                <DrawnStar color="#ffcc33" />
+                            </div>
 
                             <RSVPFooter orderId={orderId} data={data} />
                         </div>
                     </div>
-                )}
             </main>
         </div>
     );

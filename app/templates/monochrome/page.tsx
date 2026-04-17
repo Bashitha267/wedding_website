@@ -13,15 +13,16 @@ const TORN_PATH_TOP = 'polygon(0% 0%, 100% 0%, 100% 100%, 98% 88%, 95% 95%, 92% 
 
 const FloatingHearts = () => (
   <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
-    {[...Array(25)].map((_, i) => (
+    {[...Array(60)].map((_, i) => (
       <div key={i} className="pulse" style={{
         position: 'absolute',
         top: `${Math.random() * 100}%`,
         left: `${Math.random() * 100}%`,
-        fontSize: `${Math.random() * 1.5 + 0.5}rem`,
-        opacity: 0.08,
+        fontSize: `${Math.random() * 1.2 + 0.4}rem`,
+        opacity: 0.06,
         color: 'black',
-        animationDelay: `${i * 0.3}s`
+        animationDelay: `${Math.random() * 5}s`,
+        animationDuration: `${3 + Math.random() * 4}s`
       }}>
         ❤
       </div>
@@ -29,7 +30,7 @@ const FloatingHearts = () => (
   </div>
 );
 
-const MonochromeEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: boolean }) => {
+const MonochromeEnvelope = ({ onOpen, isOpen, data }: { onOpen: () => void, isOpen: boolean, data: any }) => {
   return (
     <div
       style={{
@@ -47,7 +48,8 @@ const MonochromeEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: bo
         transform: isOpen ? 'scale(1.2) translateY(-100%)' : 'scale(1) translateY(0)',
         opacity: isOpen ? 0 : 1,
         cursor: 'pointer',
-        border: '20px solid #111'
+        border: '15px solid #111',
+        overflow: 'hidden'
       }}
       onClick={onOpen}
     >
@@ -55,24 +57,41 @@ const MonochromeEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: bo
         textAlign: 'center',
         width: '100%',
         color: 'white',
-        zIndex: 2
+        zIndex: 2,
+        padding: '0 20px'
       }}>
-        <div style={{ 
-            fontFamily: 'var(--font-display)', 
-            fontSize: '5rem', 
-            marginBottom: '15px'
-        }}>
-          Invitation
-        </div>
-        <div className="bounce-soft" style={{
-          fontSize: '0.8rem',
-          letterSpacing: '8px',
-          opacity: 0.6,
-          fontWeight: 300,
-          textTransform: 'uppercase'
-        }}>
-          Tap to open
-        </div>
+        <Reveal>
+            <h1 style={{ 
+                fontFamily: 'var(--font-display)', 
+                fontSize: '4.5rem', 
+                marginBottom: '5px',
+                lineHeight: 1.1 
+            }}>
+                {data?.brideName || 'Sarah'} & {data?.groomName || 'Mark'}
+            </h1>
+            <div style={{ 
+                fontSize: '0.8rem', 
+                letterSpacing: '8px', 
+                opacity: 0.6, 
+                fontWeight: 300,
+                textTransform: 'uppercase'
+            }}>Wedding Invitation</div>
+        </Reveal>
+      </div>
+
+      <div style={{ position: 'absolute', bottom: '60px', left: 0, right: 0, zIndex: 2 }}>
+        <Reveal delay={800}>
+            <div className="bounce-soft" style={{
+                fontSize: '0.8rem',
+                letterSpacing: '10px',
+                opacity: 0.5,
+                fontWeight: 300,
+                textAlign: 'center',
+                textTransform: 'uppercase'
+            }}>
+                Tap to open
+            </div>
+        </Reveal>
       </div>
     </div>
   );
@@ -355,7 +374,7 @@ export default function MonochromeTemplate({ data, orderId }: { data: any, order
                    <source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" />
                 </audio>
 
-                <MonochromeEnvelope isOpen={isOpen} onOpen={handleOpen} />
+                <MonochromeEnvelope isOpen={isOpen} onOpen={handleOpen} data={data} />
 
                 {isOpen && (
                     <div style={{ width: '100%', position: 'relative' }}>

@@ -34,7 +34,7 @@ const FloatingHearts = ({ count = 20, color = 'var(--earthy-accent)' }: { count?
   </div>
 );
 
-const InvitationEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: boolean }) => {
+const InvitationEnvelope = ({ onOpen, isOpen, data }: { onOpen: () => void, isOpen: boolean, data: any }) => {
   return (
     <div
       style={{
@@ -71,7 +71,8 @@ const InvitationEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: bo
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid rgba(255,255,255,0.1)'
+        border: '1px solid rgba(255,255,255,0.1)',
+        textAlign: 'center'
       }}>
         {/* Subtle texture for the envelope */}
         <div style={{
@@ -91,12 +92,33 @@ const InvitationEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: bo
              <Image src="/sage_leaves.png" alt="leaves" fill style={{ objectFit: 'contain' }} />
         </div>
 
+        {/* Names on Envelope */}
+        <div style={{ position: 'relative', zIndex: 3, padding: '0 30px', marginBottom: '40px' }}>
+            <h1 style={{ 
+                fontFamily: 'var(--font-display)', 
+                fontSize: '3.5rem', 
+                color: 'white', 
+                lineHeight: 1.1,
+                marginBottom: '10px'
+            }}>
+                {data?.brideName || 'Bride'} & {data?.groomName || 'Groom'}
+            </h1>
+            <div style={{ 
+                fontSize: '0.8rem', 
+                letterSpacing: '4px', 
+                color: 'white', 
+                opacity: 0.7, 
+                textTransform: 'uppercase',
+                fontWeight: 600
+            }}>Wedding Invitation</div>
+        </div>
+
         {/* Wax Seal */}
         <div className="pulse" style={{ 
             position: 'relative', 
             zIndex: 4, 
-            width: '140px', 
-            height: '140px',
+            width: '120px', 
+            height: '120px',
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))'
         }}>
             <Image src="/sage_wax_seal.png" alt="Wax Seal" fill style={{ objectFit: 'contain' }} />
@@ -481,7 +503,7 @@ export default function EarthyTemplate({ data, orderId }: { data: any, orderId?:
           <source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" />
         </audio>
 
-        <InvitationEnvelope isOpen={isOpen} onOpen={handleOpen} />
+        <InvitationEnvelope isOpen={isOpen} onOpen={handleOpen} data={data} />
 
         {isOpen && (
           <div style={{ width: '100%', position: 'relative' }}>

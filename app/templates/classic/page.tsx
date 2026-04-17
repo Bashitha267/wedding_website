@@ -165,7 +165,7 @@ const PhotoCarousel = ({ data }: { data?: any }) => {
   );
 };
 
-const InvitationEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: boolean }) => {
+const InvitationEnvelope = ({ onOpen, isOpen, data }: { onOpen: () => void, isOpen: boolean, data: any }) => {
   return (
     <div
       style={{
@@ -185,31 +185,54 @@ const InvitationEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: bo
         cursor: 'pointer',
         backgroundImage: 'url("/envelope_cover.png")',
         backgroundSize: 'cover',
-        backgroundPosition: 'center'
+        backgroundPosition: 'center',
+        overflow: 'hidden'
       }}
       onClick={onOpen}
     >
       <div style={{
-        position: 'absolute',
-        bottom: '15vh',
+        position: 'relative',
         textAlign: 'center',
         width: '100%',
         color: 'white',
-        textShadow: '0 4px 10px rgba(0,0,0,0.5)',
-        zIndex: 2
+        textShadow: '0 4px 15px rgba(0,0,0,0.6)',
+        zIndex: 2,
+        padding: '0 20px'
       }}>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '4.5rem', marginBottom: '15px' }}>
-          Invitation
-        </div>
-        <div className="bounce-soft" style={{
-          fontSize: '0.9rem',
-          letterSpacing: '5px',
-          opacity: 0.9,
-          fontWeight: 700
-        }}>
-          TAP TO OPEN
-        </div>
+        <Reveal>
+            <h1 style={{ 
+                fontFamily: 'var(--font-display)', 
+                fontSize: '4.5rem', 
+                marginBottom: '5px',
+                lineHeight: 1.1 
+            }}>
+                {data?.brideName || 'Sarah'} <span style={{ fontSize: '3rem' }}>&</span> {data?.groomName || 'Mark'}
+            </h1>
+            <div style={{ 
+                fontSize: '0.9rem', 
+                letterSpacing: '5px', 
+                opacity: 0.9, 
+                fontWeight: 700,
+                textTransform: 'uppercase'
+            }}>Wedding Invitation</div>
+        </Reveal>
       </div>
+
+      <div style={{ position: 'absolute', bottom: '60px', left: 0, right: 0, zIndex: 2 }}>
+        <Reveal delay={800}>
+            <div className="bounce-soft" style={{
+                fontSize: '0.9rem',
+                letterSpacing: '5px',
+                opacity: 0.9,
+                fontWeight: 800,
+                color: 'white',
+                textAlign: 'center'
+            }}>
+                TAP TO OPEN
+            </div>
+        </Reveal>
+      </div>
+
       {/* Dark gradient for text visibility */}
       <div style={{
         position: 'absolute',
@@ -217,7 +240,7 @@ const InvitationEnvelope = ({ onOpen, isOpen }: { onOpen: () => void, isOpen: bo
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 40%)',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.7) 100%)',
         zIndex: 1
       }} />
     </div>
@@ -337,7 +360,7 @@ export default function ClassicTemplate({ data, orderId }: { data: any, orderId?
           </button>
         )}
 
-        <InvitationEnvelope isOpen={isOpen} onOpen={handleOpen} />
+        <InvitationEnvelope isOpen={isOpen} onOpen={handleOpen} data={data} />
 
         {isOpen && (
           <div style={{ position: 'relative' }}>

@@ -202,20 +202,26 @@ const PhotoCarousel = ({ data }: { data?: any }) => {
   );
 };
 
+const OperaHouseSVG = ({ style, color = SYDNEY_GOLD }: { style?: React.CSSProperties, color?: string }) => (
+    <svg viewBox="0 0 100 60" style={{ width: '150px', height: '90px', fill: 'none', stroke: color, strokeWidth: 1, ...style }}>
+        <path d="M10 50 Q 25 10 40 50 M35 50 Q 50 20 65 50 M60 50 Q 75 30 90 50" />
+        <path d="M5 50 L 95 50" />
+    </svg>
+);
+
+const EucalyptusSVG = ({ style, color = "#5b7c5b" }: { style?: React.CSSProperties, color?: string }) => (
+    <svg viewBox="0 0 24 24" style={{ width: '100px', height: '100px', fill: color, ...style }}>
+        <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8.17,20C12.21,20 18,12.22 18,10C18,10 21,12 21,12C21,12 22,11.33 21,10C21,10 18,8 17,8M15,10C15,11.23 13.5,13.72 12.33,15.17L11.08,13.92C12.44,12.59 13.91,10 13.91,10C13.91,10 15,10 15,10M9.54,16.7L10.79,17.95C9.28,18.42 7.79,18.66 7.79,18.66C7.79,18.66 9.54,16.7 9.54,16.7Z" />
+    </svg>
+);
+
 export default function SydneyTemplate({ data, orderId }: { data: any, orderId?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [floatingDots, setFloatingDots] = useState<{ top: string, left: string, size: string }[]>([]);
 
   useEffect(() => {
     setIsMounted(true);
-    const dots = [...Array(15)].map(() => ({
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      size: `${Math.random() * 10 + 5}px`
-    }));
-    setFloatingDots(dots);
   }, []);
 
   if (!isMounted) return <div style={{ minHeight: '100vh', backgroundColor: SYDNEY_WHITE }} />;
@@ -244,18 +250,19 @@ export default function SydneyTemplate({ data, orderId }: { data: any, orderId?:
 
   return (
     <div style={{
-      backgroundColor: '#000814',
+      backgroundColor: '#000d1a',
       minHeight: '100vh',
       display: 'flex',
       justifyContent: 'center',
     }}>
       <main className="invitation-container" style={{
         position: 'relative',
-        boxShadow: '0 0 100px rgba(0,0,0,0.8)',
+        boxShadow: '0 0 100px rgba(0,0,0,0.5)',
         backgroundColor: SYDNEY_WHITE,
         maxWidth: '500px',
         width: '100%',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")'
       }}>
         <audio id="bg-music" loop>
           <source src={data?.musicUrl || "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3"} type="audio/mpeg" />
@@ -273,7 +280,7 @@ export default function SydneyTemplate({ data, orderId }: { data: any, orderId?:
               height: '45px',
               borderRadius: '50%',
               backgroundColor: SYDNEY_WHITE,
-              border: `2px solid ${SYDNEY_GOLD}`,
+              border: `2px solid ${SYDNEY_NAVY}`,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -285,69 +292,62 @@ export default function SydneyTemplate({ data, orderId }: { data: any, orderId?:
           </button>
         )}
 
-        {!isOpen && (
-          <div style={{
-            position: 'absolute',
+        {/* Modern Harbor Welcome Screen */}
+        <div 
+          onClick={handleOpen} 
+          style={{
+            position: 'fixed',
             inset: 0,
             zIndex: 1000,
-            backgroundImage: `linear-gradient(rgba(0,31,63,0.9), rgba(0,31,63,0.9)), url(${data?.images?.gallery?.[0] || '/home_hero_bg.png'})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundColor: SYDNEY_NAVY,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
             padding: '20px',
-            color: 'white'
-          }}>
-             <Reveal>
-              <div style={{ fontSize: '0.9rem', letterSpacing: '8px', color: SYDNEY_GOLD, marginBottom: '20px' }}>YOU ARE INVITED TO THE WEDDING OF</div>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', marginBottom: '40px' }}>
-                {data?.brideName} & {data?.groomName}
-              </h2>
-              <button
-                onClick={handleOpen}
-                style={{
-                  backgroundColor: SYDNEY_GOLD,
-                  color: SYDNEY_NAVY,
-                  padding: '15px 45px',
-                  border: 'none',
-                  fontSize: '1.1rem',
-                  fontWeight: 900,
-                  cursor: 'pointer',
-                  letterSpacing: '3px',
-                  borderRadius: '0px',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-                }}
-              >
-                VIEW INVITATION
-              </button>
-            </Reveal>
-          </div>
-        )}
+            cursor: 'pointer',
+            overflow: 'hidden',
+            transition: 'transform 1.4s cubic-bezier(0.85, 0 cooking, 0.15, 1)',
+            transform: isOpen ? 'translateY(100%)' : 'translateY(0)',
+            pointerEvents: isOpen ? 'none' : 'auto'
+          }}
+        >
+            <OperaHouseSVG style={{ position: 'absolute', top: '5%', right: '-30px', opacity: 0.1 }} />
+            <OperaHouseSVG style={{ position: 'absolute', bottom: '15%', left: '-50px', opacity: 0.1, transform: 'scaleX(-1)' }} />
+            
+            <div style={{ position: 'relative', zIndex: 1 }}>
+                <Reveal>
+                    <div style={{ fontSize: '0.8rem', letterSpacing: '8px', color: SYDNEY_GOLD, marginBottom: '20px', fontWeight: 600 }}>SYDNEY • AUSTRALIA</div>
+                    <h1 style={{ 
+                        fontFamily: 'var(--font-display)', 
+                        fontSize: '5rem', 
+                        color: 'white', 
+                        marginBottom: '10px',
+                        lineHeight: 1.1 
+                    }}>
+                        {data?.brideName || 'Sarah'} & {data?.groomName || 'Mark'}
+                    </h1>
+                    <div style={{ height: '1px', width: '60px', backgroundColor: SYDNEY_GOLD, margin: '20px auto' }}></div>
+                    <div style={{ fontSize: '0.9rem', letterSpacing: '4px', textTransform: 'uppercase', color: SYDNEY_GOLD, fontWeight: 700 }}>Wedding Invitation</div>
+                </Reveal>
+            </div>
 
-        {/* Floating Decorative Dots */}
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, opacity: 0.1 }}>
-          {floatingDots.map((dot, i) => (
-            <div key={i} style={{
-              position: 'absolute',
-              top: dot.top,
-              left: dot.left,
-              width: dot.size,
-              height: dot.size,
-              backgroundColor: SYDNEY_GOLD,
-              borderRadius: '50%',
-              boxShadow: `0 0 10px ${SYDNEY_GOLD}`
-            }} />
-          ))}
+            <div style={{ position: 'absolute', bottom: '80px', left: 0, right: 0 }}>
+              <Reveal delay={800}>
+                <div className="bounce-soft" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+                    <div style={{ width: '40px', height: '2px', backgroundColor: SYDNEY_GOLD, opacity: 0.5 }}></div>
+                    <p style={{ letterSpacing: '8px', opacity: 0.6, fontSize: '0.8rem', fontWeight: 800, color: 'white' }}>TAP TO OPEN</p>
+                </div>
+              </Reveal>
+            </div>
         </div>
 
         <div style={{ position: 'relative', zIndex: 1 }}>
           {/* High Impact Hero Section */}
           <div style={{
             position: 'relative',
-            minHeight: '100vh',
+            height: '100vh',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
@@ -358,45 +358,50 @@ export default function SydneyTemplate({ data, orderId }: { data: any, orderId?:
             <div style={{
               position: 'absolute',
               inset: 0,
-              backgroundImage: `linear-gradient(rgba(0,31,63,0.3), rgba(0,31,63,0.6)), url(${data?.images?.heroImage || '/home_hero_bg.png'})`,
+              backgroundImage: `linear-gradient(rgba(0,31,63,0.4), rgba(0,31,63,0.7)), url(${data?.images?.heroImage || '/home_hero_bg.png'})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }} />
             
+            {/* Sydney Opera House Silhouette as Watermark */}
+            <OperaHouseSVG style={{ position: 'absolute', bottom: '40px', right: '10%', opacity: 0.2, transform: 'scale(1.5)' }} />
+
             <div style={{ position: 'relative', zIndex: 10, textAlign: 'center', color: 'white', padding: '0 20px' }}>
               <Reveal>
-                <div style={{ fontSize: '0.9rem', letterSpacing: '10px', color: SYDNEY_GOLD, marginBottom: '20px', fontWeight: 600 }}>TOGETHER WITH THEIR FAMILIES</div>
+                <div style={{ fontSize: '0.9rem', letterSpacing: '10px', color: SYDNEY_GOLD, marginBottom: '25px', fontWeight: 600 }}>SYDNEY EMBRACE</div>
                 <h1 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '5.5rem',
+                  fontSize: '6rem',
                   color: 'white',
                   margin: 0,
-                  textShadow: '0 10px 30px rgba(0,0,0,0.5)',
-                  lineHeight: 1
+                  textShadow: '0 10px 40px rgba(0,0,0,0.6)',
+                  lineHeight: 1.1
                 }}>
                   {data?.brideName}
                 </h1>
-                <div style={{ fontSize: '3rem', color: SYDNEY_GOLD, margin: '10px 0', fontStyle: 'italic' }}>&</div>
+                <div style={{ fontSize: '3rem', color: SYDNEY_GOLD, margin: '15px 0', fontStyle: 'italic' }}>&</div>
                 <h1 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '5.5rem',
+                  fontSize: '6rem',
                   color: 'white',
                   margin: 0,
-                  textShadow: '0 10px 30px rgba(0,0,0,0.5)',
-                  lineHeight: 1
+                  textShadow: '0 10px 40px rgba(0,0,0,0.6)',
+                  lineHeight: 1.1
                 }}>
                   {data?.groomName}
                 </h1>
-                <div style={{ height: '1px', width: '100px', backgroundColor: SYDNEY_GOLD, margin: '40px auto' }}></div>
-                <div style={{ fontSize: '1.2rem', letterSpacing: '5px', fontWeight: 300, opacity: 0.9 }}>SEPTEMBER 05, 2026</div>
+                <div style={{ height: '3px', width: '120px', backgroundColor: SYDNEY_GOLD, margin: '40px auto', boxShadow: '0 0 15px rgba(197, 160, 89, 0.4)' }}></div>
+                <div style={{ fontSize: '1.4rem', letterSpacing: '6px', fontWeight: 400, color: 'white' }}>SEPTEMBER 05, 2026</div>
               </Reveal>
             </div>
           </div>
 
           <div style={{ padding: '0 20px' }}>
             <Reveal delay={100}>
-              <div style={{ textAlign: 'center', padding: '60px 20px', fontStyle: 'italic', color: SYDNEY_NAVY, fontSize: '1.2rem', opacity: 0.8 }}>
+              <div style={{ textAlign: 'center', padding: '60px 20px', fontStyle: 'italic', color: SYDNEY_NAVY, fontSize: '1.2rem', opacity: 0.8, position: 'relative' }}>
+                <EucalyptusSVG style={{ position: 'absolute', top: '-20px', left: '10px', opacity: 0.05, transform: 'rotate(-45deg)' }} />
                 "Love is written in the stars, but anchored in the soul."
+                <EucalyptusSVG style={{ position: 'absolute', bottom: '-20px', right: '10px', opacity: 0.05, transform: 'rotate(135deg)' }} />
               </div>
             </Reveal>
 
