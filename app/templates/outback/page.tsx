@@ -12,7 +12,8 @@ const THEME = {
     secondary: "#6b705c", // Olive
     accent: "#b8915e", // Gold
     bg: "#fdf8f5", // Warm Cream
-    text: "#4a3b2b"
+    text: "#4a3b2b",
+    sand: "#e2d1c3"
 };
 
 const FloatingSparkles = ({ count = 30 }) => {
