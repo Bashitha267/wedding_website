@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Reveal from '@/components/Reveal';
 import Image from 'next/image';
 import ItineraryTimeline from "@/components/ItineraryTimeline";
@@ -15,32 +15,52 @@ const FloatingDeco = ({ style }: { style: React.CSSProperties }) => (
   </div>
 );
 
+const seededValue = (seed: number) => {
+  const x = Math.sin(seed * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+};
+
 const FloatingHearts = ({ count = 20, color = 'var(--earthy-accent)' }: { count?: number, color?: string }) => (
   <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
     {[...Array(count)].map((_, i) => (
-      <div key={i} className="pulse" style={{
-        position: 'absolute',
-        top: `${Math.random() * 100}%`,
-        left: `${Math.random() * 100}%`,
-        fontSize: `${Math.random() * 1.5 + 0.5}rem`,
-        opacity: 0.15,
-        color: color,
-        animationDelay: `${i * 0.5}s`,
-        animationDuration: `${4 + Math.random() * 4}s`
-      }}>
+      <div
+        key={i}
+        className="pulse"
+        style={{
+          position: 'absolute',
+          top: `${(seededValue((i + 1) * 3.1) * 88 + 6).toFixed(4)}%`,
+          left: `${(seededValue((i + 1) * 7.3) * 88 + 6).toFixed(4)}%`,
+          fontSize: `${(0.55 + seededValue((i + 1) * 11.7) * 1.45).toFixed(4)}rem`,
+          opacity: 0.15,
+          color,
+          animationDelay: `${i * 0.5}s`,
+          animationDuration: `${(4 + seededValue((i + 1) * 17.9) * 4).toFixed(4)}s`
+        }}
+      >
         ❤
       </div>
     ))}
   </div>
 );
 
-const InvitationEnvelope = ({ onOpen, isOpen, data }: { onOpen: () => void, isOpen: boolean, data: any }) => {
+const InvitationEnvelope = ({
+  onOpen,
+  stage,
+  data
+}: {
+  onOpen: () => void;
+  stage: 'closed' | 'opening' | 'opened';
+  data: any;
+}) => {
+  const isOpening = stage === 'opening';
+  const isOpened = stage === 'opened';
+
   return (
     <div
       style={{
         width: '100%',
         height: '100vh',
-        backgroundColor: '#f8f9f8',
+        backgroundColor: '#f7f8f6',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -48,119 +68,230 @@ const InvitationEnvelope = ({ onOpen, isOpen, data }: { onOpen: () => void, isOp
         top: 0,
         left: 0,
         zIndex: 1000,
-        transition: 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)',
-        transform: isOpen ? 'scale(1.2) translateY(-100%)' : 'scale(1) translateY(0)',
-        opacity: isOpen ? 0 : 1,
-        cursor: 'pointer',
+        transition: 'opacity 0.8s ease, transform 1s cubic-bezier(0.2, 0.9, 0.2, 1)',
+        transform: isOpened ? 'scale(1.05) translateY(-30px)' : 'scale(1) translateY(0)',
+        opacity: isOpened ? 0 : 1,
+        pointerEvents: isOpened ? 'none' : 'auto',
         overflow: 'hidden',
         backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")'
       }}
       onClick={onOpen}
     >
-      {/* Outer Envelope Face */}
       <FloatingHearts count={15} color="#8a9a5b" />
       <div style={{
-        width: '90%',
-        maxWidth: '400px',
-        height: '550px',
-        backgroundColor: 'var(--earthy-accent)',
-        borderRadius: '15px',
+        width: '92%',
+        maxWidth: '430px',
+        height: '600px',
         position: 'relative',
-        boxShadow: '0 30px 70px rgba(0,0,0,0.2)',
         display: 'flex',
-        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid rgba(255,255,255,0.1)',
-        textAlign: 'center'
+        perspective: '1400px'
       }}>
-        {/* Subtle texture for the envelope */}
         <div style={{
-           position: 'absolute',
-           top: 0, left: 0, right: 0, bottom: 0,
-           backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
-           opacity: 0.2,
-           zIndex: 1,
-           borderRadius: '15px'
+          position: 'absolute',
+          inset: 0,
+          borderRadius: '26px',
+          background: 'radial-gradient(circle at 20% 10%, rgba(255,255,255,0.4), transparent 55%), radial-gradient(circle at 80% 90%, rgba(138,154,91,0.25), transparent 50%)',
+          filter: 'blur(2px)',
+          opacity: 0.8
         }} />
 
-        {/* Decorative Sage Leaves */}
-        <div style={{ position: 'absolute', top: '-15px', left: '-25px', width: '160px', height: '160px', zIndex: 2, transform: 'rotate(-15deg)', opacity: 0.9 }}>
-             <Image src="/sage_leaves.png" alt="leaves" fill style={{ objectFit: 'contain' }} />
-        </div>
-        <div style={{ position: 'absolute', bottom: '-15px', right: '-25px', width: '160px', height: '160px', zIndex: 2, transform: 'rotate(165deg)', opacity: 0.9 }}>
-             <Image src="/sage_leaves.png" alt="leaves" fill style={{ objectFit: 'contain' }} />
-        </div>
-
-        {/* Names on Envelope */}
-        <div style={{ position: 'relative', zIndex: 3, padding: '0 30px', marginBottom: '40px' }}>
-            <h1 style={{ 
-                fontFamily: 'var(--font-display)', 
-                fontSize: '3.5rem', 
-                color: 'white', 
-                lineHeight: 1.1,
-                marginBottom: '10px'
-            }}>
-                {data?.brideName || 'Bride'} & {data?.groomName || 'Groom'}
-            </h1>
-            <div style={{ 
-                fontSize: '0.8rem', 
-                letterSpacing: '4px', 
-                color: 'white', 
-                opacity: 0.7, 
-                textTransform: 'uppercase',
-                fontWeight: 600
-            }}>Wedding Invitation</div>
-        </div>
-
-        {/* Wax Seal */}
-        <div className="pulse" style={{ 
-            position: 'relative', 
-            zIndex: 4, 
-            width: '120px', 
-            height: '120px',
-            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))'
-        }}>
-            <Image src="/sage_wax_seal.png" alt="Wax Seal" fill style={{ objectFit: 'contain' }} />
-        </div>
-
-        {/* Elegant Tap Message */}
-        <div className="bounce-soft" style={{
-            position: 'absolute',
-            bottom: '50px',
-            zIndex: 4,
-            color: 'white',
-            fontSize: '0.85rem',
-            letterSpacing: '5px',
-            fontWeight: 800,
-            opacity: 0.9,
-            textShadow: '0 2px 8px rgba(0,0,0,0.3)'
-        }}>
-            TAP TO OPEN
-        </div>
-        
-        {/* Decorative inner line */}
         <div style={{
+          width: '100%',
+          maxWidth: '400px',
+          height: '540px',
+          position: 'relative',
+          transformStyle: 'preserve-3d',
+          transform: isOpening ? 'translateY(-16px) scale(1.01)' : 'translateY(0) scale(1)',
+          transition: 'transform 0.9s cubic-bezier(0.2, 0.9, 0.2, 1)'
+        }}>
+          <div style={{
             position: 'absolute',
-            top: '20px',
+            top: '40px',
             left: '20px',
             right: '20px',
-            bottom: '20px',
-            border: '1px solid rgba(255,255,255,0.15)',
-            borderRadius: '10px',
-            pointerEvents: 'none',
+            bottom: '145px',
+            backgroundColor: '#97aa6b',
+            borderRadius: '12px',
+            boxShadow: '0 22px 35px rgba(62, 74, 62, 0.25)',
+            transform: isOpening ? 'translateY(-140px) scale(1.01)' : 'translateY(0)',
+            transition: 'transform 0.95s cubic-bezier(0.2, 0.9, 0.2, 1)',
+            overflow: 'hidden',
             zIndex: 2
-        }} />
+          }}>
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
+              opacity: 0.2
+            }} />
+
+            <div style={{ position: 'absolute', top: '-18px', left: '-30px', width: '140px', height: '140px', opacity: 0.9 }}>
+              <Image src={DECO_IMAGE} alt="leaves" fill style={{ objectFit: 'contain', transform: 'rotate(-8deg)' }} />
+            </div>
+            <div style={{ position: 'absolute', right: '-26px', bottom: '-14px', width: '140px', height: '140px', opacity: 0.9 }}>
+              <Image src={DECO_IMAGE} alt="leaves" fill style={{ objectFit: 'contain', transform: 'rotate(168deg)' }} />
+            </div>
+
+            <div style={{
+              position: 'absolute',
+              inset: '20px',
+              border: '1px solid rgba(255,255,255,0.18)',
+              borderRadius: '10px'
+            }} />
+
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              color: 'white',
+              padding: '20px'
+            }}>
+              <h1 style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '3.4rem',
+                lineHeight: 1.1,
+                marginBottom: '12px'
+              }}>
+                {data?.brideName || 'Bride'} & {data?.groomName || 'Groom'}
+              </h1>
+              <div style={{
+                fontSize: '0.82rem',
+                letterSpacing: '5px',
+                textTransform: 'uppercase',
+                fontWeight: 700,
+                opacity: 0.85
+              }}>
+                Wedding Invitation
+              </div>
+            </div>
+          </div>
+
+          <div style={{
+            position: 'absolute',
+            left: '20px',
+            right: '20px',
+            bottom: '40px',
+            height: '280px',
+            backgroundColor: '#8a9a5b',
+            borderRadius: '0 0 18px 18px',
+            boxShadow: '0 22px 45px rgba(0, 0, 0, 0.18)',
+            overflow: 'hidden',
+            zIndex: 5
+          }}>
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
+              opacity: 0.2
+            }} />
+            <div style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              top: '-140px',
+              margin: '0 auto',
+              width: 0,
+              height: 0,
+              borderLeft: '180px solid transparent',
+              borderRight: '180px solid transparent',
+              borderBottom: '140px solid #8a9a5b'
+            }} />
+          </div>
+
+          <div style={{
+            position: 'absolute',
+            left: '20px',
+            right: '20px',
+            bottom: '180px',
+            height: '190px',
+            transformOrigin: 'top center',
+            transformStyle: 'preserve-3d',
+            transform: isOpening ? 'rotateX(-178deg)' : 'rotateX(0deg)',
+            transition: 'transform 0.9s cubic-bezier(0.2, 0.9, 0.2, 1)',
+            zIndex: isOpening ? 1 : 7
+          }}>
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
+              backgroundColor: '#94a768',
+              boxShadow: 'inset 0 -1px 0 rgba(255,255,255,0.28), 0 10px 20px rgba(0,0,0,0.12)'
+            }} />
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
+              backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
+              opacity: 0.16
+            }} />
+          </div>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpen();
+            }}
+            disabled={isOpening}
+            style={{
+              position: 'absolute',
+              left: '50%',
+              bottom: '120px',
+              transform: isOpening ? 'translateX(-50%) scale(0.6)' : 'translateX(-50%) scale(1)',
+              width: '112px',
+              height: '112px',
+              borderRadius: '999px',
+              border: 'none',
+              background: 'transparent',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: isOpening ? 'default' : 'pointer',
+              zIndex: 9,
+              opacity: isOpening ? 0 : 1,
+              transition: 'all 0.5s ease',
+              filter: 'drop-shadow(0 14px 20px rgba(0,0,0,0.28))'
+            }}
+            aria-label="Open invitation envelope"
+          >
+            <div className="pulse" style={{ position: 'relative', width: '100%', height: '100%' }}>
+              <Image src="/sage_wax_seal.png" alt="Wax Seal" fill style={{ objectFit: 'contain' }} />
+            </div>
+          </button>
+
+          <div className="bounce-soft" style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: '32px',
+            textAlign: 'center',
+            color: '#f1f4e8',
+            letterSpacing: '5px',
+            fontWeight: 700,
+            fontSize: '0.82rem',
+            textTransform: 'uppercase',
+            zIndex: 10,
+            opacity: isOpening ? 0 : 0.95,
+            transition: 'opacity 0.35s ease'
+          }}>
+            Tap to open
+          </div>
+        </div>
       </div>
-      
-      {/* Background depth gradient */}
+
       <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.05) 100%)',
+        background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.06) 100%)',
         zIndex: 0
       }} />
     </div>
@@ -455,8 +586,9 @@ const EarthyCalendar = ({ data }: { data: any }) => {
 };
 
 export default function EarthyTemplate({ data, orderId }: { data: any, orderId?: string }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [envelopeStage, setEnvelopeStage] = useState<'closed' | 'opening' | 'opened'>('closed');
   const [isMuted, setIsMuted] = useState(false);
+  const openTimerRef = useRef<number | null>(null);
 
   const toggleMusic = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -465,10 +597,24 @@ export default function EarthyTemplate({ data, orderId }: { data: any, orderId?:
   };
 
   const handleOpen = () => {
-    setIsOpen(true);
+    if (envelopeStage !== 'closed') return;
+
+    setEnvelopeStage('opening');
     const audio = document.getElementById('bg-music') as HTMLAudioElement;
     if (audio) { audio.play().catch(e => console.log("Audio play blocked", e)); }
+
+    openTimerRef.current = window.setTimeout(() => {
+      setEnvelopeStage('opened');
+    }, 980);
   };
+
+  useEffect(() => {
+    return () => {
+      if (openTimerRef.current) {
+        clearTimeout(openTimerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div style={{
@@ -503,10 +649,16 @@ export default function EarthyTemplate({ data, orderId }: { data: any, orderId?:
           <source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" />
         </audio>
 
-        <InvitationEnvelope isOpen={isOpen} onOpen={handleOpen} data={data} />
+        <InvitationEnvelope stage={envelopeStage} onOpen={handleOpen} data={data} />
 
-        {isOpen && (
-          <div style={{ width: '100%', position: 'relative' }}>
+        <div style={{
+          width: '100%',
+          position: 'relative',
+          opacity: envelopeStage === 'opened' ? 1 : 0,
+          transform: envelopeStage === 'opened' ? 'translateY(0)' : 'translateY(36px) scale(0.99)',
+          transition: 'opacity 0.8s ease, transform 0.9s cubic-bezier(0.2, 0.9, 0.2, 1)',
+          pointerEvents: envelopeStage === 'opened' ? 'auto' : 'none'
+        }}>
             <FloatingHearts count={30} color="var(--earthy-accent)" />
             <button onClick={toggleMusic} style={{ position: 'fixed', bottom: '25px', right: '25px', zIndex: 2000, width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.95)', border: '2px solid var(--earthy-accent)', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.3rem', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0,0,0,0.15)' }}>
               {isMuted ? '🔇' : '🎵'}
@@ -562,8 +714,7 @@ export default function EarthyTemplate({ data, orderId }: { data: any, orderId?:
 
               <RSVPFooter orderId={orderId} data={data} />
             </div>
-          </div>
-        )}
+        </div>
       </main>
     </div>
   );

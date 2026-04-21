@@ -107,42 +107,128 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
   );
 };
 
-const PhotoCollage = ({ data }: { data?: any }) => {
-  const photos = (data?.images?.gallery?.length > 4
-    ? data.images.gallery
-    : ['/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png', '/home_hero_bg.png']) as string[];
+
+
+const KandyanPhotoLayout = ({ data }: { data?: any }) => {
+  const images = [
+    data?.images?.image1 || '/photo_2.png',
+    data?.images?.gallery?.[0] || '/photo_3.png',
+    data?.images?.gallery?.[1] || '/photo_4.png'
+  ];
+
+  return (
+    <div style={{ position: 'relative', padding: '100px 20px', margin: '40px 0' }}>
+      <Reveal>
+        <div style={{ position: 'relative', width: '100%', height: '500px', overflow: 'hidden' }}>
+          {/* Main Blended Photo */}
+          <div style={{ 
+              position: 'absolute', 
+              inset: 0, 
+              zIndex: 1,
+              maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)',
+          }}>
+            <Image src={images[0]} alt="Our Love" fill style={{ objectFit: 'cover' }} />
+          </div>
+          
+          {/* Top Left Floating Photo */}
+          <div style={{ 
+              position: 'absolute', 
+              top: '-40px', 
+              left: '0', 
+              width: '180px', 
+              height: '220px', 
+              zIndex: 5, 
+              border: `4px solid white`,
+              boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+              transform: 'rotate(-5deg)',
+              overflow: 'hidden',
+              backgroundColor: 'white'
+          }}>
+            <div style={{ position: 'absolute', inset: '5px', border: `1px solid ${KANDYAN_GOLD}`, overflow: 'hidden' }}>
+                <Image src={images[1]} alt="Moment 1" fill style={{ objectFit: 'cover' }} />
+            </div>
+          </div>
+
+          {/* Bottom Right Floating Photo */}
+          <div style={{ 
+              position: 'absolute', 
+              bottom: '20px', 
+              right: '0', 
+              width: '200px', 
+              height: '200px', 
+              zIndex: 5, 
+              border: `4px solid white`,
+              boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+              transform: 'rotate(8deg)',
+              overflow: 'hidden',
+              backgroundColor: 'white'
+          }}>
+            <div style={{ position: 'absolute', inset: '5px', border: `1px solid ${KANDYAN_GOLD}`, overflow: 'hidden' }}>
+                <Image src={images[2]} alt="Moment 2" fill style={{ objectFit: 'cover' }} />
+            </div>
+          </div>
+
+          {/* Ornamental Background element */}
+          <div style={{ position: 'absolute', top: '20%', right: '-10%', width: '200px', height: '200px', opacity: 0.1, zIndex: 0 }}>
+             <Image src="/dancing.png" alt="Dance" fill style={{ objectFit: 'contain' }} />
+          </div>
+        </div>
+      </Reveal>
+    </div>
+  );
+};
+
+const KandyanCountdown = ({ data }: { data?: any }) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const targetDate = data?.eventDate ? new Date(data.eventDate).getTime() : new Date('August 24, 2026 15:00:00').getTime();
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      if (distance < 0) { clearInterval(timer); return; }
+      setTimeLeft({
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000)
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [data?.eventDate]);
+
+  const units = [
+    { label: 'Days', val: timeLeft.days },
+    { label: 'Hrs', val: timeLeft.hours },
+    { label: 'Min', val: timeLeft.minutes },
+    { label: 'Sec', val: timeLeft.seconds }
+  ];
 
   return (
     <Reveal delay={200}>
-      <div style={{ padding: '60px 0', textAlign: 'center' }}>
-        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '2.8rem', color: KANDYAN_RED, marginBottom: '30px' }}>
-          Royal Memories
-        </h3>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gridAutoRows: '150px',
-          gap: '10px',
-          padding: '0 10px'
-        }}>
-          <div style={{ gridColumn: 'span 2', gridRow: 'span 2', position: 'relative', overflow: 'hidden', borderRadius: '15px', border: `2px solid ${KANDYAN_GOLD}` }}>
-            <Image src={photos[0]} alt="Collage 1" fill style={{ objectFit: 'cover' }} />
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', margin: '60px 0' }}>
+        {units.map(u => (
+          <div key={u.label} style={{
+            backgroundColor: KANDYAN_RED,
+            border: `2px solid ${KANDYAN_GOLD}`,
+            boxShadow: `4px 4px 0px ${KANDYAN_GOLD}`,
+            width: '80px',
+            padding: '15px 5px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            color: 'white'
+          }}>
+            <div style={{ fontSize: '2rem', fontWeight: 900, lineHeight: 1, fontFamily: 'serif' }}>{u.val.toString().padStart(2, '0')}</div>
+            <div style={{ fontSize: '0.65rem', color: KANDYAN_GOLD, fontWeight: 700, marginTop: '8px', textTransform: 'uppercase', letterSpacing: '2px' }}>{u.label}</div>
           </div>
-          <div style={{ gridColumn: 'span 2', gridRow: 'span 1', position: 'relative', overflow: 'hidden', borderRadius: '15px', border: `2px solid ${KANDYAN_GOLD}` }}>
-            <Image src={photos[1]} alt="Collage 2" fill style={{ objectFit: 'cover' }} />
-          </div>
-          <div style={{ gridColumn: 'span 1', gridRow: 'span 1', position: 'relative', overflow: 'hidden', borderRadius: '15px', border: `1px solid ${KANDYAN_GOLD}` }}>
-            <Image src={photos[2]} alt="Collage 3" fill style={{ objectFit: 'cover' }} />
-          </div>
-          <div style={{ gridColumn: 'span 1', gridRow: 'span 1', position: 'relative', overflow: 'hidden', borderRadius: '15px', border: `1px solid ${KANDYAN_GOLD}` }}>
-            <Image src={photos[3]} alt="Collage 4" fill style={{ objectFit: 'cover' }} />
-          </div>
-        </div>
+        ))}
       </div>
     </Reveal>
   );
 };
+
 
 export default function KandyanTemplate({ data, orderId }: { data: any, orderId?: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -193,19 +279,51 @@ export default function KandyanTemplate({ data, orderId }: { data: any, orderId?
 
   return (
     <div style={{
-      backgroundColor: '#1a1a1a',
+      position: 'relative',
       minHeight: '100vh',
+      width: '100%',
+      backgroundColor: '#111',
       display: 'flex',
       justifyContent: 'center',
-      backgroundImage: 'url("https://www.transparenttextures.com/patterns/handmade-paper.png")',
+      overflowX: 'hidden'
     }}>
+      {/* Blurred Background for Desktop */}
+      <div 
+        className="desktop-only"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${data?.images?.heroImage || '/home_hero_bg.png'})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(30px) brightness(0.3)',
+          transform: 'scale(1.1)',
+          zIndex: 0
+        }} 
+      />
+
       <main className="invitation-container" style={{
         position: 'relative',
-        boxShadow: '0 0 50px rgba(0,0,0,0.5)',
+        zIndex: 1,
         backgroundColor: '#fffcf2',
-        borderLeft: `10px solid ${KANDYAN_GOLD}`,
-        borderRight: `10px solid ${KANDYAN_GOLD}`
+        boxShadow: '0 0 100px rgba(0,0,0,0.6)',
+        width: '100%',
+        maxWidth: '450px',
+        minHeight: '100vh',
+        borderLeft: `2px solid ${KANDYAN_GOLD}`,
+        borderRight: `2px solid ${KANDYAN_GOLD}`,
+        overflow: 'hidden'
       }}>
+        <style jsx global>{`
+          @media (min-width: 600px) {
+            .desktop-only { display: block !important; }
+          }
+          @media (max-width: 600px) {
+            .desktop-only { display: none !important; }
+            .invitation-container { border-left: none !important; border-right: none !important; max-width: 100% !important; }
+          }
+          .font-display { font-family: var(--font-alex-brush) !important; }
+        `}</style>
         <audio id="bg-music" loop>
           <source src={data?.musicUrl || "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3"} type="audio/mpeg" />
         </audio>
@@ -475,26 +593,19 @@ export default function KandyanTemplate({ data, orderId }: { data: any, orderId?
                 </div>
               </Reveal>
 
-              {/* Arched Vertical Image Section */}
-              <div style={{ display: 'flex', gap: '20px', margin: '40px 0' }}>
-                <div style={{ flex: 2, height: '400px', position: 'relative', borderRadius: '200px 200px 0 0', overflow: 'hidden', border: `3px solid ${KANDYAN_GOLD}` }}>
-                  <Image src={data?.images?.image1 || '/photo_2.png'} alt="Moment 1" fill style={{ objectFit: 'cover' }} />
-                </div>
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                  <div style={{ flex: 1, position: 'relative', borderRadius: '15px', overflow: 'hidden', border: `1px solid ${KANDYAN_GOLD}` }}>
-                    <Image src={data?.images?.gallery?.[0] || '/photo_3.png'} alt="Moment 2" fill style={{ objectFit: 'cover' }} />
-                  </div>
-                  <div style={{ flex: 1, position: 'relative', borderRadius: '15px', overflow: 'hidden', border: `1px solid ${KANDYAN_GOLD}` }}>
-                    <Image src={data?.images?.gallery?.[1] || '/photo_4.png'} alt="Moment 3" fill style={{ objectFit: 'cover' }} />
-                  </div>
-                </div>
-              </div>
+              <KandyanPhotoLayout data={data} />
 
-              <CountdownSection data={data} />
+              <Reveal delay={200}>
+                <div style={{ textAlign: 'center', marginBottom: '30px', marginTop: '60px' }}>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', color: KANDYAN_RED, marginBottom: '5px' }}>Counting Every Second</h3>
+                  <p style={{ fontSize: '0.9rem', letterSpacing: '6px', color: KANDYAN_GOLD, fontWeight: 700, textTransform: 'uppercase' }}>Until We Say I Do</p>
+                  <div style={{ height: '1px', width: '50px', backgroundColor: KANDYAN_GOLD, margin: '15px auto 0' }}></div>
+                </div>
+              </Reveal>
+
+              <KandyanCountdown data={data} />
 
               <WeddingCalendar onAdd={addToCalendar} data={data} />
-
-              <PhotoCollage data={data} />
 
               <ItineraryTimeline data={data} />
 

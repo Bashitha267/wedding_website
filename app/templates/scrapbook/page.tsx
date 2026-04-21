@@ -168,6 +168,55 @@ const ScrapbookCalendar = ({ data }: { data: any }) => {
   );
 };
 
+const ScrapbookCountdown = ({ data }: { data?: any }) => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  useEffect(() => {
+    const targetDate = data?.eventDate ? new Date(data.eventDate).getTime() : new Date('August 24, 2026 15:00:00').getTime();
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      if (distance < 0) { clearInterval(timer); return; }
+      setTimeLeft({
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000)
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [data?.eventDate]);
+
+  const units = [
+    { label: 'Days', val: timeLeft.days },
+    { label: 'Hrs', val: timeLeft.hours },
+    { label: 'Min', val: timeLeft.minutes },
+    { label: 'Sec', val: timeLeft.seconds }
+  ];
+
+  return (
+    <Reveal delay={200}>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', margin: '40px 0' }}>
+        {units.map(u => (
+          <div key={u.label} style={{
+            backgroundColor: '#ffffff',
+            border: '2px solid #a2c2e0',
+            boxShadow: '4px 4px 0px #a2c2e0',
+            width: '75px',
+            padding: '12px 5px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#4a4a4a', lineHeight: 1 }}>{u.val.toString().padStart(2, '0')}</div>
+            <div style={{ fontSize: '0.6rem', color: '#a2c2e0', fontWeight: 800, marginTop: '4px', textTransform: 'uppercase' }}>{u.label}</div>
+          </div>
+        ))}
+      </div>
+    </Reveal>
+  );
+};
+
 const DrawnHeart = ({ style, color = "currentColor" }: { style?: React.CSSProperties, color?: string }) => (
     <svg viewBox="0 0 100 100" style={{ width: '40px', height: '40px', fill: 'none', stroke: color, strokeWidth: 1.5, strokeLinecap: 'round', ...style }}>
         <path d="M50 85 C10 65 -5 35 15 15 C35 -5 45 20 50 25 C55 20 65 -5 85 15 C105 35 90 65 50 85" />
@@ -186,6 +235,42 @@ const DrawnFloral = ({ style, color = "currentColor" }: { style?: React.CSSPrope
         <circle cx="50" cy="50" r="3" />
     </svg>
 );
+
+const FloatingHearts = ({ count = 40 }: { count?: number }) => {
+  const [hearts, setHearts] = useState<{ top: string; left: string; size: string; opacity: number; delay: string; duration: string; rotation: string; drift: string }[]>([]);
+
+  useEffect(() => {
+    const newHearts = [...Array(count)].map(() => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      size: `${Math.random() * 40 + 10}px`,
+      opacity: Math.random() * 0.12 + 0.03,
+      delay: `${Math.random() * 5}s`,
+      duration: `${8 + Math.random() * 12}s`,
+      rotation: `${Math.random() * 360}deg`,
+      drift: `${(Math.random() - 0.5) * 80}px`
+    }));
+    setHearts(newHearts);
+  }, [count]);
+
+  return (
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
+      {hearts.map((h, i) => (
+        <div key={i} className="floating-heart" style={{
+          position: 'absolute',
+          top: h.top,
+          left: h.left,
+          opacity: h.opacity,
+          animationDelay: h.delay,
+          animationDuration: h.duration,
+          ['--drift-x' as any]: h.drift
+        }}>
+          <DrawnHeart style={{ width: h.size, height: h.size }} color="#ff6b6b" />
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default function ScrapbookTemplate({ data, orderId }: { data: any, orderId?: string }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -238,6 +323,15 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
                         transition: all 0.2s;
                     }
                     .scrapbook-theme .btn-primary:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #7b9ebc !important; }
+                    
+                    @keyframes floatDrift {
+                        0% { transform: translateY(0) rotate(0deg); }
+                        50% { transform: translateY(-100px) translateX(var(--drift-x, 30px)) rotate(180deg); }
+                        100% { transform: translateY(0) rotate(360deg); }
+                    }
+                    .floating-heart {
+                        animation: floatDrift 15s infinite linear;
+                    }
                 `}</style>
 
                 <audio id="bg-music" loop>
@@ -290,6 +384,7 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
                         backgroundImage: 'url("https://www.transparenttextures.com/patterns/notebook.png")'
                     }}
                 >
+                    <FloatingHearts count={100} />
                     {/* Decorative Elements on Welcome Screen */}
                     <DrawnHeart style={{ position: 'absolute', top: '15%', left: '15%', transform: 'rotate(-15deg)', opacity: 0.2 }} color="#ff6b6b" />
                     <DrawnStar style={{ position: 'absolute', top: '20%', right: '20%', transform: 'rotate(20deg)', opacity: 0.2 }} color="#a2c2e0" />
@@ -335,7 +430,8 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
                         </Reveal>
                     </div>
                 </div>
-                    <div style={{ width: '100%', padding: '20px' }}>
+                    <div style={{ width: '100%', padding: '20px', position: 'relative' }}>
+                        <FloatingHearts count={300} />
                         {/* Hero Polaroid */}
                         <Polaroid 
                             src={data?.images?.heroImage || '/home_hero_bg.png'} 
@@ -373,7 +469,7 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
                                 </div>
                             </Reveal>
 
-                            <CountdownSection data={data} />
+                             <ScrapbookCountdown data={data} />
 
                             <div style={{ margin: '60px 0' }}>
                                 <ItineraryTimeline data={data} />

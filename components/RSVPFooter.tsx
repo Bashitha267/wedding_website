@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 
 const RSVPFooter = ({ orderId, data }: { orderId?: string, data?: any }) => {
   const [formOpen, setFormOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: '', contact: '' });
+  const [formData, setFormData] = useState({ name: '', contact: '', adults: 1, children: 0 });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const [successMsg, setSuccessMsg] = useState('');
@@ -59,7 +59,9 @@ const RSVPFooter = ({ orderId, data }: { orderId?: string, data?: any }) => {
     const { error } = await supabase.from('rsvps').insert({
       order_id: orderId,
       name: formData.name,
-      contact_number: formData.contact
+      contact_number: formData.contact,
+      adult_count: formData.adults,
+      children_count: formData.children
     });
 
     if (error) {
@@ -127,6 +129,34 @@ const RSVPFooter = ({ orderId, data }: { orderId?: string, data?: any }) => {
                     padding: '12px', border: '1px solid #ccc', borderRadius: '4px'
                   }}
                 />
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ fontSize: '0.8rem', display: 'block', marginBottom: '4px', textAlign: 'left' }}>Adults</label>
+                    <input 
+                      type="number" 
+                      min="1"
+                      required 
+                      value={formData.adults}
+                      onChange={(e) => setFormData({...formData, adults: parseInt(e.target.value) || 1})}
+                      style={{
+                        width: '100%', padding: '12px', border: '1px solid #ccc', borderRadius: '4px'
+                      }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ fontSize: '0.8rem', display: 'block', marginBottom: '4px', textAlign: 'left' }}>Children</label>
+                    <input 
+                      type="number" 
+                      min="0"
+                      required 
+                      value={formData.children}
+                      onChange={(e) => setFormData({...formData, children: parseInt(e.target.value) || 0})}
+                      style={{
+                        width: '100%', padding: '12px', border: '1px solid #ccc', borderRadius: '4px'
+                      }}
+                    />
+                  </div>
+                </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <button type="button" onClick={() => setFormOpen(false)} className="btn-outline" style={{ flex: 1, padding: '10px' }}>Cancel</button>
                   <button type="submit" className="btn-primary" style={{ flex: 1, padding: '10px' }} disabled={status === 'loading'}>

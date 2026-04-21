@@ -45,7 +45,7 @@ export const templates: Product[] = [
   {
     id: "kandyan",
     name: "Golden Kandyan Heritage",
-    image: "/golden_kandyan_template_cover_1776328671942.png",
+    image: "https://res.cloudinary.com/dnfbik3if/image/upload/v1776770793/Untitled_design_1_ipwqq5.jpg",
     description: "A regal Sri Lankan design inspired by the Kandyan kingdom, featuring gold motifs, royal red silk textures, and traditional elegance.",
     theme: "Royal Kandyan"
   },

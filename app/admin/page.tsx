@@ -2,16 +2,22 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, History, LayoutTemplate, Edit2, Trash2, Eye, X, Check } from 'lucide-react';
+import { LayoutDashboard, History, LayoutTemplate, Edit2, Trash2, Eye, X, Check, Unlock } from 'lucide-react';
 
 const mockOrdersOrigin = [
   { id: 'ORD-001', date: '2026-04-12', customer_name: 'John Doe', username: null, status: 'pending' },
   { id: 'ORD-002', date: '2026-04-11', customer_name: 'Sarah Smith', username: 'sarah_client', status: 'completed' },
 ];
 
+const mockRSVPs = [
+  { id: 1, order_id: 'ORD-001', name: 'Alice Cooper', contact: '0712345678', adults: 2, children: 1, table: 'T-1' },
+  { id: 2, order_id: 'ORD-001', name: 'Bob Marley', contact: '0777654321', adults: 1, children: 0, table: 'T-1' },
+];
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [orders, setOrders] = useState(mockOrdersOrigin);
+  const [rsvps, setRSVPs] = useState(mockRSVPs);
   const [editingOrder, setEditingOrder] = useState<any>(null);
   const [editForm, setEditForm] = useState({ username: '', password: '', status: '' });
 
@@ -40,6 +46,12 @@ export default function AdminDashboard() {
 
   const deleteOrder = (id: string) => {
     setOrders(orders.filter(o => o.id !== id));
+  };
+
+  const handleApprove = (order: any) => {
+    // In real app: call supabase.rpc('approve_client', { p_username: order.username, p_order_id: order.id })
+    setOrders(orders.map(o => o.id === order.id ? { ...o, status: 'completed' } : o));
+    alert(`${order.customer_name} has been granted access!`);
   };
 
   return (
@@ -80,6 +92,16 @@ export default function AdminDashboard() {
             }}
           >
             <LayoutTemplate size={18} /> Templates
+          </button>
+          <button 
+            onClick={() => setActiveTab('rsvps')}
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
+              backgroundColor: activeTab === 'rsvps' ? '#333' : 'transparent',
+              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer'
+            }}
+          >
+             <Check size={18} /> RSVPs
           </button>
         </nav>
         <div style={{ position: 'absolute', bottom: '20px', padding: '0 20px' }}>
@@ -140,6 +162,15 @@ export default function AdminDashboard() {
                           <button style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#666' }} title="View">
                             <Eye size={18} />
                           </button>
+                          {order.status === 'pending' && (
+                            <button 
+                              onClick={() => handleApprove(order)} 
+                              style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#28a745' }} 
+                              title="Grant Access"
+                            >
+                              <Unlock size={18} />
+                            </button>
+                          )}
                           <button onClick={() => startEdit(order)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#0056b3' }} title="Edit">
                             <Edit2 size={18} />
                           </button>
@@ -158,6 +189,37 @@ export default function AdminDashboard() {
 
         {activeTab === 'history' && <div><h2>History</h2><p>Past completed templates would be listed here.</p></div>}
         {activeTab === 'templates' && <div><h2>Templates</h2><p>Manage the 10 core templates here.</p></div>}
+        {activeTab === 'rsvps' && (
+          <div>
+            <h1 style={{ marginBottom: '30px' }}>Guest RSVPs</h1>
+            <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead style={{ backgroundColor: '#f4f4f4' }}>
+                  <tr>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#333' }}>Order ID</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#333' }}>Guest Name</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#333' }}>Contact</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#333' }}>Adults</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#333' }}>Children</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#333' }}>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rsvps.map(rsvp => (
+                    <tr key={rsvp.id} style={{ borderBottom: '1px solid #eee' }}>
+                      <td style={{ padding: '15px 20px' }}>{rsvp.order_id}</td>
+                      <td style={{ padding: '15px 20px' }}>{rsvp.name}</td>
+                      <td style={{ padding: '15px 20px', color: '#666' }}>{rsvp.contact}</td>
+                      <td style={{ padding: '15px 20px' }}>{rsvp.adults}</td>
+                      <td style={{ padding: '15px 20px' }}>{rsvp.children}</td>
+                      <td style={{ padding: '15px 20px', fontWeight: 600 }}>{rsvp.adults + rsvp.children}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Edit Modal */}

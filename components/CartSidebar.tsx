@@ -14,8 +14,7 @@ export default function CartSidebar() {
     url: '', // slug
     contact: '',
     username: '',
-    password: '',
-    card: ''
+    password: ''
   });
   
   const [loading, setLoading] = useState(false);
@@ -64,6 +63,18 @@ export default function CartSidebar() {
         throw new Error(data.message || "Username or URL might already be taken!");
       }
 
+      const whatsappMessage = encodeURIComponent(
+        `Hello Admin, I have placed an order for the ${item.name} template.\n\n` +
+        `*Customer Name:* ${form.name}\n` +
+        `*Username:* ${form.username}\n` +
+        `*Contact:* ${form.contact}\n` +
+        `*Slug:* ${form.url}\n\n` +
+        `Please approve my account so I can start customizing.`
+      );
+      const whatsappUrl = `https://wa.me/94769996430?text=${whatsappMessage}`;
+      
+      // We'll open WhatsApp after showing the success state or immediately 
+      window.open(whatsappUrl, '_blank');
       setSuccess(true);
     } catch (err: any) {
       console.error(err);
@@ -107,18 +118,18 @@ export default function CartSidebar() {
           {success ? (
             <div style={{ textAlign: 'center', padding: '40px 20px' }}>
               <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🎉</div>
-              <h2>Payment Successful!</h2>
+              <h2>Order Placed!</h2>
               <p style={{ color: 'var(--bw-gray-medium)', margin: '20px 0' }}>
-                Your template is ready. You can now login to customize it.
+                Your order is pending admin approval. A WhatsApp notification has been sent to our team. We will notify you once you can log in.
               </p>
-              <p>Your URL: <b>http://localhost:3001/{form.url || 'your-url'}</b></p>
+              <p>Your reserved URL: <b>/{form.url || 'your-url'}</b></p>
               <br />
               <button 
                 className="btn-primary" 
-                onClick={() => { window.location.href = '/client/login'; }}
+                onClick={() => setIsOpen(false)}
                 style={{ width: '100%' }}
               >
-                Go to Client Dashboard
+                Close and Wait for Approval
               </button>
             </div>
           ) : (
@@ -165,14 +176,11 @@ export default function CartSidebar() {
                     <input type="password" placeholder="Create a Password" required value={form.password} onChange={e => setForm({...form, password: e.target.value})} style={inputStyle} />
                   </div>
 
-                  <h4 style={{ marginTop: '10px' }}>Payment (Mock Only)</h4>
-                  <div style={{ position: 'relative' }}>
-                    <CreditCard size={18} style={{ position: 'absolute', top: '12px', left: '12px', color: '#888' }} />
-                    <input type="text" placeholder="Card Number (4242 4242...)" required value={form.card} onChange={e => setForm({...form, card: e.target.value})} style={inputStyle} />
-                  </div>
+                  <h4 style={{ marginTop: '10px' }}>Confirmation</h4>
+                  <p style={{ fontSize: '0.85rem', color: '#666' }}>By clicking below, your order will be sent to the admin for manual approval. You will receive access once confirmed via WhatsApp.</p>
 
                   <button type="submit" className="btn-primary" style={{ marginTop: '20px', fontSize: '1.1rem', padding: '15px' }} disabled={loading}>
-                    {loading ? 'Processing Payment...' : 'Pay & Create Account'}
+                    {loading ? 'Creating Order...' : 'Request Access & Checkout'}
                   </button>
                 </form>
               )}
