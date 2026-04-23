@@ -5,7 +5,7 @@ import Reveal from '@/components/Reveal';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { Cinzel, Montserrat, Playfair_Display, Alex_Brush } from 'next/font/google';
-import { Plane, Calendar, Clock, MapPin, Users, Ticket, Heart, Smartphone, Music, Mail, Compass, Navigation, Wind } from 'lucide-react';
+import { Plane, Calendar, Clock, MapPin, Users, Ticket, Heart, Smartphone, Music, Mail, Navigation, Wind } from 'lucide-react';
 
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '700', '900'] });
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['300', '400', '500', '700'] });
@@ -176,7 +176,7 @@ const PlaneWindow = ({ src, size = '220px' }: { src: string, size?: string }) =>
   );
 };
 
-const GlassSection = ({ children, padding = '40px 25px', hasCompass = false }: { children: React.ReactNode, padding?: string, hasCompass?: boolean }) => (
+const GlassSection = ({ children, padding = '40px 25px' }: { children: React.ReactNode, padding?: string }) => (
   <Reveal delay={100}>
     <div style={{ 
       padding, 
@@ -192,11 +192,6 @@ const GlassSection = ({ children, padding = '40px 25px', hasCompass = false }: {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {hasCompass && (
-        <div style={{ position: 'absolute', top: '-50px', right: '-50px', opacity: 0.1, pointerEvents: 'none' }}>
-           <Compass size={250} color={THEME.gold} />
-        </div>
-      )}
       <div style={{ position: 'relative', zIndex: 1 }}>
         {children}
       </div>
@@ -224,9 +219,6 @@ const AviationCountdown = ({ data }: { data?: any }) => {
 
   return (
     <div style={{ padding: '40px 20px', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, margin: '40px 0', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', bottom: '-20px', left: '-20px', opacity: 0.1 }}>
-         <Navigation size={120} color={THEME.gold} />
-      </div>
       <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '25px', fontWeight: 700 }}>FLIGHT TIME REMAINING</div>
       <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
         {[
@@ -379,9 +371,6 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
   return (
     <Reveal delay={200}>
       <div style={{ padding: '30px 20px', textAlign: 'center', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, margin: '40px 0', boxShadow: '0 15px 35px rgba(0,0,0,0.2)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '-30px', left: '-30px', opacity: 0.1 }}>
-           <Wind size={150} color={THEME.gold} />
-        </div>
         <div className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.3)', position: 'relative', zIndex: 1 }}>Save the Date</div>
         <div className={THEME.fontBody} style={{ fontSize: '1.1rem', fontWeight: 900, color: THEME.white, marginBottom: '20px', letterSpacing: '3px', position: 'relative', zIndex: 1 }}>{monthName} {year}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', maxWidth: '300px', margin: '0 auto 30px', position: 'relative', zIndex: 1 }}>
@@ -509,7 +498,7 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
           <FlightPath />
 
           {/* Intro Section */}
-          <GlassSection hasCompass>
+          <GlassSection>
             <p className={THEME.fontAccent} style={{ fontSize: '1.5rem', fontStyle: 'italic', color: THEME.gold, lineHeight: 1.6 }}>"Love is the greatest adventure of all."</p>
             <div style={{ height: '1px', width: '100px', background: THEME.gold, margin: '30px auto', opacity: 0.5 }}></div>
             <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.95, fontWeight: 300, letterSpacing: '1px' }}>We invite you to be part of our first flight as husband and wife.</p>
@@ -541,7 +530,7 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
 
           <AviationCountdown data={data} />
 
-          <GlassSection hasCompass>
+          <GlassSection>
             <h3 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '30px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>Flight Itinerary</h3>
             <div style={{ position: 'relative', padding: '10px 0', textAlign: 'left' }}>
               <div style={{ position: 'absolute', left: '20px', top: '0', bottom: '0', width: '2px', background: `linear-gradient(to bottom, transparent, ${THEME.gold}, transparent)` }}></div>
