@@ -48,5 +48,12 @@ export const templates: Product[] = [
     image: "/weddingwalk.jpg",
     description: "An ethereal white and gold theme featuring warm lighting, elegant floral arrangements, and a cinematic background video.",
     theme: "Elegant White & Gold"
+  },
+  {
+    id: "aviation",
+    name: "Love Airways",
+    image: "/aviation_cover.png",
+    description: "A unique aviation-themed invitation styled like a passport and boarding pass for your forever journey.",
+    theme: "Aviation & Travel"
   }
 ];
