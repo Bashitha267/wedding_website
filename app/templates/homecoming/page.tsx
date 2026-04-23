@@ -4,14 +4,22 @@ import { useState, useEffect, useRef } from 'react';
 import Reveal from '@/components/Reveal';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
+import { Cinzel, Montserrat, Playfair_Display } from 'next/font/google';
+
+const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '700', '900'] });
+const montserrat = Montserrat({ subsets: ['latin'], weight: ['300', '400', '500', '700'] });
+const playfair = Playfair_Display({ subsets: ['latin'], style: ['italic', 'normal'], weight: ['400', '700', '900'] });
 
 const THEME = {
   gold: '#D4AF37',
   goldLight: '#F1E5AC',
   red: '#8B0000',
   redDark: '#4A0404',
-  glassBg: 'rgba(30, 0, 0, 0.55)',
-  glassBorder: 'rgba(212, 175, 55, 0.3)',
+  glassBg: 'rgba(30, 0, 0, 0.65)',
+  glassBorder: 'rgba(212, 175, 55, 0.4)',
+  fontDisplay: cinzel.className,
+  fontBody: montserrat.className,
+  fontAccent: playfair.className,
 };
 
 const MUSIC_URL = "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3";
@@ -85,7 +93,7 @@ const HomecomingCountdown = ({ data }: { data?: any }) => {
 
   return (
     <div style={{ padding: '40px 20px', background: THEME.glassBg, backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, margin: '40px 0', textAlign: 'center' }}>
-      <div style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '25px', fontWeight: 700 }}>COUNTDOWN</div>
+      <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '25px', fontWeight: 700 }}>COUNTDOWN</div>
       <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
         {[
           { label: 'Days', value: timeLeft.days },
@@ -94,8 +102,8 @@ const HomecomingCountdown = ({ data }: { data?: any }) => {
           { label: 'Sec', value: timeLeft.seconds }
         ].map((item) => (
           <div key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '60px' }}>
-            <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#fff', textShadow: `0 0 10px ${THEME.gold}`, borderBottom: `1px solid ${THEME.gold}`, paddingBottom: '5px', width: '100%', fontFamily: 'serif' }}>{item.value.toString().padStart(2, '0')}</div>
-            <span style={{ fontSize: '0.65rem', letterSpacing: '1px', marginTop: '10px', color: THEME.gold, fontWeight: 700 }}>{item.label.toUpperCase()}</span>
+            <div className={THEME.fontDisplay} style={{ fontSize: '2rem', fontWeight: 700, color: '#fff', textShadow: `0 0 10px ${THEME.gold}`, borderBottom: `1px solid ${THEME.gold}`, paddingBottom: '5px', width: '100%' }}>{item.value.toString().padStart(2, '0')}</div>
+            <span className={THEME.fontBody} style={{ fontSize: '0.65rem', letterSpacing: '1px', marginTop: '10px', color: THEME.gold, fontWeight: 700 }}>{item.label.toUpperCase()}</span>
           </div>
         ))}
       </div>
@@ -113,16 +121,16 @@ const HomecomingItinerary = ({ data }: { data?: any }) => {
   return (
     <div style={{ position: 'relative', padding: '10px 0' }}>
       <div style={{ position: 'absolute', left: '20px', top: '0', bottom: '0', width: '1px', background: `linear-gradient(to bottom, transparent, ${THEME.gold}, transparent)` }}></div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '35px', paddingLeft: '45px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', paddingLeft: '45px' }}>
         {events.map((event: any, i: number) => (
           <Reveal key={i} delay={i * 100}>
             <div style={{ textAlign: 'left' }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginLeft: '-37px', marginBottom: '8px' }}>
-                <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: THEME.gold, boxShadow: `0 0 10px ${THEME.gold}`, border: '1px solid white' }}></div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: THEME.gold, marginLeft: '20px', letterSpacing: '2px' }}>{event.time}</div>
+              <div style={{ display: 'flex', alignItems: 'center', marginLeft: '-37px', marginBottom: '10px' }}>
+                <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: THEME.gold, boxShadow: `0 0 15px ${THEME.gold}`, border: '1px solid white' }}></div>
+                <div className={THEME.fontBody} style={{ fontSize: '0.85rem', fontWeight: 700, color: THEME.gold, marginLeft: '20px', letterSpacing: '2px' }}>{event.time}</div>
               </div>
-              <div style={{ fontSize: '1.4rem', color: '#fff', fontFamily: 'var(--font-display)' }}>{event.title}</div>
-              <div style={{ fontSize: '0.8rem', color: THEME.goldLight, opacity: 0.7 }}>{event.location}</div>
+              <div className={THEME.fontDisplay} style={{ fontSize: '1.6rem', color: '#fff', marginBottom: '4px', letterSpacing: '1px', fontWeight: 700 }}>{event.title}</div>
+              <div className={THEME.fontBody} style={{ fontSize: '0.9rem', color: THEME.goldLight, opacity: 0.8, fontWeight: 400 }}>{event.location}</div>
             </div>
           </Reveal>
         ))}
@@ -145,13 +153,13 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
   return (
     <Reveal delay={200}>
       <div style={{ padding: '30px 20px', textAlign: 'center', background: THEME.glassBg, backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, margin: '40px 0' }}>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: THEME.gold, marginBottom: '10px' }}>Save the Date</div>
-        <div style={{ fontSize: '1.1rem', fontWeight: 700, color: THEME.goldLight, marginBottom: '20px', letterSpacing: '3px' }}>{monthName} {year}</div>
+        <div className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '10px' }}>Save the Date</div>
+        <div className={THEME.fontBody} style={{ fontSize: '1.1rem', fontWeight: 700, color: THEME.goldLight, marginBottom: '20px', letterSpacing: '3px' }}>{monthName} {year}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', maxWidth: '300px', margin: '0 auto 30px' }}>
-          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <div key={i} style={{ fontSize: '0.7rem', fontWeight: 900, color: THEME.gold }}>{d}</div>)}
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <div key={i} className={THEME.fontBody} style={{ fontSize: '0.7rem', fontWeight: 900, color: THEME.gold }}>{d}</div>)}
           {blanksArr.map(b => <div key={`b-${b}`} />)}
           {daysArr.map(d => (
-            <div key={d} style={{ position: 'relative', fontSize: '1.1rem', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1, fontWeight: d === targetDay ? 900 : 500 }}>
+            <div key={d} className={THEME.fontBody} style={{ position: 'relative', fontSize: '1.1rem', height: '35px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1, fontWeight: d === targetDay ? 900 : 500, color: '#fff' }}>
               {d === targetDay ? (
                 <>
                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: -1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -163,7 +171,7 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
             </div>
           ))}
         </div>
-        <button onClick={onAdd} style={{ background: THEME.gold, color: '#000', border: 'none', borderRadius: '30px', padding: '12px 25px', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '1px' }}>ADD TO CALENDAR</button>
+        <button onClick={onAdd} className={THEME.fontBody} style={{ background: THEME.gold, color: '#000', border: 'none', borderRadius: '30px', padding: '12px 25px', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '1px', cursor: 'pointer' }}>ADD TO CALENDAR</button>
       </div>
     </Reveal>
   );
@@ -193,26 +201,26 @@ const HomecomingRSVP = ({ orderId, data }: { orderId?: string, data?: any }) => 
 
   return (
     <div style={{ padding: '40px 20px', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, textAlign: 'center' }}>
-      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: THEME.gold, marginBottom: '20px' }}>Join Our Celebration</h3>
-      {!formOpen && status !== 'success' && <button onClick={() => setFormOpen(true)} style={{ background: THEME.gold, color: '#000', padding: '16px 40px', borderRadius: '30px', fontWeight: 900, border: 'none', letterSpacing: '1px' }}>RSVP NOW</button>}
+      <h3 className={THEME.fontDisplay} style={{ fontSize: '2.2rem', color: THEME.gold, marginBottom: '20px' }}>Join Our Celebration</h3>
+      {!formOpen && status !== 'success' && <button onClick={() => setFormOpen(true)} className={THEME.fontBody} style={{ background: THEME.gold, color: '#000', padding: '16px 40px', borderRadius: '30px', fontWeight: 900, border: 'none', letterSpacing: '1px', cursor: 'pointer' }}>RSVP NOW</button>}
       {formOpen && (
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxWidth: '300px', margin: '0 auto' }}>
-          <input type="text" placeholder="Name" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} style={{ padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
-          <input type="tel" placeholder="Contact" required value={formData.contact} onChange={e => setFormData({ ...formData, contact: e.target.value })} style={{ padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
+          <input type="text" placeholder="Name" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className={THEME.fontBody} style={{ padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
+          <input type="tel" placeholder="Contact" required value={formData.contact} onChange={e => setFormData({ ...formData, contact: e.target.value })} className={THEME.fontBody} style={{ padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
           <div style={{ display: 'flex', gap: '15px' }}>
             <div style={{ flex: 1 }}>
-              <label style={{ fontSize: '0.7rem', display: 'block', textAlign: 'left', marginBottom: '5px', color: THEME.gold, fontWeight: 700, letterSpacing: '1px' }}>ADULTS</label>
-              <input type="number" min="1" value={formData.adults} onChange={e => setFormData({ ...formData, adults: parseInt(e.target.value) })} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
+              <label className={THEME.fontBody} style={{ fontSize: '0.7rem', display: 'block', textAlign: 'left', marginBottom: '5px', color: THEME.gold, fontWeight: 700, letterSpacing: '1px' }}>ADULTS</label>
+              <input type="number" min="1" value={formData.adults} onChange={e => setFormData({ ...formData, adults: parseInt(e.target.value) })} className={THEME.fontBody} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
             </div>
             <div style={{ flex: 1 }}>
-              <label style={{ fontSize: '0.7rem', display: 'block', textAlign: 'left', marginBottom: '5px', color: THEME.gold, fontWeight: 700, letterSpacing: '1px' }}>CHILDREN</label>
-              <input type="number" min="0" value={formData.children} onChange={e => setFormData({ ...formData, children: parseInt(e.target.value) })} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
+              <label className={THEME.fontBody} style={{ fontSize: '0.7rem', display: 'block', textAlign: 'left', marginBottom: '5px', color: THEME.gold, fontWeight: 700, letterSpacing: '1px' }}>CHILDREN</label>
+              <input type="number" min="0" value={formData.children} onChange={e => setFormData({ ...formData, children: parseInt(e.target.value) })} className={THEME.fontBody} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
             </div>
           </div>
-          <button type="submit" style={{ background: THEME.gold, color: '#000', padding: '12px', borderRadius: '30px', fontWeight: 900 }}>CONFIRM</button>
+          <button type="submit" className={THEME.fontBody} style={{ background: THEME.gold, color: '#000', padding: '12px', borderRadius: '30px', fontWeight: 900, cursor: 'pointer' }}>CONFIRM</button>
         </form>
       )}
-      {status === 'success' && <div style={{ color: THEME.gold, fontSize: '1.2rem', fontWeight: 700 }}>Thank you! See you soon.</div>}
+      {status === 'success' && <div className={THEME.fontBody} style={{ color: THEME.gold, fontSize: '1.2rem', fontWeight: 700 }}>Thank you! See you soon.</div>}
     </div>
   );
 };
@@ -238,7 +246,7 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
   const gallery = (data?.images?.gallery?.length > 0 ? data.images.gallery : DEFAULT_IMAGES) as string[];
 
   return (
-    <div style={{ backgroundColor: '#000', minHeight: '100vh', width: '100%', overflowX: 'hidden', fontFamily: 'var(--font-body)', color: '#fff' }}>
+    <div className={THEME.fontBody} style={{ backgroundColor: '#000', minHeight: '100vh', width: '100%', overflowX: 'hidden', color: '#fff' }}>
       <video ref={videoRef} autoPlay loop muted playsInline style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.65 }}>
         <source src="/homecomingBg.mp4" type="video/mp4" />
       </video>
@@ -256,10 +264,10 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%)', zIndex: 1 }} />
         <div style={{ position: 'relative', textAlign: 'center', width: '100%', zIndex: 2, padding: '0 20px' }}>
           <Reveal>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '4rem', color: THEME.gold, marginBottom: '20px', textShadow: '2px 2px 15px rgba(0,0,0,1)', paddingTop: '40px' }}>Homecoming</h1>
+            <h1 className={THEME.fontDisplay} style={{ fontSize: '4rem', color: THEME.gold, marginBottom: '20px', textShadow: '2px 2px 15px rgba(0,0,0,1)', paddingTop: '40px' }}>Homecoming</h1>
             <BlendingImage src={gallery[0]} size="240px" align="center" />
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2.8rem', color: '#fff', marginBottom: '0', textShadow: '1px 1px 10px rgba(0,0,0,1)' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
-            <div className="bounce-soft" style={{ fontSize: '0.9rem', letterSpacing: '6px', fontWeight: 900, color: '#fff', textTransform: 'uppercase', marginTop: '40px' }}>TAP TO OPEN</div>
+            <h2 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: '#fff', marginBottom: '0', textShadow: '1px 1px 10px rgba(0,0,0,1)' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
+            <div className={`bounce-soft ${THEME.fontBody}`} style={{ fontSize: '0.8rem', letterSpacing: '6px', fontWeight: 900, color: '#fff', textTransform: 'uppercase', marginTop: '40px' }}>TAP TO OPEN</div>
           </Reveal>
         </div>
       </div>
@@ -268,18 +276,17 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
         <main style={{ position: 'relative', zIndex: 1, maxWidth: '500px', margin: '0 auto', padding: '0 20px' }}>
           <section style={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
             <Reveal>
-              <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '4.5rem', color: THEME.gold, textShadow: '0 0 20px rgba(212,175,55,0.4)', marginBottom: '10px' }}>Homecoming</h1>
+              <h1 className={THEME.fontDisplay} style={{ fontSize: '4.5rem', color: THEME.gold, textShadow: '0 0 20px rgba(212,175,55,0.4)', marginBottom: '10px' }}>Homecoming</h1>
               <BlendingImage src={gallery[1]} size="280px" align="center" />
-              <div style={{ fontSize: '1.1rem', letterSpacing: '4px', color: '#fff', margin: '15px 0' }}>CELEBRATING THE UNION OF</div>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: THEME.gold }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
-
+              <div className={THEME.fontBody} style={{ fontSize: '1rem', letterSpacing: '4px', color: '#fff', margin: '15px 0', fontWeight: 500 }}>CELEBRATING THE UNION OF</div>
+              <h2 className={THEME.fontDisplay} style={{ fontSize: '2.8rem', color: THEME.gold }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
             </Reveal>
           </section>
 
           <GlassSection>
-            <p style={{ fontSize: '1.2rem', fontStyle: 'italic', color: THEME.goldLight, lineHeight: 1.6 }}>"Every love story is beautiful, but ours is my favorite."</p>
+            <p className={THEME.fontAccent} style={{ fontSize: '1.4rem', fontStyle: 'italic', color: THEME.goldLight, lineHeight: 1.6 }}>"Every love story is beautiful, but ours is my favorite."</p>
             <div style={{ height: '1px', width: '80px', background: THEME.gold, margin: '25px auto' }}></div>
-            <p style={{ fontSize: '1.1rem', opacity: 0.9 }}>Join us as we step into our new life together.</p>
+            <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, fontWeight: 300 }}>Join us as we step into our new life together.</p>
           </GlassSection>
 
           {/* Gallery Pattern: 2 rows, Left-aligned top, Right-aligned bottom */}
@@ -295,7 +302,7 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
           <HomecomingCountdown data={data} />
 
           <GlassSection>
-            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: THEME.gold, marginBottom: '25px' }}>Our Schedule</h3>
+            <h3 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '25px' }}>Our Schedule</h3>
             <HomecomingItinerary data={data} />
           </GlassSection>
 
@@ -307,18 +314,18 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
           <WeddingCalendar onAdd={() => { }} data={data} />
 
           <GlassSection>
-            <div style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 800 }}>THE VENUE</div>
-            <h2 style={{ fontSize: '2rem', marginBottom: '10px' }}>{data?.location?.name || 'Grand Royal Ballroom'}</h2>
-            <p style={{ opacity: 0.8, color: THEME.goldLight }}>{data?.location?.address || '456 Majesty Way, Royal City'}</p>
+            <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 700 }}>THE VENUE</div>
+            <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px' }}>{data?.location?.name || 'Grand Royal Ballroom'}</h2>
+            <p className={THEME.fontBody} style={{ opacity: 0.8, color: THEME.goldLight }}>{data?.location?.address || '456 Majesty Way, Royal City'}</p>
             <div style={{ height: '250px', borderRadius: '20px', overflow: 'hidden', border: `1px solid ${THEME.gold}`, margin: '30px 0' }}>
               <iframe src="https://www.google.com/maps/embed?..." width="100%" height="100%" style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}></iframe>
             </div>
-            <a href="#" style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#000', borderRadius: '40px', fontWeight: 900, textDecoration: 'none' }}>GET DIRECTIONS</a>
+            <a href="#" className={THEME.fontBody} style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#000', borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '1px' }}>GET DIRECTIONS</a>
           </GlassSection>
 
           <GlassSection padding="60px 25px">
-            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', color: THEME.gold, marginBottom: '20px' }}>Thank You</h3>
-            <p style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '40px' }}>For being part of our journey.</p>
+            <h3 className={THEME.fontDisplay} style={{ fontSize: '3rem', color: THEME.gold, marginBottom: '20px' }}>Thank You</h3>
+            <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '40px' }}>For being part of our journey.</p>
             <HomecomingRSVP orderId={orderId} data={data} />
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
               <HeartIcon size={40} color={THEME.gold} />
