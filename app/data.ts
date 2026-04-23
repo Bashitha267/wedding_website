@@ -41,5 +41,12 @@ export const templates: Product[] = [
     image: "/homecoming.jpg",
     description: "A majestic red and gold theme featuring glassmorphism effects and a looping background video for a truly royal experience.",
     theme: "Royal Red & Gold"
+  },
+  {
+    id: "weddingwalk",
+    name: "Wedding Walk",
+    image: "/weddingwalk.jpg",
+    description: "An ethereal white and gold theme featuring warm lighting, elegant floral arrangements, and a cinematic background video.",
+    theme: "Elegant White & Gold"
   }
 ];

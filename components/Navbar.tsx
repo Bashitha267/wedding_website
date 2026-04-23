@@ -42,9 +42,9 @@ export default function Navbar() {
           alignItems: 'center',
           textDecoration: 'none',
         }}>
-          <div style={{ position: 'relative', width: '120px', height: '60px' }}>
+          <div style={{ position: 'relative', width: '180px', height: '60px' }}>
             <Image 
-              src="/LOGO.png" 
+              src="/logo.png" 
               alt="KNOT STORY Logo" 
               fill 
               style={{ objectFit: 'contain' }}

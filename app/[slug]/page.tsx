@@ -13,6 +13,7 @@ import CeylonTemplate from '@/app/templates/ceylon/page';
 import SydneyTemplate from '@/app/templates/sydney/page';
 import FusionTemplate from '@/app/templates/fusion/page';
 import HomecomingTemplate from '@/app/templates/homecoming/page';
+import WeddingWalkTemplate from '@/app/templates/weddingwalk/page';
 
 
 // We map template IDs from the database to the actual React Components
@@ -28,6 +29,7 @@ const templateMap: Record<string, React.ElementType> = {
   'sydney': SydneyTemplate,
   'fusion': FusionTemplate,
   'homecoming': HomecomingTemplate,
+  'weddingwalk': WeddingWalkTemplate,
 
 };
 

@@ -264,9 +264,9 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%)', zIndex: 1 }} />
         <div style={{ position: 'relative', textAlign: 'center', width: '100%', zIndex: 2, padding: '0 20px' }}>
           <Reveal>
-            <h1 className={THEME.fontDisplay} style={{ fontSize: '4rem', color: THEME.gold, marginBottom: '20px', textShadow: '2px 2px 15px rgba(0,0,0,1)', paddingTop: '40px' }}>Homecoming</h1>
+            <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)', color: THEME.gold, marginBottom: '20px', textShadow: '2px 2px 15px rgba(0,0,0,1)', paddingTop: '40px', width: '100%', textAlign: 'center' }}>Homecoming</h1>
             <BlendingImage src={gallery[0]} size="240px" align="center" />
-            <h2 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: '#fff', marginBottom: '0', textShadow: '1px 1px 10px rgba(0,0,0,1)' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
+            <h2 className={THEME.fontDisplay} style={{ fontSize: 'clamp(1.8rem, 8vw, 2.5rem)', color: '#fff', marginBottom: '0', textShadow: '1px 1px 10px rgba(0,0,0,1)' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
             <div className={`bounce-soft ${THEME.fontBody}`} style={{ fontSize: '0.8rem', letterSpacing: '6px', fontWeight: 900, color: '#fff', textTransform: 'uppercase', marginTop: '40px' }}>TAP TO OPEN</div>
           </Reveal>
         </div>
@@ -276,7 +276,7 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
         <main style={{ position: 'relative', zIndex: 1, maxWidth: '500px', margin: '0 auto', padding: '0 20px' }}>
           <section style={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
             <Reveal>
-              <h1 className={THEME.fontDisplay} style={{ fontSize: '4.5rem', color: THEME.gold, textShadow: '0 0 20px rgba(212,175,55,0.4)', marginBottom: '10px' }}>Homecoming</h1>
+              <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(3rem, 15vw, 4.5rem)', color: THEME.gold, textShadow: '0 0 20px rgba(212,175,55,0.4)', marginBottom: '10px', width: '100%' }}>Homecoming</h1>
               <BlendingImage src={gallery[1]} size="280px" align="center" />
               <div className={THEME.fontBody} style={{ fontSize: '1rem', letterSpacing: '4px', color: '#fff', margin: '15px 0', fontWeight: 500 }}>CELEBRATING THE UNION OF</div>
               <h2 className={THEME.fontDisplay} style={{ fontSize: '2.8rem', color: THEME.gold }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
@@ -324,7 +324,7 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
           </GlassSection>
 
           <GlassSection padding="60px 25px">
-            <h3 className={THEME.fontDisplay} style={{ fontSize: '3rem', color: THEME.gold, marginBottom: '20px' }}>Thank You</h3>
+            <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 10vw, 3rem)', color: THEME.gold, marginBottom: '20px' }}>Thank You</h3>
             <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '40px' }}>For being part of our journey.</p>
             <HomecomingRSVP orderId={orderId} data={data} />
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
