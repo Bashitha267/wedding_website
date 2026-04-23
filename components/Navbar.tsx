@@ -37,16 +37,16 @@ export default function Navbar() {
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
-        <Link href="/" style={{ 
+        <Link href="/" style={{
           display: 'flex',
           alignItems: 'center',
           textDecoration: 'none',
         }}>
           <div style={{ position: 'relative', width: '180px', height: '60px' }}>
-            <Image 
-              src="/logo.png" 
-              alt="KNOT STORY Logo" 
-              fill 
+            <Image
+              src="https://res.cloudinary.com/dnfbik3if/image/upload/v1776967066/logo_bfzkos.png"
+              alt="Logo"
+              fill
               style={{ objectFit: 'contain' }}
             />
           </div>
@@ -59,7 +59,7 @@ export default function Navbar() {
             <Link href="/contact" style={{ color: 'var(--bw-black)', textDecoration: 'none', fontSize: '0.9rem', letterSpacing: '2px', fontWeight: 500 }}>CONTACT</Link>
           </div>
 
-          <button 
+          <button
             onClick={() => window.dispatchEvent(new CustomEvent('open-cart', { detail: null }))}
             style={{
               background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--bw-black)'
@@ -69,7 +69,7 @@ export default function Navbar() {
           </button>
 
           {/* Mobile Menu Toggle */}
-          <button 
+          <button
             className="mobile-toggle"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             style={{

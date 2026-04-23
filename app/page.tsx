@@ -53,7 +53,7 @@ export default function Home() {
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
                             <div style={{ position: 'relative', width: '200px', height: '80px' }}>
-                                <Image src="/logo.png" alt="KNOT STORY Logo" fill style={{ objectFit: 'contain', objectPosition: 'left' }} />
+                                <Image src="https://res.cloudinary.com/dnfbik3if/image/upload/v1776967066/logo_bfzkos.png" alt="KNOT STORY Logo" fill style={{ objectFit: 'contain', objectPosition: 'left' }} />
                             </div>
                         </div>
                         <p style={{ color: 'var(--bw-gray-medium)', fontSize: '0.9rem' }}>
