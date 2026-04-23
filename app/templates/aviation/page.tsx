@@ -5,7 +5,7 @@ import Reveal from '@/components/Reveal';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { Cinzel, Montserrat, Playfair_Display, Alex_Brush } from 'next/font/google';
-import { Plane, Calendar, Clock, MapPin, Users, Ticket, Heart, Smartphone, Music, Mail } from 'lucide-react';
+import { Plane, Calendar, Clock, MapPin, Users, Ticket, Heart, Smartphone, Music, Mail, Compass, Navigation, Wind } from 'lucide-react';
 
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '700', '900'] });
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['300', '400', '500', '700'] });
@@ -34,6 +34,25 @@ const DEFAULT_IMAGES = [
   '/photo_5.png'
 ];
 
+// Background Clouds Animation
+const DriftingClouds = () => (
+  <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden', opacity: 0.3 }}>
+    <div className="cloud cloud-1" style={{ position: 'absolute', top: '10%', left: '-20%', width: '400px', height: '200px', background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'blur(40px)' }}></div>
+    <div className="cloud cloud-2" style={{ position: 'absolute', top: '40%', right: '-30%', width: '600px', height: '300px', background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'blur(60px)' }}></div>
+    <div className="cloud cloud-3" style={{ position: 'absolute', bottom: '10%', left: '10%', width: '500px', height: '250px', background: 'radial-gradient(circle, white 0%, transparent 70%)', filter: 'blur(50px)' }}></div>
+    <style jsx>{`
+      @keyframes drift {
+        0% { transform: translateX(0) translateY(0); }
+        50% { transform: translateX(100px) translateY(20px); }
+        100% { transform: translateX(0) translateY(0); }
+      }
+      .cloud-1 { animation: drift 40s linear infinite; }
+      .cloud-2 { animation: drift 55s linear infinite reverse; }
+      .cloud-3 { animation: drift 45s linear infinite; }
+    `}</style>
+  </div>
+);
+
 // Moving Airplanes Component
 const MovingAirplanes = () => (
   <div style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' }}>
@@ -57,6 +76,15 @@ const MovingAirplanes = () => (
         animation: flyAcross 25s linear infinite;
       }
     `}</style>
+  </div>
+);
+
+// Flight Path Line
+const FlightPath = () => (
+  <div style={{ display: 'flex', justifyContent: 'center', margin: '40px 0', position: 'relative' }}>
+    <div style={{ width: '2px', height: '100px', borderLeft: `2px dashed ${THEME.gold}`, opacity: 0.4, position: 'relative' }}>
+       <Plane size={16} color={THEME.gold} style={{ position: 'absolute', bottom: '-8px', left: '-9px', transform: 'rotate(180deg)', opacity: 0.6 }} />
+    </div>
   </div>
 );
 
@@ -148,7 +176,7 @@ const PlaneWindow = ({ src, size = '220px' }: { src: string, size?: string }) =>
   );
 };
 
-const GlassSection = ({ children, padding = '40px 25px' }: { children: React.ReactNode, padding?: string }) => (
+const GlassSection = ({ children, padding = '40px 25px', hasCompass = false }: { children: React.ReactNode, padding?: string, hasCompass?: boolean }) => (
   <Reveal delay={100}>
     <div style={{ 
       padding, 
@@ -160,9 +188,18 @@ const GlassSection = ({ children, padding = '40px 25px' }: { children: React.Rea
       margin: '30px 0', 
       textAlign: 'center', 
       color: THEME.white,
-      boxShadow: '0 20px 50px rgba(0,0,0,0.3)'
+      boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
+      position: 'relative',
+      overflow: 'hidden'
     }}>
-      {children}
+      {hasCompass && (
+        <div style={{ position: 'absolute', top: '-50px', right: '-50px', opacity: 0.1, pointerEvents: 'none' }}>
+           <Compass size={250} color={THEME.gold} />
+        </div>
+      )}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        {children}
+      </div>
     </div>
   </Reveal>
 );
@@ -186,7 +223,10 @@ const AviationCountdown = ({ data }: { data?: any }) => {
   }, [data?.eventDate]);
 
   return (
-    <div style={{ padding: '40px 20px', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, margin: '40px 0', textAlign: 'center' }}>
+    <div style={{ padding: '40px 20px', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, margin: '40px 0', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', bottom: '-20px', left: '-20px', opacity: 0.1 }}>
+         <Navigation size={120} color={THEME.gold} />
+      </div>
       <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '25px', fontWeight: 700 }}>FLIGHT TIME REMAINING</div>
       <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
         {[
@@ -288,7 +328,12 @@ const BoardingPass = ({ data, orderId }: { data: any, orderId?: string }) => {
                 <button type="submit" style={{ background: THEME.gold, color: '#fff', border: 'none', padding: '14px', borderRadius: '8px', fontWeight: 900, letterSpacing: '2px', fontSize: '0.9rem', cursor: 'pointer' }}>CONFIRM FLIGHT</button>
               </form>
             )}
-            {status === 'success' && <div className={THEME.fontDisplay} style={{ color: THEME.gold, fontSize: '1.2rem', fontWeight: 700 }}>WELCOME ON BOARD!</div>}
+            {status === 'success' && (
+               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                 <div className={THEME.fontDisplay} style={{ color: THEME.gold, fontSize: '1.2rem', fontWeight: 700 }}>WELCOME ON BOARD!</div>
+                 <div style={{ padding: '8px 15px', border: `2px solid ${THEME.gold}`, color: THEME.gold, borderRadius: '20px', fontSize: '0.6rem', fontWeight: 900, letterSpacing: '2px' }}>CLEARED FOR LANDING</div>
+               </div>
+            )}
           </div>
         </div>
 
@@ -333,10 +378,13 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
 
   return (
     <Reveal delay={200}>
-      <div style={{ padding: '30px 20px', textAlign: 'center', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, margin: '40px 0', boxShadow: '0 15px 35px rgba(0,0,0,0.2)' }}>
-        <div className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>Save the Date</div>
-        <div className={THEME.fontBody} style={{ fontSize: '1.1rem', fontWeight: 900, color: THEME.white, marginBottom: '20px', letterSpacing: '3px' }}>{monthName} {year}</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', maxWidth: '300px', margin: '0 auto 30px' }}>
+      <div style={{ padding: '30px 20px', textAlign: 'center', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, margin: '40px 0', boxShadow: '0 15px 35px rgba(0,0,0,0.2)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '-30px', left: '-30px', opacity: 0.1 }}>
+           <Wind size={150} color={THEME.gold} />
+        </div>
+        <div className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.3)', position: 'relative', zIndex: 1 }}>Save the Date</div>
+        <div className={THEME.fontBody} style={{ fontSize: '1.1rem', fontWeight: 900, color: THEME.white, marginBottom: '20px', letterSpacing: '3px', position: 'relative', zIndex: 1 }}>{monthName} {year}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', maxWidth: '300px', margin: '0 auto 30px', position: 'relative', zIndex: 1 }}>
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <div key={i} className={THEME.fontBody} style={{ fontSize: '0.7rem', fontWeight: 900, color: THEME.gold }}>{d}</div>)}
           {blanksArr.map(b => <div key={`b-${b}`} />)}
           {daysArr.map(d => (
@@ -352,7 +400,7 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
             </div>
           ))}
         </div>
-        <button onClick={onAdd} className={THEME.fontBody} style={{ background: THEME.gold, color: THEME.white, border: 'none', borderRadius: '30px', padding: '12px 25px', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '1px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(197, 160, 89, 0.3)' }}>ADD TO CALENDAR</button>
+        <button onClick={onAdd} className={THEME.fontBody} style={{ background: THEME.gold, color: THEME.white, border: 'none', borderRadius: '30px', padding: '12px 25px', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '1px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(197, 160, 89, 0.3)', position: 'relative', zIndex: 1 }}>ADD TO CALENDAR</button>
       </div>
     </Reveal>
   );
@@ -397,6 +445,7 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(26,43,76,0.8), rgba(26,43,76,0.6))' }} />
       </div>
 
+      <DriftingClouds />
       <MovingAirplanes />
 
       <audio id="bg-music" loop><source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" /></audio>
@@ -432,11 +481,19 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
             <Reveal>
               <div className={THEME.fontDisplay} style={{ fontSize: '0.75rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '20px', fontWeight: 700 }}>TOGETHER WITH THEIR FAMILIES</div>
               
-              <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)', color: THEME.white, lineHeight: '1.1', margin: '15px 0', textShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-                {data?.brideName || 'Sarah'}<br />
-                <span className={THEME.fontScript} style={{ fontSize: '3rem', color: THEME.gold, display: 'inline-block', margin: '10px 0' }}>&</span><br />
-                {data?.groomName || 'Mark'}
-              </h1>
+              <div style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+                <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)', color: THEME.white, lineHeight: '1.1', margin: '15px 0', textShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.6rem', color: THEME.gold, letterSpacing: '4px', marginBottom: '5px', fontWeight: 900 }}>CAPTAIN</span>
+                    {data?.brideName || 'Sarah'}
+                  </div>
+                  <span className={THEME.fontScript} style={{ fontSize: '3rem', color: THEME.gold, display: 'inline-block', margin: '10px 0' }}>&</span><br />
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.6rem', color: THEME.gold, letterSpacing: '4px', marginBottom: '5px', fontWeight: 900 }}>FIRST OFFICER</span>
+                    {data?.groomName || 'Mark'}
+                  </div>
+                </h1>
+              </div>
 
               <div style={{ margin: '30px 0', position: 'relative' }}>
                 <PlaneWindow src={img0} size="240px" />
@@ -449,8 +506,10 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
             </Reveal>
           </section>
 
+          <FlightPath />
+
           {/* Intro Section */}
-          <GlassSection>
+          <GlassSection hasCompass>
             <p className={THEME.fontAccent} style={{ fontSize: '1.5rem', fontStyle: 'italic', color: THEME.gold, lineHeight: 1.6 }}>"Love is the greatest adventure of all."</p>
             <div style={{ height: '1px', width: '100px', background: THEME.gold, margin: '30px auto', opacity: 0.5 }}></div>
             <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.95, fontWeight: 300, letterSpacing: '1px' }}>We invite you to be part of our first flight as husband and wife.</p>
@@ -472,7 +531,7 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
             <Reveal delay={200}>
               <PlaneWindow src={img1} size="240px" />
             </Reveal>
-            <div style={{ height: '40px' }}></div>
+            <FlightPath />
             <Reveal delay={400}>
               <div style={{ textAlign: 'right' }}>
                 <PlaneWindow src={img2} size="240px" />
@@ -482,9 +541,8 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
 
           <AviationCountdown data={data} />
 
-          <GlassSection>
+          <GlassSection hasCompass>
             <h3 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '30px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>Flight Itinerary</h3>
-            {/* Itinerary Logic similar to Homecoming but with Aviation touch */}
             <div style={{ position: 'relative', padding: '10px 0', textAlign: 'left' }}>
               <div style={{ position: 'absolute', left: '20px', top: '0', bottom: '0', width: '2px', background: `linear-gradient(to bottom, transparent, ${THEME.gold}, transparent)` }}></div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '45px', paddingLeft: '50px' }}>
