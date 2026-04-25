@@ -199,3 +199,24 @@ section {
   .grid-3 { grid-template-columns: repeat(3, 1fr); }
   .grid-4 { grid-template-columns: repeat(4, 1fr); }
 }
+
+/* Dashboard Specific Utilities */
+@media (max-width: 768px) {
+  .mobile-header { display: flex !important; }
+  main { margin-left: 0 !important; padding: 80px 20px 40px !important; }
+  .mobile-only { display: block !important; }
+  .preview-column { display: none !important; } /* Hide heavy preview on mobile by default */
+}
+
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-left-color: var(--rose-dark);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

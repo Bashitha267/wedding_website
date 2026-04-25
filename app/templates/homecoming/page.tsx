@@ -52,7 +52,6 @@ const GoldMotif = ({ size = 60 }: { size?: number }) => (
   </div>
 );
 
-// Blending Image
 const BlendingImage = ({ src, size = '100%', align = 'center' }: { src: string, size?: string, align?: 'left' | 'right' | 'center' }) => (
   <div style={{
     display: 'flex',
@@ -200,8 +199,8 @@ const HomecomingRSVP = ({ orderId, data }: { orderId?: string, data?: any }) => 
   };
 
   return (
-    <div style={{ padding: '40px 20px', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, textAlign: 'center' }}>
-      <h3 className={THEME.fontDisplay} style={{ fontSize: '2.2rem', color: THEME.gold, marginBottom: '20px' }}>Join Our Celebration</h3>
+    <div style={{ padding: '40px 20px', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, textAlign: 'center', overflow: 'hidden' }}>
+      <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(1.8rem, 8vw, 2.2rem)', color: THEME.gold, marginBottom: '25px', lineHeight: 1.2, textTransform: 'uppercase', letterSpacing: '1px' }}>Join Our Celebration</h3>
       {!formOpen && status !== 'success' && <button onClick={() => setFormOpen(true)} className={THEME.fontBody} style={{ background: THEME.gold, color: '#000', padding: '16px 40px', borderRadius: '30px', fontWeight: 900, border: 'none', letterSpacing: '1px', cursor: 'pointer' }}>RSVP NOW</button>}
       {formOpen && (
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxWidth: '300px', margin: '0 auto' }}>
@@ -210,11 +209,11 @@ const HomecomingRSVP = ({ orderId, data }: { orderId?: string, data?: any }) => 
           <div style={{ display: 'flex', gap: '15px' }}>
             <div style={{ flex: 1 }}>
               <label className={THEME.fontBody} style={{ fontSize: '0.7rem', display: 'block', textAlign: 'left', marginBottom: '5px', color: THEME.gold, fontWeight: 700, letterSpacing: '1px' }}>ADULTS</label>
-              <input type="number" min="1" value={formData.adults} onChange={e => setFormData({ ...formData, adults: parseInt(e.target.value) })} className={THEME.fontBody} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
+              <input type="number" min="1" value={formData.adults} onChange={e => setFormData({ ...formData, adults: parseInt(e.target.value) || 0 })} className={THEME.fontBody} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
             </div>
             <div style={{ flex: 1 }}>
               <label className={THEME.fontBody} style={{ fontSize: '0.7rem', display: 'block', textAlign: 'left', marginBottom: '5px', color: THEME.gold, fontWeight: 700, letterSpacing: '1px' }}>CHILDREN</label>
-              <input type="number" min="0" value={formData.children} onChange={e => setFormData({ ...formData, children: parseInt(e.target.value) })} className={THEME.fontBody} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
+              <input type="number" min="0" value={formData.children} onChange={e => setFormData({ ...formData, children: parseInt(e.target.value) || 0 })} className={THEME.fontBody} style={{ width: '100%', padding: '12px', borderRadius: '10px', border: `1px solid ${THEME.gold}`, background: 'rgba(0,0,0,0.3)', color: '#fff' }} />
             </div>
           </div>
           <button type="submit" className={THEME.fontBody} style={{ background: THEME.gold, color: '#000', padding: '12px', borderRadius: '30px', fontWeight: 900, cursor: 'pointer' }}>CONFIRM</button>
@@ -244,97 +243,144 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
   };
 
   const gallery = (data?.images?.gallery?.length > 0 ? data.images.gallery : DEFAULT_IMAGES) as string[];
+  const heroImage = data?.images?.heroImage || gallery[0] || DEFAULT_IMAGES[0];
+  const image1 = data?.images?.image1 || gallery[1] || DEFAULT_IMAGES[1];
+  const image2 = data?.images?.image2 || gallery[2] || DEFAULT_IMAGES[2];
+  const image3 = data?.images?.image3 || gallery[3] || DEFAULT_IMAGES[3];
+  const thankYouImage = data?.images?.thankYouImage || gallery[4] || DEFAULT_IMAGES[4];
 
   return (
-    <div className={THEME.fontBody} style={{ backgroundColor: '#000', minHeight: '100vh', width: '100%', overflowX: 'hidden', color: '#fff' }}>
-      <video ref={videoRef} autoPlay loop muted playsInline style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.65 }}>
-        <source src="/homecomingBg.mp4" type="video/mp4" />
-      </video>
-      <audio id="bg-music" loop><source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" /></audio>
+    <div style={{ 
+      backgroundColor: '#140505', 
+      minHeight: '100vh', 
+      width: '100%', 
+      display: 'flex', 
+      justifyContent: 'center'
+    }}>
+      <div className={THEME.fontBody} style={{ 
+        backgroundColor: '#000', 
+        height: '100vh', 
+        width: '100%', 
+        maxWidth: '430px', 
+        position: 'relative',
+        overflow: 'hidden', 
+        color: '#fff',
+        boxShadow: '0 0 100px rgba(0,0,0,0.8)'
+      }}>
+        {/* Layer 0: Static Background Video (Pinned) */}
+        <video ref={videoRef} autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
+          <source src="/homecomingBg.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.4)', zIndex: 0 }}></div>
+        <audio id="bg-music" loop><source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" /></audio>
 
-      {isOpen && (
-        <button onClick={toggleMusic} style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 2000, width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'rgba(0, 0, 0, 0.6)', border: `1px solid ${THEME.gold}`, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.4rem', cursor: 'pointer', color: THEME.gold }}>
-          <MusicIcon muted={isMuted} />
-        </button>
-      )}
+        {/* Layer 1: Scrollable Content Wrapper */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflowY: 'auto', zIndex: 1, scrollbarWidth: 'none' }}>
+          
+          {isOpen && (
+            <button onClick={toggleMusic} style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 2000, width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'rgba(0, 0, 0, 0.6)', border: `1px solid ${THEME.gold}`, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.4rem', cursor: 'pointer', color: THEME.gold }}>
+              <MusicIcon muted={isMuted} />
+            </button>
+          )}
 
-      {/* Cover Page */}
-      <div style={{ width: '100%', height: '100vh', backgroundColor: '#000', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'fixed', top: 0, left: 0, zIndex: 1000, transition: 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)', transform: isOpen ? 'translateY(-100%)' : 'translateY(0)', opacity: isOpen ? 0 : 1, cursor: 'pointer', overflow: 'hidden' }} onClick={handleOpen}>
-        <Image src="/homecoming.jpg" alt="Cover" fill style={{ objectFit: 'cover', opacity: 0.9 }} priority />
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%)', zIndex: 1 }} />
-        <div style={{ position: 'relative', textAlign: 'center', width: '100%', zIndex: 2, padding: '0 20px' }}>
-          <Reveal>
-            <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)', color: THEME.gold, marginBottom: '20px', textShadow: '2px 2px 15px rgba(0,0,0,1)', paddingTop: '40px', width: '100%', textAlign: 'center' }}>Homecoming</h1>
-            <BlendingImage src={gallery[0]} size="240px" align="center" />
-            <h2 className={THEME.fontDisplay} style={{ fontSize: 'clamp(1.8rem, 8vw, 2.5rem)', color: '#fff', marginBottom: '0', textShadow: '1px 1px 10px rgba(0,0,0,1)' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
-            <div className={`bounce-soft ${THEME.fontBody}`} style={{ fontSize: '0.8rem', letterSpacing: '6px', fontWeight: 900, color: '#fff', textTransform: 'uppercase', marginTop: '40px' }}>TAP TO OPEN</div>
-          </Reveal>
-        </div>
-      </div>
-
-      {isOpen && (
-        <main style={{ position: 'relative', zIndex: 1, maxWidth: '500px', margin: '0 auto', padding: '0 20px' }}>
-          <section style={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
-            <Reveal>
-              <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(3rem, 15vw, 4.5rem)', color: THEME.gold, textShadow: '0 0 20px rgba(212,175,55,0.4)', marginBottom: '10px', width: '100%' }}>Homecoming</h1>
-              <BlendingImage src={gallery[1]} size="280px" align="center" />
-              <div className={THEME.fontBody} style={{ fontSize: '1rem', letterSpacing: '4px', color: '#fff', margin: '15px 0', fontWeight: 500 }}>CELEBRATING THE UNION OF</div>
-              <h2 className={THEME.fontDisplay} style={{ fontSize: '2.8rem', color: THEME.gold }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
-            </Reveal>
-          </section>
-
-          <GlassSection>
-            <p className={THEME.fontAccent} style={{ fontSize: '1.4rem', fontStyle: 'italic', color: THEME.goldLight, lineHeight: 1.6 }}>"Every love story is beautiful, but ours is my favorite."</p>
-            <div style={{ height: '1px', width: '80px', background: THEME.gold, margin: '25px auto' }}></div>
-            <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, fontWeight: 300 }}>Join us as we step into our new life together.</p>
-          </GlassSection>
-
-          {/* Gallery Pattern: 2 rows, Left-aligned top, Right-aligned bottom */}
-          <div style={{ margin: '40px 0' }}>
-            <Reveal delay={200}>
-              <BlendingImage src={gallery[2]} size="300px" align="left" />
-            </Reveal>
-            <Reveal delay={400}>
-              <BlendingImage src={gallery[3]} size="300px" align="right" />
-            </Reveal>
+          {/* Cover Page */}
+          <div style={{ width: '100%', height: '100vh', backgroundColor: '#000', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, left: 0, zIndex: 1000, transition: 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)', transform: isOpen ? 'translateY(-100%)' : 'translateY(0)', opacity: isOpen ? 0 : 1, cursor: 'pointer', overflow: 'hidden' }} onClick={handleOpen}>
+            <Image src="/homecoming.jpg" alt="Cover" fill style={{ objectFit: 'cover', opacity: 0.9 }} priority />
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%)', zIndex: 1 }} />
+            <div style={{ position: 'relative', textAlign: 'center', width: '100%', zIndex: 2, padding: '0 20px' }}>
+              <Reveal>
+                <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 10vw, 3.2rem)', color: THEME.gold, marginBottom: '20px', textShadow: '2px 2px 15px rgba(0,0,0,1)', paddingTop: '40px', width: '100%', textAlign: 'center', letterSpacing: '2px' }}>Homecoming</h1>
+                <BlendingImage src={heroImage} size="240px" align="center" />
+                <h2 className={THEME.fontDisplay} style={{ fontSize: 'clamp(1.8rem, 8vw, 2.5rem)', color: '#fff', marginBottom: '0', textShadow: '1px 1px 10px rgba(0,0,0,1)' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
+                <div className={`bounce-soft ${THEME.fontBody}`} style={{ fontSize: '0.8rem', letterSpacing: '6px', fontWeight: 900, color: '#fff', textTransform: 'uppercase', marginTop: '40px' }}>TAP TO OPEN</div>
+              </Reveal>
+            </div>
           </div>
 
-          <HomecomingCountdown data={data} />
+          {isOpen && (
+            <main style={{ position: 'relative', zIndex: 1, width: '100%', padding: '0 20px' }}>
+              <section style={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
+                <Reveal>
+                  <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 3.8rem)', color: THEME.gold, textShadow: '0 0 20px rgba(212,175,55,0.4)', marginBottom: '10px', width: '100%', letterSpacing: '2px' }}>Homecoming</h1>
+                  <BlendingImage src={image1} size="280px" align="center" />
+                  <div className={THEME.fontBody} style={{ fontSize: '1rem', letterSpacing: '4px', color: '#fff', margin: '15px 0', fontWeight: 500 }}>CELEBRATING THE UNION OF</div>
+                  <h2 className={THEME.fontDisplay} style={{ fontSize: '2.8rem', color: THEME.gold }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
+                </Reveal>
+              </section>
 
-          <GlassSection>
-            <h3 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '25px' }}>Our Schedule</h3>
-            <HomecomingItinerary data={data} />
-          </GlassSection>
+              <GlassSection>
+                <p className={THEME.fontAccent} style={{ fontSize: '1.4rem', fontStyle: 'italic', color: THEME.goldLight, lineHeight: 1.6 }}>"Every love story is beautiful, but ours is my favorite."</p>
+                <div style={{ height: '1px', width: '80px', background: THEME.gold, margin: '25px auto' }}></div>
+                <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, fontWeight: 300 }}>Join us as we step into our new life together.</p>
+              </GlassSection>
 
-          {/* More Gallery images if needed */}
-          <Reveal delay={300}>
-            <BlendingImage src={gallery[4]} size="280px" align="left" />
-          </Reveal>
+              <div style={{ margin: '40px 0' }}>
+                <Reveal delay={200}>
+                  <BlendingImage src={image2} size="300px" align="left" />
+                </Reveal>
+                <Reveal delay={400}>
+                  <BlendingImage src={image3} size="300px" align="right" />
+                </Reveal>
+              </div>
 
-          <WeddingCalendar onAdd={() => { }} data={data} />
+              <HomecomingCountdown data={data} />
 
-          <GlassSection>
-            <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 700 }}>THE VENUE</div>
-            <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px' }}>{data?.location?.name || 'Grand Royal Ballroom'}</h2>
-            <p className={THEME.fontBody} style={{ opacity: 0.8, color: THEME.goldLight }}>{data?.location?.address || '456 Majesty Way, Royal City'}</p>
-            <div style={{ height: '250px', borderRadius: '20px', overflow: 'hidden', border: `1px solid ${THEME.gold}`, margin: '30px 0' }}>
-              <iframe src="https://www.google.com/maps/embed?..." width="100%" height="100%" style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}></iframe>
-            </div>
-            <a href="#" className={THEME.fontBody} style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#000', borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '1px' }}>GET DIRECTIONS</a>
-          </GlassSection>
+              <GlassSection>
+                <h3 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '25px' }}>Our Schedule</h3>
+                <HomecomingItinerary data={data} />
+              </GlassSection>
 
-          <GlassSection padding="60px 25px">
-            <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 10vw, 3rem)', color: THEME.gold, marginBottom: '20px' }}>Thank You</h3>
-            <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '40px' }}>For being part of our journey.</p>
-            <HomecomingRSVP orderId={orderId} data={data} />
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
-              <HeartIcon size={40} color={THEME.gold} />
-            </div>
-          </GlassSection>
+              <Reveal delay={300}>
+                <BlendingImage src={thankYouImage} size="280px" align="left" />
+              </Reveal>
 
-          <div style={{ height: '100px' }}></div>
-        </main>
-      )}
+              <WeddingCalendar onAdd={() => { }} data={data} />
+
+              <GlassSection>
+                <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 700 }}>THE VENUE</div>
+                <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px' }}>{data?.location?.name || 'Grand Royal Ballroom'}</h2>
+
+                {data?.location?.address && !data.location.address.startsWith('http') && (
+                  <p className={THEME.fontBody} style={{ opacity: 0.8, color: THEME.goldLight, marginBottom: '10px' }}>
+                    {data.location.address}
+                  </p>
+                )}
+
+                {data?.location?.address && data.location.address.includes('google.com/maps/embed') ? (
+                  <div style={{ height: '250px', borderRadius: '20px', overflow: 'hidden', border: `1px solid ${THEME.gold}`, margin: '30px 0' }}>
+                    <iframe src={data.location.address} width="100%" height="100%" style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}></iframe>
+                  </div>
+                ) : (
+                  <div style={{ margin: '30px 0' }}>
+                    <div style={{ height: '2px', width: '40px', background: THEME.gold, margin: '0 auto 20px' }}></div>
+                  </div>
+                )}
+
+                <a
+                  href={data?.location?.address || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={THEME.fontBody}
+                  style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#000', borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '1px' }}
+                >
+                  GET DIRECTIONS
+                </a>
+              </GlassSection>
+
+              <GlassSection padding="60px 25px">
+                <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 10vw, 3rem)', color: THEME.gold, marginBottom: '20px' }}>Thank You</h3>
+                <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '40px' }}>For being part of our journey.</p>
+                <HomecomingRSVP orderId={orderId} data={data} />
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
+                  <HeartIcon size={40} color={THEME.gold} />
+                </div>
+              </GlassSection>
+
+              <div style={{ height: '100px' }}></div>
+            </main>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

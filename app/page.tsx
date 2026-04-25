@@ -34,6 +34,31 @@ export default function Home() {
                     </Reveal>
                 </div>
             </section>
+            {/* Customized Design Section */}
+            <section style={{ padding: '120px 0', backgroundColor: '#fdf8f4' }}>
+                <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '60px', flexWrap: 'wrap' }}>
+                    <div style={{ flex: 1, minWidth: '300px' }}>
+                        <Reveal>
+                            <h4 style={{ letterSpacing: '4px', color: 'var(--bw-gray-medium)', marginBottom: '15px', textTransform: 'uppercase', fontSize: '0.9rem' }}>BESPOKE CREATIONS</h4>
+                            <h2 className="font-romantic" style={{ fontSize: '4rem', color: 'var(--bw-black)', marginBottom: '25px', lineHeight: '1.1' }}>Want something truly unique?</h2>
+                            <p style={{ fontSize: '1.2rem', color: 'var(--bw-gray-dark)', lineHeight: '1.8', marginBottom: '35px' }}>
+                                Our master designers are ready to bring your vision to life. If you can't find the perfect template in our collection, we can create a one-of-a-kind digital experience specifically for your wedding theme.
+                            </p>
+                            <Link href="/contact" className="btn-primary" style={{ textDecoration: 'none', padding: '15px 40px' }}>
+                                REQUEST CUSTOM TEMPLATE
+                            </Link>
+                        </Reveal>
+                    </div>
+                    <div style={{ flex: 1, minWidth: '300px', position: 'relative', height: '500px', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
+                        <Image 
+                            src="/bespoke_roses_color.png" 
+                            alt="Custom Bespoke Wedding Design" 
+                            fill 
+                            style={{ objectFit: 'cover' }} 
+                        />
+                    </div>
+                </div>
+            </section>
 
             {/* Pre-footer Call to Action */}
             <section style={{ padding: '120px 0', backgroundColor: 'var(--bw-white)' }}>

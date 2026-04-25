@@ -55,5 +55,12 @@ export const templates: Product[] = [
     image: "/aviation_cover.png",
     description: "A unique aviation-themed invitation styled like a passport and boarding pass for your forever journey.",
     theme: "Aviation & Travel"
+  },
+  {
+    id: "christian",
+    name: "Divine Grace",
+    image: "/christianweddingimg.jpg",
+    description: "A serene and ethereal design inspired by sacred unions, featuring heavenly white and sky blue accents with a cinematic church background video.",
+    theme: "Heavenly White & Sky Blue"
   }
 ];

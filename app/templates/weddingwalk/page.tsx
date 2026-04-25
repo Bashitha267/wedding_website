@@ -254,103 +254,122 @@ export default function WeddingWalkTemplate({ data, orderId }: { data: any, orde
   const img4 = gallery[4] || DEFAULT_IMAGES[4] || DEFAULT_IMAGES[0];
 
   return (
-    <div className={THEME.fontBody} style={{ backgroundColor: THEME.cream, minHeight: '100vh', width: '100%', overflowX: 'hidden', color: THEME.dark }}>
-      {/* Background Video */}
-      <video ref={videoRef} autoPlay loop muted playsInline style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.85 }}>
-        <source src="/weddingwalk.mp4" type="video/mp4" />
-      </video>
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.6)', zIndex: 0 }}></div>
-      <audio id="bg-music" loop><source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" /></audio>
+    <div style={{ 
+      backgroundColor: '#FAF7F2', 
+      minHeight: '100vh', 
+      width: '100%', 
+      display: 'flex', 
+      justifyContent: 'center'
+    }}>
+      <div className={THEME.fontBody} style={{ 
+        backgroundColor: THEME.cream, 
+        height: '100vh', 
+        width: '100%', 
+        maxWidth: '430px', 
+        position: 'relative',
+        overflow: 'hidden', 
+        color: THEME.dark,
+        boxShadow: '0 0 100px rgba(0,0,0,0.1)'
+      }}>
+        {/* Layer 0: Static Background Video (Pinned) */}
+        <video ref={videoRef} autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
+          <source src="/weddingwalk.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.4)', zIndex: 0 }}></div>
+        <audio id="bg-music" loop><source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" /></audio>
 
-      {isOpen && (
-        <button onClick={toggleMusic} style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 2000, width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.8)', border: `1px solid ${THEME.gold}`, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.4rem', cursor: 'pointer', color: THEME.gold, boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
-          <MusicIcon muted={isMuted} />
-        </button>
-      )}
+        {/* Layer 1: Scrollable Content Wrapper */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflowY: 'auto', zIndex: 1, scrollbarWidth: 'none' }}>
+          
+          {isOpen && (
+            <button onClick={toggleMusic} style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 2000, width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.8)', border: `1px solid ${THEME.gold}`, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.4rem', cursor: 'pointer', color: THEME.gold, boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+              <MusicIcon muted={isMuted} />
+            </button>
+          )}
 
-      {/* Cover Page */}
-      <div style={{ width: '100%', height: '100vh', backgroundColor: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'fixed', top: 0, left: 0, zIndex: 1000, transition: 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)', transform: isOpen ? 'translateY(-100%)' : 'translateY(0)', opacity: isOpen ? 0 : 1, cursor: 'pointer', overflow: 'hidden' }} onClick={handleOpen}>
-        <Image src="/weddingwalk.jpg" alt="Cover" fill style={{ objectFit: 'cover' }} priority />
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%)', zIndex: 1 }} />
-        <div style={{ position: 'relative', textAlign: 'center', width: '100%', zIndex: 2, padding: '0 20px' }}>
-          <Reveal>
-            <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 4.2rem)', color: '#fff', marginBottom: '20px', letterSpacing: '10px', textShadow: '0 10px 30px rgba(0,0,0,0.8)', paddingTop: '40px', width: '100%', textAlign: 'center', fontWeight: 900 }}>WEDDING</h1>
-            <div style={{ transform: 'scale(1.1)', margin: '40px 0' }}>
-              <BlendingImage src={img0} size="260px" align="center" />
+          {/* Cover Page */}
+          <div style={{ width: '100%', height: '100vh', backgroundColor: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, left: 0, zIndex: 1000, transition: 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)', transform: isOpen ? 'translateY(-100%)' : 'translateY(0)', opacity: isOpen ? 0 : 1, cursor: 'pointer', overflow: 'hidden' }} onClick={handleOpen}>
+            <Image src="/weddingwalk.jpg" alt="Cover" fill style={{ objectFit: 'cover' }} priority />
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%)', zIndex: 1 }} />
+            <div style={{ position: 'relative', textAlign: 'center', width: '100%', zIndex: 2, padding: '0 20px' }}>
+              <Reveal>
+                <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 10vw, 3.8rem)', color: '#fff', marginBottom: '20px', letterSpacing: '8px', textShadow: '0 10px 30px rgba(0,0,0,0.8)', paddingTop: '40px', width: '100%', textAlign: 'center', fontWeight: 900 }}>WEDDING</h1>
+                <div style={{ transform: 'scale(1.1)', margin: '40px 0' }}>
+                  <BlendingImage src={img0} size="260px" align="center" />
+                </div>
+                <h2 className={THEME.fontDisplay} style={{ fontSize: 'clamp(1.8rem, 8vw, 2.8rem)', color: THEME.gold, marginBottom: '0', textShadow: '0 4px 15px rgba(0,0,0,1)', letterSpacing: '6px', fontWeight: 700 }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
+                <div className={`bounce-soft ${THEME.fontBody}`} style={{ fontSize: '0.8rem', letterSpacing: '8px', fontWeight: 900, color: '#fff', textTransform: 'uppercase', marginTop: '60px', textShadow: '0 2px 10px rgba(0,0,0,1)' }}>TAP TO OPEN</div>
+              </Reveal>
             </div>
-            <h2 className={THEME.fontDisplay} style={{ fontSize: 'clamp(1.8rem, 8vw, 2.8rem)', color: THEME.gold, marginBottom: '0', textShadow: '0 4px 15px rgba(0,0,0,1)', letterSpacing: '6px', fontWeight: 700 }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
-            <div className={`bounce-soft ${THEME.fontBody}`} style={{ fontSize: '0.8rem', letterSpacing: '8px', fontWeight: 900, color: '#fff', textTransform: 'uppercase', marginTop: '60px', textShadow: '0 2px 10px rgba(0,0,0,1)' }}>TAP TO OPEN</div>
-          </Reveal>
-        </div>
-      </div>
-
-      {isOpen && (
-        <main style={{ position: 'relative', zIndex: 1, maxWidth: '500px', margin: '0 auto', padding: '0 20px' }}>
-          <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', padding: '40px 0' }}>
-            <Reveal>
-              <div style={{ background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', padding: '50px 20px', borderRadius: '40px', border: `1px solid ${THEME.glassBorder}`, boxShadow: '0 20px 50px rgba(0,0,0,0.3)' }}>
-                <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 10vw, 3.5rem)', color: THEME.dark, marginBottom: '10px', textShadow: '0 4px 15px rgba(0,0,0,0.5)', letterSpacing: '8px' }}>THE WEDDING</h1>
-                <BlendingImage src={img1} size="240px" align="center" />
-                <div className={THEME.fontBody} style={{ fontSize: 'clamp(0.75rem, 3vw, 0.9rem)', letterSpacing: '6px', color: THEME.gold, margin: '20px 0', fontWeight: 800, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>WE ARE GETTING MARRIED</div>
-                <h2 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', color: THEME.dark, textShadow: '0 4px 15px rgba(0,0,0,0.5)', letterSpacing: '4px' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
-              </div>
-            </Reveal>
-          </section>
-
-          <GlassSection>
-            <p className={THEME.fontAccent} style={{ fontSize: '1.4rem', fontStyle: 'italic', color: THEME.gold, lineHeight: 1.6 }}>"Love is composed of a single soul inhabiting two bodies."</p>
-            <div style={{ height: '1px', width: '80px', background: THEME.gold, margin: '25px auto', opacity: 0.5 }}></div>
-            <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, fontWeight: 300 }}>We invite you to share in our joy as we begin our forever.</p>
-          </GlassSection>
-
-          {/* Gallery Pattern */}
-          <div style={{ margin: '40px 0' }}>
-            <Reveal delay={200}>
-              <BlendingImage src={img2} size="300px" align="left" />
-            </Reveal>
-            <Reveal delay={400}>
-              <BlendingImage src={img3} size="300px" align="right" />
-            </Reveal>
           </div>
 
-          <WeddingCountdown data={data} />
+          {isOpen && (
+            <main style={{ position: 'relative', zIndex: 1, width: '100%', padding: '0 20px' }}>
+              <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', padding: '40px 0' }}>
+                <Reveal>
+                  <div style={{ background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', padding: '50px 20px', borderRadius: '40px', border: `1px solid ${THEME.glassBorder}`, boxShadow: '0 20px 50px rgba(0,0,0,0.3)' }}>
+                    <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', color: THEME.dark, marginBottom: '10px', textShadow: '0 4px 15px rgba(0,0,0,0.5)', letterSpacing: '6px' }}>THE WEDDING</h1>
+                    <BlendingImage src={img1} size="240px" align="center" />
+                    <div className={THEME.fontBody} style={{ fontSize: 'clamp(0.75rem, 3vw, 0.9rem)', letterSpacing: '6px', color: THEME.gold, margin: '20px 0', fontWeight: 800, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>WE ARE GETTING MARRIED</div>
+                    <h2 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 8vw, 3rem)', color: THEME.dark, textShadow: '0 4px 15px rgba(0,0,0,0.5)', letterSpacing: '4px' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
+                  </div>
+                </Reveal>
+              </section>
 
-          <GlassSection>
-            <h3 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '25px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>The Schedule</h3>
-            <WeddingItinerary data={data} />
-          </GlassSection>
+              <GlassSection>
+                <p className={THEME.fontAccent} style={{ fontSize: '1.4rem', fontStyle: 'italic', color: THEME.gold, lineHeight: 1.6 }}>"Love is composed of a single soul inhabiting two bodies."</p>
+                <div style={{ height: '1px', width: '80px', background: THEME.gold, margin: '25px auto', opacity: 0.5 }}></div>
+                <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, fontWeight: 300 }}>We invite you to share in our joy as we begin our forever.</p>
+              </GlassSection>
 
-          {/* More Gallery images */}
-          <Reveal delay={300}>
-            <BlendingImage src={img4} size="280px" align="left" />
-          </Reveal>
-
-          <WeddingCalendar onAdd={() => { }} data={data} />
-
-          <GlassSection>
-            <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 900, textShadow: '0 1px 5px rgba(0,0,0,0.3)' }}>THE VENUE</div>
-            <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>{data?.location?.name || 'Grand Pavilion'}</h2>
-            <p className={THEME.fontBody} style={{ opacity: 0.95, color: '#fff', fontWeight: 500, textShadow: '0 1px 5px rgba(0,0,0,0.2)' }}>{data?.location?.address || '123 Dream Garden, Floral City'}</p>
-            <div style={{ height: '250px', borderRadius: '20px', overflow: 'hidden', border: `1px solid ${THEME.goldLight}`, margin: '30px 0' }}>
-              <iframe src="https://www.google.com/maps/embed?..." width="100%" height="100%" style={{ border: 0 }}></iframe>
-            </div>
-            <a href="#" className={THEME.fontBody} style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#fff', borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '1px', boxShadow: '0 4px 15px rgba(197, 160, 89, 0.3)' }}>GET DIRECTIONS</a>
-          </GlassSection>
-
-          <GlassSection padding="80px 25px">
-            <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 3.5rem)', color: THEME.gold, marginBottom: '20px', textShadow: '0 4px 15px rgba(0,0,0,0.4)' }}>WITH LOVE</h3>
-            <p className={THEME.fontBody} style={{ fontSize: '1.2rem', opacity: 0.95, marginBottom: '50px', textShadow: '0 2px 10px rgba(0,0,0,0.3)', fontWeight: 500 }}>We can't wait to celebrate with you.</p>
-            <WeddingRSVP orderId={orderId} data={data} />
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}>
-              <div style={{ filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.3))' }}>
-                <HeartIcon size={45} color={THEME.gold} />
+              <div style={{ margin: '40px 0' }}>
+                <Reveal delay={200}>
+                  <BlendingImage src={img2} size="300px" align="left" />
+                </Reveal>
+                <Reveal delay={400}>
+                  <BlendingImage src={img3} size="300px" align="right" />
+                </Reveal>
               </div>
-            </div>
-          </GlassSection>
 
-          <div style={{ height: '100px' }}></div>
-        </main>
-      )}
+              <WeddingCountdown data={data} />
+
+              <GlassSection>
+                <h3 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '25px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>The Schedule</h3>
+                <WeddingItinerary data={data} />
+              </GlassSection>
+
+              <Reveal delay={300}>
+                <BlendingImage src={img4} size="280px" align="left" />
+              </Reveal>
+
+              <WeddingCalendar onAdd={() => { }} data={data} />
+
+              <GlassSection>
+                <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 900, textShadow: '0 1px 5px rgba(0,0,0,0.3)' }}>THE VENUE</div>
+                <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>{data?.location?.name || 'Grand Pavilion'}</h2>
+                <p className={THEME.fontBody} style={{ opacity: 0.95, color: '#fff', fontWeight: 500, textShadow: '0 1px 5px rgba(0,0,0,0.2)' }}>{data?.location?.address || '123 Dream Garden, Floral City'}</p>
+                <div style={{ height: '250px', borderRadius: '20px', overflow: 'hidden', border: `1px solid ${THEME.goldLight}`, margin: '30px 0' }}>
+                  <iframe src="https://www.google.com/maps/embed?..." width="100%" height="100%" style={{ border: 0 }}></iframe>
+                </div>
+                <a href="#" className={THEME.fontBody} style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#fff', borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '1px', boxShadow: '0 4px 15px rgba(197, 160, 89, 0.3)' }}>GET DIRECTIONS</a>
+              </GlassSection>
+
+              <GlassSection padding="80px 25px">
+                <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 3.5rem)', color: THEME.gold, marginBottom: '20px', textShadow: '0 4px 15px rgba(0,0,0,0.4)' }}>WITH LOVE</h3>
+                <p className={THEME.fontBody} style={{ fontSize: '1.2rem', opacity: 0.95, marginBottom: '50px', textShadow: '0 2px 10px rgba(0,0,0,0.3)', fontWeight: 500 }}>We can't wait to celebrate with you.</p>
+                <WeddingRSVP orderId={orderId} data={data} />
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}>
+                  <div style={{ filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.3))' }}>
+                    <HeartIcon size={45} color={THEME.gold} />
+                  </div>
+                </div>
+              </GlassSection>
+
+              <div style={{ height: '100px' }}></div>
+            </main>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

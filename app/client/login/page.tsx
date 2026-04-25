@@ -65,6 +65,7 @@ export default function ClientLogin() {
         textAlign: 'center',
         border: '1px solid var(--rose-light)'
       }}>
+        <img src="/logo.png" alt="Logo" style={{ width: '180px', display: 'block', margin: '0 auto 20px' }} />
         <h1 className="font-romantic" style={{ fontSize: '3rem', marginBottom: '10px', color: 'var(--rose-dark)' }}>Client Login</h1>
         <p style={{ color: 'var(--text-main)', marginBottom: '30px', opacity: 0.8 }}>Access your wedding template dashboard</p>
 

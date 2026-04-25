@@ -15,6 +15,7 @@ import FusionTemplate from '@/app/templates/fusion/page';
 import HomecomingTemplate from '@/app/templates/homecoming/page';
 import WeddingWalkTemplate from '@/app/templates/weddingwalk/page';
 import AviationTheme from '@/app/templates/aviation/page';
+import ChristianTemplate from '@/app/templates/christian/page';
 
 
 // We map template IDs from the database to the actual React Components
@@ -32,7 +33,7 @@ const templateMap: Record<string, React.ElementType> = {
   'homecoming': HomecomingTemplate,
   'weddingwalk': WeddingWalkTemplate,
   'aviation': AviationTheme,
-
+  'christian': ChristianTemplate,
 };
 
 type Props = {

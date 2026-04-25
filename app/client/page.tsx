@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { PenTool, Users, Image as ImageIcon, Music, MapPin, Calendar, Clock, Disc, Copy, CheckCircle } from 'lucide-react';
+import { PenTool, Users, Image as ImageIcon, Music, MapPin, Calendar, Clock, Disc, Copy, CheckCircle, Menu, X, Save } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'unsigned_preset'; 
@@ -23,6 +23,8 @@ export default function ClientDashboard() {
   // Template draft state
   const [templateDraft, setTemplateDraft] = useState<any>({});
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
   useEffect(() => {
     // 1. Get logged in user 
@@ -96,6 +98,33 @@ export default function ClientDashboard() {
       if (rsvpData) setRsvps(rsvpData);
     }
   };
+
+  // Auto-save logic (Debounced)
+  useEffect(() => {
+    if (!order?.id || Object.keys(templateDraft).length === 0) return;
+    
+    // Don't auto-save on initial load
+    if (saveStatus === 'idle') {
+      setSaveStatus('saved');
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setSaveStatus('saving');
+      const { error } = await supabase
+        .from('orders')
+        .update({ template_data: templateDraft })
+        .eq('id', order.id);
+        
+      if (!error) {
+        setSaveStatus('saved');
+        // Refresh preview occasionally
+        setRefreshKey(k => k + 1);
+      }
+    }, 1500); // 1.5s delay after last change
+
+    return () => clearTimeout(timer);
+  }, [templateDraft]);
 
   const handleCopyLink = () => {
     if (!order) return;
@@ -179,19 +208,48 @@ export default function ClientDashboard() {
     return rsvps.filter(r => r.table_number === tableNumber);
   };
 
+  const handleDraftChange = (newData: any) => {
+    setSaveStatus('saving');
+    setTemplateDraft(newData);
+  };
+
   if (!user || !order) return <div style={{ padding: '50px', textAlign: 'center' }}>Loading your dashboard...</div>;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff9f9' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff9f9', position: 'relative' }}>
+      {/* Mobile Header */}
+      <div style={{ 
+        display: 'none', 
+        position: 'fixed', top: 0, left: 0, right: 0, height: '60px', 
+        backgroundColor: 'white', borderBottom: '1px solid #fee6ea', zIndex: 100,
+        padding: '0 20px', alignItems: 'center', justifyContent: 'space-between'
+      }} className="mobile-header">
+        <h2 className="font-romantic" style={{ fontSize: '1.5rem', margin: 0, color: 'var(--rose-dark)' }}>Client Area</h2>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+          {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
       {/* Sidebar */}
-      <aside style={{ width: '250px', backgroundColor: 'var(--card-bg)', borderRight: '1px solid #fee6ea', padding: '20px 0', flexShrink: 0 }}>
-        <div style={{ padding: '0 20px 20px', borderBottom: '1px solid #fee6ea', marginBottom: '20px' }}>
-          <h2 className="font-romantic" style={{ fontSize: '2rem', margin: 0, color: 'var(--rose-dark)' }}>Client Area</h2>
-          <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: 0 }}>Welcome, {user.name}</p>
+      <aside style={{ 
+        width: '250px', backgroundColor: 'var(--card-bg)', borderRight: '1px solid #fee6ea', 
+        padding: '20px 0', flexShrink: 0,
+        position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 1000,
+        transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+        transition: 'transform 0.3s ease'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px 20px', borderBottom: '1px solid #fee6ea', marginBottom: '20px' }}>
+          <div>
+            <h2 className="font-romantic" style={{ fontSize: '2rem', margin: 0, color: 'var(--rose-dark)' }}>Client Area</h2>
+            <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: 0 }}>Welcome, {user.name}</p>
+          </div>
+          <button className="mobile-only" onClick={() => setIsSidebarOpen(false)} style={{ display: 'none', background: 'none', border: 'none' }}>
+             <X size={20} />
+          </button>
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <button 
-            onClick={() => setActiveTab('template')}
+            onClick={() => { setActiveTab('template'); if(window.innerWidth < 768) setIsSidebarOpen(false); }}
             style={{ 
               display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
               backgroundColor: activeTab === 'template' ? 'var(--rose-light)' : 'transparent',
@@ -203,7 +261,7 @@ export default function ClientDashboard() {
             <PenTool size={18} /> Edit Template
           </button>
           <button 
-            onClick={() => setActiveTab('confirms')}
+            onClick={() => { setActiveTab('confirms'); if(window.innerWidth < 768) setIsSidebarOpen(false); }}
             style={{ 
               display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
               backgroundColor: activeTab === 'confirms' ? 'var(--rose-light)' : 'transparent',
@@ -215,7 +273,7 @@ export default function ClientDashboard() {
             <Users size={18} /> RSVPs ({rsvps.length})
           </button>
           <button 
-            onClick={() => setActiveTab('seating')}
+            onClick={() => { setActiveTab('seating'); if(window.innerWidth < 768) setIsSidebarOpen(false); }}
             style={{ 
               display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
               backgroundColor: activeTab === 'seating' ? 'var(--rose-light)' : 'transparent',
@@ -237,12 +295,34 @@ export default function ClientDashboard() {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main style={{ flex: 1, padding: '40px', overflowY: 'auto', height: '100vh', paddingBottom: '100px' }}>
+      {/* Main Content Area */}
+      <main style={{ 
+        flex: 1, 
+        marginLeft: isSidebarOpen ? '250px' : '0',
+        padding: '40px', 
+        overflowY: 'auto', 
+        height: '100vh', 
+        paddingBottom: '100px',
+        transition: 'margin-left 0.3s ease'
+      }}>
         
-        {/* Universal Top Bar for Client URL & Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '20px', marginBottom: '30px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
+        {/* Status indicator */}
+        <div style={{ 
+          position: 'fixed', bottom: '20px', left: isSidebarOpen ? '270px' : '20px', 
+          backgroundColor: 'white', padding: '10px 20px', borderRadius: '30px', 
+          boxShadow: '0 4px 15px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '10px',
+          zIndex: 50, transition: 'all 0.3s ease'
+        }}>
+          {saveStatus === 'saving' ? (
+             <><span className="spinner-small" /> Saving changes...</>
+          ) : (
+             <><CheckCircle size={16} color="#28a745" /> All changes saved</>
+          )}
+        </div>
+
+        {/* Universal Top Bar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
                 <div>
                    <div style={{ fontSize: '0.8rem', color: 'var(--rose-medium)', fontWeight: 600, letterSpacing: '1px' }}>YOUR LIVE INVITATION URL</div>
                    <div style={{ fontSize: '1.2rem', fontWeight: 500 }}>{typeof window !== 'undefined' ? window.location.host : 'localhost:3000'}/{order.slug}</div>
@@ -294,7 +374,7 @@ export default function ClientDashboard() {
                   
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                      <div>
-                         <label style={{ fontSize: '0.9rem', display: 'block', marginBottom: '5px' }}>Hero Cover Image</label>
+                         <label style={{ fontSize: '0.9rem', display: 'block', marginBottom: '5px' }}>Hero Center Image</label>
                          <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'heroImage')} disabled={uploading} />
                          {templateDraft?.images?.heroImage && <img src={templateDraft.images.heroImage} alt="Hero" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', marginTop: '10px' }} />}
                      </div>
@@ -307,6 +387,11 @@ export default function ClientDashboard() {
                          <label style={{ fontSize: '0.9rem', display: 'block', marginBottom: '5px' }}>Middle Image 2</label>
                          <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'image2')} disabled={uploading} />
                          {templateDraft?.images?.image2 && <img src={templateDraft.images.image2} alt="Img2" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', marginTop: '10px' }} />}
+                     </div>
+                     <div>
+                         <label style={{ fontSize: '0.9rem', display: 'block', marginBottom: '5px' }}>Middle Image 3</label>
+                         <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'image3')} disabled={uploading} />
+                         {templateDraft?.images?.image3 && <img src={templateDraft.images.image3} alt="Img3" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px', marginTop: '10px' }} />}
                      </div>
                      <div>
                          <label style={{ fontSize: '0.9rem', display: 'block', marginBottom: '5px' }}>Thank You / RSVP Image</label>
@@ -490,15 +575,39 @@ export default function ClientDashboard() {
                       <td style={{ padding: '15px 20px' }}>
                         <span style={{ 
                           padding: '4px 10px', borderRadius: '20px', fontSize: '0.8rem',
-                          backgroundColor: rsvp.is_attending ? '#e6fffa' : '#fff5f5',
-                          color: rsvp.is_attending ? '#2c7a7b' : '#c53030',
+                          backgroundColor: '#e6fffa',
+                          color: '#2c7a7b',
                           fontWeight: 600
                         }}>
-                          {rsvp.is_attending ? '✅ ATTENDING' : '❌ DECLINED'}
+                          ✅ CONFIRMED
                         </span>
                       </td>
                       <td style={{ padding: '15px 20px' }}>
-                        {rsvp.table_number ? `Table ${rsvp.table_number}` : <span style={{ opacity: 0.4 }}>Not assigned</span>}
+                        {rsvp.table_number ? (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ fontWeight: 600, color: 'var(--rose-medium)' }}>Table {rsvp.table_number}</span>
+                            <button 
+                              onClick={() => handleTableAssign(rsvp.id, '')}
+                              style={{ 
+                                padding: '4px 8px', backgroundColor: 'transparent', color: '#c53030', 
+                                border: '1px solid #c53030', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer'
+                              }}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ) : (
+                          <button 
+                            onClick={() => setActiveTab('seating')}
+                            style={{ 
+                              padding: '6px 12px', backgroundColor: 'var(--rose-medium)', color: 'white', 
+                              border: 'none', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer',
+                              fontWeight: 600
+                            }}
+                          >
+                            Assign Table
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -551,6 +660,9 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '40px' }}>
         {tables.map((table: any) => {
           const guestsAtTable = rsvps.filter((r: any) => r.table_number === table.name);
+          const totalAdults = guestsAtTable.reduce((sum: number, r: any) => sum + (Number(r.adult_count) || 0), 0);
+          const totalChildren = guestsAtTable.reduce((sum: number, r: any) => sum + (Number(r.children_count) || 0), 0);
+          const totalHeadcount = totalAdults + totalChildren;
           
           return (
             <div key={table.id} style={{ 
@@ -563,8 +675,17 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                   type="text" 
                   value={table.name} 
                   onChange={(e) => {
-                    const newTables = tables.map((t: any) => t.id === table.id ? { ...t, name: e.target.value } : t);
+                    const oldName = table.name;
+                    const newName = e.target.value;
+                    const newTables = tables.map((t: any) => t.id === table.id ? { ...t, name: newName } : t);
                     onUpdateDraft({ ...templateDraft, tables: newTables });
+                    
+                    // Sync all RSVPs to the new table name
+                    rsvps.forEach((r: any) => {
+                        if (r.table_number === oldName) {
+                            onAssignGuest(r.id, newName);
+                        }
+                    });
                   }}
                   style={{ fontWeight: 700, fontSize: '1.2rem', border: 'none', color: 'var(--rose-dark)', width: '120px' }}
                 />
@@ -576,9 +697,12 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                 <div style={{ 
                   width: '100px', height: '100px', borderRadius: '50%', 
                   backgroundColor: 'var(--rose-light)', border: '2px dashed var(--rose-dark)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, flexDirection: 'column'
                 }}>
-                  <span style={{ fontWeight: 800, color: 'var(--rose-dark)' }}>{guestsAtTable.length} / {table.seats}</span>
+                  <span style={{ fontWeight: 800, color: 'var(--rose-dark)', fontSize: '1.1rem' }}>{totalHeadcount} / {table.seats}</span>
+                  <div style={{ fontSize: '0.65rem', color: 'var(--rose-medium)', marginTop: '2px' }}>
+                    {totalAdults}A | {totalChildren}C
+                  </div>
                 </div>
 
                 {/* Seats */}
@@ -587,7 +711,22 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                   const radius = 85;
                   const x = Math.cos(angle) * radius;
                   const y = Math.sin(angle) * radius;
-                  const guestAtSeat = guestsAtTable[i];
+                  
+                  // Flatten guests into individual seats with types
+                  const seatMap: { guest: any, type: 'adult' | 'child' }[] = [];
+                  guestsAtTable.forEach((guest: any) => {
+                    const adults = Number(guest.adult_count) || 0;
+                    const children = Number(guest.children_count) || 0;
+                    for(let j=0; j<adults; j++) {
+                      if (seatMap.length < table.seats) seatMap.push({ guest, type: 'adult' });
+                    }
+                    for(let j=0; j<children; j++) {
+                      if (seatMap.length < table.seats) seatMap.push({ guest, type: 'child' });
+                    }
+                  });
+                  const seatData = seatMap[i];
+                  const guestAtSeat = seatData?.guest;
+                  const isChild = seatData?.type === 'child';
 
                   return (
                     <div 
@@ -603,13 +742,13 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                         position: 'absolute',
                         transform: `translate(${x}px, ${y}px)`,
                         width: '35px', height: '35px', borderRadius: '50%',
-                        backgroundColor: guestAtSeat ? 'var(--rose-vibrant)' : '#eee',
+                        backgroundColor: guestAtSeat ? (isChild ? '#ffb6c1' : 'var(--rose-vibrant)') : '#eee',
                         border: guestAtSeat ? 'none' : '2px solid #ddd',
                         cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                         zIndex: 10, transition: 'all 0.2s ease',
                         boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
                       }}
-                      title={guestAtSeat ? `Remove ${guestAtSeat.name}` : "Assign Guest"}
+                      title={guestAtSeat ? `${guestAtSeat.name}${isChild ? '-child' : ''}` : "Assign Guest"}
                     >
                       {guestAtSeat ? (
                         <span style={{ color: 'white', fontSize: '0.8rem', fontWeight: 700 }}>{guestAtSeat.name.charAt(0)}</span>
@@ -623,7 +762,7 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                           backgroundColor: 'rgba(0,0,0,0.8)', color: 'white', padding: '2px 8px',
                           borderRadius: '4px', fontSize: '0.6rem', whiteSpace: 'nowrap', pointerEvents: 'none'
                         }}>
-                          {guestAtSeat.name}
+                          {guestAtSeat.name}{isChild ? '-child' : ''}
                         </div>
                       )}
                     </div>
@@ -664,7 +803,9 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                   onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fff'}
                 >
                   <div style={{ fontWeight: 600 }}>{guest.name}</div>
-                  <div style={{ fontSize: '0.7rem', opacity: 0.6 }}>{guest.contact_number || 'No contact info'}</div>
+                  <div style={{ fontSize: '0.7rem', opacity: 0.6 }}>
+                    {guest.adult_count || 0} Adults, {guest.children_count || 0} Children
+                  </div>
                 </button>
               ))}
             </div>
