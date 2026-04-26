@@ -62,5 +62,12 @@ export const templates: Product[] = [
     image: "/christianweddingimg.jpg",
     description: "A serene and ethereal design inspired by sacred unions, featuring heavenly white and sky blue accents with a cinematic church background video.",
     theme: "Heavenly White & Sky Blue"
+  },
+  {
+    id: "poruwa",
+    name: "Poruwa Tradition",
+    image: "/poruwa_final_clean.png",
+    description: "A traditional Sri Lankan Sinhala Poruwa wedding template with rich gold and maroon tones, featuring a serene background video of the Poruwa ceremony.",
+    theme: "Traditional Sri Lankan"
   }
 ];
