@@ -5,6 +5,7 @@ import Reveal from '@/components/Reveal';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { Cinzel, Montserrat, Playfair_Display } from 'next/font/google';
+import { Music as MusicIconLucide, VolumeX, Heart, Cross } from 'lucide-react';
 
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '700', '900'] });
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['300', '400', '500', '700'] });
@@ -25,15 +26,9 @@ const THEME = {
 const MUSIC_URL = "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3";
 const DEFAULT_IMAGES = ['/christianweddingimg.jpg', '/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png'];
 
-// SVG Icons
+// Icons
 const MusicIcon = ({ muted }: { muted: boolean }) => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    {muted ? (
-      <><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v10a3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3c1.29 0 2.42.81 2.83 2"></path><path d="M18 13V5a2 2 0 0 0-2-2H9"></path></>
-    ) : (
-      <><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></>
-    )}
-  </svg>
+  muted ? <VolumeX size={24} /> : <MusicIconLucide size={24} />
 );
 
 const CrossIcon = ({ size = 24, color = THEME.secondary }: { size?: number, color?: string }) => (

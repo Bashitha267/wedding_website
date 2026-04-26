@@ -2,8 +2,9 @@
 
 import Navbar from "@/components/Navbar";
 import LandingHero from "@/components/LandingHero";
-import AboutSection from "@/components/AboutSection";
 import ProductsSection from "@/components/ProductsSection";
+import FeedbackSection from "@/components/FeedbackSection";
+import ReservationBanner from "@/components/ReservationBanner";
 import Reveal from "@/components/Reveal";
 import CartSidebar from "@/components/CartSidebar";
 import Link from "next/link";
@@ -17,23 +18,13 @@ export default function Home() {
 
             <LandingHero />
 
-            <AboutSection />
+            {/* New Reservation Management Section */}
+            <ReservationBanner />
 
             <ProductsSection />
 
-            {/* Trust Quote / Customer Satisfaction */}
-            <section style={{ backgroundColor: 'var(--bw-black)', color: 'var(--bw-white)', padding: '100px 0' }}>
-                <div className="container text-center">
-                    <Reveal>
-                        <div style={{ fontSize: '3rem', marginBottom: '30px' }}>❝</div>
-                        <h2 className="font-romantic" style={{ fontSize: '3.5rem', marginBottom: '30px' }}>Making every moment eternal.</h2>
-                        <p style={{ maxWidth: '700px', margin: '0 auto', fontSize: '1.2rem', lineHeight: '1.8', opacity: 0.8, fontWeight: 300 }}>
-                            "We were blown away by the elegance of our digital invitation. KNOT STORY captured our style perfectly and our guests loved the interactive features. It truly set the tone for our wedding."
-                        </p>
-                        <div style={{ marginTop: '30px', fontWeight: 600, letterSpacing: '2px' }}>— ELEANOR & JAMES</div>
-                    </Reveal>
-                </div>
-            </section>
+            {/* Dynamic Feedback Section */}
+            <FeedbackSection />
             {/* Customized Design Section */}
             <section style={{ padding: '120px 0', backgroundColor: '#fdf8f4' }}>
                 <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '60px', flexWrap: 'wrap' }}>
@@ -60,18 +51,6 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Pre-footer Call to Action */}
-            <section style={{ padding: '120px 0', backgroundColor: 'var(--bw-white)' }}>
-                <div className="container text-center">
-                    <Reveal>
-                        <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', textTransform: 'uppercase' }}>Ready to start your journey?</h2>
-                        <p style={{ marginBottom: '40px', color: 'var(--bw-gray-medium)', fontSize: '1.1rem' }}>Get in touch with us today for a custom consultation.</p>
-                        <Link href="/contact" className="btn-primary" style={{ textDecoration: 'none' }}>
-                            CONTACT OUR TEAM
-                        </Link>
-                    </Reveal>
-                </div>
-            </section>
 
             <footer style={{ backgroundColor: 'var(--bw-gray-light)', padding: '60px 0', borderTop: '1px solid #eee' }}>
                 <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px' }}>

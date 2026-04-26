@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, History, LayoutTemplate, X, Check, Trash2, PenTool, Search, Filter, ChevronLeft, ChevronRight, Users, Disc } from 'lucide-react';
+import { LayoutDashboard, History, LayoutTemplate, X, Check, Trash2, PenTool, Search, Filter, ChevronLeft, ChevronRight, Users, Disc, MessageSquare, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useEffect } from 'react';
 
@@ -11,8 +11,10 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [orders, setOrders] = useState<any[]>([]);
   const [rsvps, setRSVPs] = useState<any[]>([]);
+  const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingOrder, setEditingOrder] = useState<any>(null);
+  const [viewingImage, setViewingImage] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ username: '', password: '', status: '' });
   
   // Search & Filter State
@@ -30,6 +32,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchOrders();
     fetchRSVPs();
+    fetchFeedbacks();
   }, []);
 
   const fetchOrders = async () => {
@@ -57,6 +60,47 @@ export default function AdminDashboard() {
       console.error('Error fetching RSVPs:', error);
     } else {
       setRSVPs(data || []);
+    }
+  };
+
+  const fetchFeedbacks = async () => {
+    const { data, error } = await supabase
+      .from('feedbacks')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching feedbacks:', error);
+    } else {
+      setFeedbacks(data || []);
+    }
+  };
+
+  const toggleFeedbackPublish = async (id: string, currentStatus: boolean) => {
+    const { error } = await supabase
+      .from('feedbacks')
+      .update({ is_published: !currentStatus })
+      .eq('id', id);
+    
+    if (error) {
+      alert('Failed to update feedback status');
+    } else {
+      fetchFeedbacks();
+    }
+  };
+
+  const deleteFeedback = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this feedback?')) return;
+    
+    const { error } = await supabase
+      .from('feedbacks')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      alert('Failed to delete feedback');
+    } else {
+      fetchFeedbacks();
     }
   };
 
@@ -170,13 +214,13 @@ export default function AdminDashboard() {
                 placeholder="Search by name, username, contact..." 
                 value={searchTerm}
                 onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                style={{ width: '100%', padding: '10px 10px 10px 40px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '0.9rem' }}
+                 style={{ width: '100%', padding: '10px 10px 10px 40px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '1rem' }}
               />
           </div>
           <select 
             value={filterMonth} 
             onChange={(e) => { setFilterMonth(e.target.value); setCurrentPage(1); }}
-            style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '0.9rem' }}
+            style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '1rem' }}
           >
               <option value="">All Months</option>
               {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((m, i) => (
@@ -186,7 +230,7 @@ export default function AdminDashboard() {
           <select 
             value={filterYear} 
             onChange={(e) => { setFilterYear(e.target.value); setCurrentPage(1); }}
-            style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '0.9rem' }}
+            style={{ padding: '10px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '1rem' }}
           >
               <option value="">All Years</option>
               {[2024, 2025, 2026].map(y => <option key={y} value={y.toString()}>{y}</option>)}
@@ -227,8 +271,8 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <aside style={{ width: '250px', backgroundColor: 'var(--bw-black)', color: 'white', padding: '20px 0' }}>
         <div style={{ padding: '0 20px 20px', borderBottom: '1px solid #333', marginBottom: '20px' }}>
-          <h2 style={{ fontSize: '1.5rem', margin: 0 }}>KNOT STORY</h2>
-          <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: 0 }}>Admin Portal</p>
+          <h2 style={{ fontSize: '1.8rem', margin: 0 }}>KNOT STORY</h2>
+          <p style={{ fontSize: '0.9rem', opacity: 0.6, margin: 0 }}>Admin Portal</p>
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <button 
@@ -236,7 +280,8 @@ export default function AdminDashboard() {
             style={{ 
               display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
               backgroundColor: activeTab === 'dashboard' ? '#333' : 'transparent',
-              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer'
+              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
+              fontSize: '1.1rem'
             }}
           >
             <LayoutDashboard size={18} /> Dashboard
@@ -246,7 +291,8 @@ export default function AdminDashboard() {
             style={{ 
               display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
               backgroundColor: activeTab === 'history' ? '#333' : 'transparent',
-              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer'
+              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
+              fontSize: '1.1rem'
             }}
           >
             <History size={18} /> History
@@ -256,10 +302,22 @@ export default function AdminDashboard() {
             style={{ 
               display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
               backgroundColor: activeTab === 'rsvps' ? '#333' : 'transparent',
-              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer'
+              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
+              fontSize: '1.1rem'
             }}
           >
              <Check size={18} /> RSVPs
+          </button>
+          <button 
+            onClick={() => setActiveTab('feedbacks')}
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
+              backgroundColor: activeTab === 'feedbacks' ? '#333' : 'transparent',
+              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
+              fontSize: '1.1rem'
+            }}
+          >
+             <MessageSquare size={18} /> Feedbacks
           </button>
         </nav>
         <div style={{ position: 'absolute', bottom: '20px', padding: '0 20px' }}>
@@ -287,15 +345,15 @@ export default function AdminDashboard() {
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
                 <thead style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #eee' }}>
                   <tr>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem', width: '40px' }}>#</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>CUSTOMER</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>CONTACT</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>USERNAME</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>DATE</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>URL</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>STATUS</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>ACTIONS</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>EDITOR</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem', width: '40px' }}>#</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CUSTOMER</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CONTACT</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>USERNAME</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>DATE</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>URL</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>STATUS</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>ACTIONS</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>EDITOR</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -304,7 +362,7 @@ export default function AdminDashboard() {
                   ) : getFilteredOrders('pending').length === 0 ? (
                     <tr><td colSpan={9} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>No orders found matching your criteria.</td></tr>
                   ) : paginate(getFilteredOrders('pending')).map((order, index) => (
-                    <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '0.85rem' }}>
+                    <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '1rem' }}>
                       <td style={{ padding: '12px', color: '#999' }}>{(currentPage-1)*itemsPerPage + index + 1}</td>
                       <td style={{ padding: '12px', fontWeight: 600, color: '#333' }}>{order.customer_name}</td>
                       <td style={{ padding: '12px', color: '#666' }}>{order.customer_phone || 'N/A'}</td>
@@ -344,22 +402,22 @@ export default function AdminDashboard() {
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
                 <thead style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #eee' }}>
                   <tr>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem', width: '40px' }}>#</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>CUSTOMER</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>CONTACT</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>USERNAME</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>DATE</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>URL</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>STATUS</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>ACTIONS</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.8rem' }}>EDITOR</th>
+                     <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem', width: '40px' }}>#</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CUSTOMER</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CONTACT</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>USERNAME</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>DATE</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>URL</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>STATUS</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>ACTIONS</th>
+                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>EDITOR</th>
                   </tr>
                 </thead>
                 <tbody>
                   {getFilteredOrders('completed').length === 0 ? (
                     <tr><td colSpan={9} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>No history records found matching your criteria.</td></tr>
                   ) : paginate(getFilteredOrders('completed')).map((order, index) => (
-                    <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '0.85rem' }}>
+                    <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '1rem' }}>
                       <td style={{ padding: '12px', color: '#999' }}>{(currentPage-1)*itemsPerPage + index + 1}</td>
                       <td style={{ padding: '12px', fontWeight: 600 }}>{order.customer_name}</td>
                       <td style={{ padding: '12px', color: '#666' }}>{order.customer_phone || 'N/A'}</td>
@@ -477,7 +535,7 @@ export default function AdminDashboard() {
                                 {getFilteredOrders(null).length === 0 ? (
                                     <tr><td colSpan={4} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>No orders found.</td></tr>
                                 ) : paginate(getFilteredOrders(null)).map((order, index) => (
-                                    <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '0.9rem' }}>
+                                    <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '1rem' }}>
                                         <td style={{ padding: '15px 12px', color: '#999' }}>{(currentPage-1)*itemsPerPage + index + 1}</td>
                                         <td style={{ padding: '15px 12px', fontWeight: 600 }}>{order.customer_name}</td>
                                         <td style={{ padding: '15px 12px' }}>{order.client_username}</td>
@@ -497,8 +555,106 @@ export default function AdminDashboard() {
                     <Pagination totalItems={getFilteredOrders(null).length} />
                 </div>
             )}
+        </div>
+      )}
+
+      {activeTab === 'feedbacks' && (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+            <h1 style={{ margin: 0 }}>User Feedbacks</h1>
+            <div style={{ backgroundColor: 'white', padding: '15px 20px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <span style={{ fontSize: '0.9rem', color: '#666', fontWeight: 600 }}>Share Feedback Link:</span>
+              <button 
+                onClick={() => {
+                  const url = `${window.location.origin}/feedback`;
+                  navigator.clipboard.writeText(url);
+                  alert('Feedback link copied to clipboard!');
+                }}
+                style={{ 
+                  padding: '8px 15px', backgroundColor: '#007bff', color: 'white', 
+                  border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600
+                }}
+              >
+                Copy Link
+              </button>
+            </div>
           </div>
-        )}
+          <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
+              <thead style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #eee' }}>
+                <tr>
+                  <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem', width: '40px' }}>#</th>
+                  <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>NAME</th>
+                  <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CONTACT</th>
+                  <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>FEEDBACK</th>
+                  <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>IMAGE</th>
+                  <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>STATUS</th>
+                  <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {feedbacks.length === 0 ? (
+                  <tr><td colSpan={7} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>No feedbacks submitted yet.</td></tr>
+                ) : feedbacks.map((feedback, index) => (
+                  <tr key={feedback.id} style={{ borderBottom: '1px solid #eee', fontSize: '1rem' }}>
+                    <td style={{ padding: '12px', color: '#999' }}>{index + 1}</td>
+                    <td style={{ padding: '12px', fontWeight: 600 }}>{feedback.name}</td>
+                    <td style={{ padding: '12px', color: '#666' }}>{feedback.contact_number}</td>
+                    <td style={{ padding: '12px', color: '#444', maxWidth: '300px' }}>
+                      <div style={{ maxHeight: '60px', overflowY: 'auto' }}>{feedback.description}</div>
+                    </td>
+                    <td style={{ padding: '12px' }}>
+                      {feedback.image_url ? (
+                        <img 
+                          src={feedback.image_url} 
+                          alt="Feedback" 
+                          onClick={() => setViewingImage(feedback.image_url)}
+                          style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '4px', cursor: 'pointer' }} 
+                        />
+                      ) : (
+                        <span style={{ color: '#ccc' }}>No Image</span>
+                      )}
+                    </td>
+                    <td style={{ padding: '12px' }}>
+                      <span style={{ 
+                        padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 700, 
+                        backgroundColor: feedback.is_published ? '#e6f4ea' : '#fff5f5', 
+                        color: feedback.is_published ? '#1e7e34' : '#d93025',
+                        textTransform: 'uppercase'
+                      }}>
+                        {feedback.is_published ? 'PUBLISHED' : 'PENDING'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '12px' }}>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <button 
+                          onClick={() => toggleFeedbackPublish(feedback.id, feedback.is_published)} 
+                          title={feedback.is_published ? 'Unpublish' : 'Publish'}
+                          style={{ 
+                            background: feedback.is_published ? '#6c757d' : '#28a745', 
+                            color: 'white', border: 'none', borderRadius: '4px', padding: '5px 10px', 
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' 
+                          }}
+                        >
+                          {feedback.is_published ? <EyeOff size={14} /> : <Eye size={14} />}
+                          {feedback.is_published ? 'Unpublish' : 'Publish'}
+                        </button>
+                        <button 
+                          onClick={() => deleteFeedback(feedback.id)} 
+                          title="Delete"
+                          style={{ background: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', padding: '5px', cursor: 'pointer' }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
       </main>
 
       {/* Edit Modal */}
@@ -550,6 +706,28 @@ export default function AdminDashboard() {
                 Save Changes
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Lightbox */}
+      {viewingImage && (
+        <div 
+          onClick={() => setViewingImage(null)}
+          style={{ 
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+            backgroundColor: 'rgba(0,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 3000, cursor: 'zoom-out'
+          }}
+        >
+          <div style={{ position: 'relative', maxWidth: '90%', maxHeight: '90%' }}>
+            <button 
+              onClick={(e) => { e.stopPropagation(); setViewingImage(null); }}
+              style={{ position: 'absolute', top: '-50px', right: '-10px', background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}
+            >
+              <X size={40} />
+            </button>
+            <img src={viewingImage} alt="Large view" style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain', borderRadius: '8px' }} />
           </div>
         </div>
       )}

@@ -320,6 +320,41 @@ export default function ClientDashboard() {
           )}
         </div>
 
+        {/* Feedback Encouragement Banner */}
+        <div style={{ 
+          backgroundColor: 'var(--rose-vibrant)', 
+          color: 'white', 
+          padding: '20px 25px', 
+          borderRadius: '10px', 
+          marginBottom: '30px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          boxShadow: '0 4px 15px rgba(227, 99, 135, 0.2)',
+          flexWrap: 'wrap',
+          gap: '20px'
+        }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>We Value Your Experience!</h3>
+            <p style={{ margin: '5px 0 0', fontSize: '0.95rem', opacity: 0.95 }}>
+              Your feedbacks are really grateful to us. Be kind to add a feedback about your wedding template experience.
+            </p>
+          </div>
+          <Link href="/feedback" style={{ 
+            backgroundColor: 'white', 
+            color: 'var(--rose-vibrant)', 
+            padding: '10px 25px', 
+            borderRadius: '6px', 
+            textDecoration: 'none', 
+            fontWeight: 700,
+            fontSize: '0.9rem',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            Give Feedback
+          </Link>
+        </div>
+
         {/* Universal Top Bar */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>

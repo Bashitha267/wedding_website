@@ -73,7 +73,7 @@ export default function Navbar() {
             className="mobile-toggle"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             style={{
-              background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--bw-black)'
+              background: 'none', border: 'none', cursor: 'pointer', alignItems: 'center', color: 'var(--bw-black)'
             }}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
