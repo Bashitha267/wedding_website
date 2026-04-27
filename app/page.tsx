@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import LandingHero from "@/components/LandingHero";
 import ProductsSection from "@/components/ProductsSection";
 import FeedbackSection from "@/components/FeedbackSection";
+import OtherEventsSection from "@/components/OtherEventsSection";
 import ReservationBanner from "@/components/ReservationBanner";
 import Reveal from "@/components/Reveal";
 import CartSidebar from "@/components/CartSidebar";
@@ -25,6 +26,10 @@ export default function Home() {
 
             {/* Dynamic Feedback Section */}
             <FeedbackSection />
+
+            {/* Other Events Section */}
+            <OtherEventsSection />
+
             {/* Customized Design Section */}
             <section style={{ padding: '120px 0', backgroundColor: '#fdf8f4' }}>
                 <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '60px', flexWrap: 'wrap' }}>
