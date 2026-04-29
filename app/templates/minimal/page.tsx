@@ -54,44 +54,44 @@ const MinimalRSVP = ({ orderId, data }: { orderId?: string, data?: any }) => {
     <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.6, fontWeight: 600 }}>Full Name</label>
+          <label style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.6, fontWeight: 600 }}>Full Name</label>
           <input
             type="text"
             required
             value={formData.name}
             onChange={e => setFormData({ ...formData, name: e.target.value })}
-            style={{ border: 'none', borderBottom: '1px solid #ddd', padding: '10px 0', outline: 'none', fontFamily: 'inherit', fontSize: '1rem' }}
+            style={{ border: '1px solid #e0e0e0', padding: '12px 15px', outline: 'none', fontFamily: 'inherit', fontSize: '1rem', borderRadius: '4px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
           />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.6, fontWeight: 600 }}>Contact Number</label>
+          <label style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.6, fontWeight: 600 }}>Contact Number</label>
           <input
             type="tel"
             required
             value={formData.contact}
             onChange={e => setFormData({ ...formData, contact: e.target.value })}
-            style={{ border: 'none', borderBottom: '1px solid #ddd', padding: '10px 0', outline: 'none', fontFamily: 'inherit', fontSize: '1rem' }}
+            style={{ border: '1px solid #e0e0e0', padding: '12px 15px', outline: 'none', fontFamily: 'inherit', fontSize: '1rem', borderRadius: '4px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
           />
         </div>
         <div style={{ display: 'flex', gap: '20px' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.6, fontWeight: 600 }}>Adults</label>
+            <label style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.6, fontWeight: 600 }}>Adults</label>
             <input
               type="number"
               min="1"
               value={formData.adults}
               onChange={e => setFormData({ ...formData, adults: parseInt(e.target.value) || 1 })}
-              style={{ border: 'none', borderBottom: '1px solid #ddd', padding: '10px 0', outline: 'none', fontFamily: 'inherit', fontSize: '1rem' }}
+              style={{ border: '1px solid #e0e0e0', padding: '12px 15px', outline: 'none', fontFamily: 'inherit', fontSize: '1rem', borderRadius: '4px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
             />
           </div>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <label style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.6, fontWeight: 600 }}>Children</label>
+            <label style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.6, fontWeight: 600 }}>Children</label>
             <input
               type="number"
               min="0"
               value={formData.children}
               onChange={e => setFormData({ ...formData, children: parseInt(e.target.value) || 0 })}
-              style={{ border: 'none', borderBottom: '1px solid #ddd', padding: '10px 0', outline: 'none', fontFamily: 'inherit', fontSize: '1rem' }}
+              style={{ border: '1px solid #e0e0e0', padding: '12px 15px', outline: 'none', fontFamily: 'inherit', fontSize: '1rem', borderRadius: '4px', backgroundColor: '#fff', width: '100%', boxSizing: 'border-box' }}
             />
           </div>
         </div>
@@ -193,11 +193,12 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
   const initials = `${(data?.brideName?.[0] || 'S')}${(data?.groomName?.[0] || 'M')}`;
 
   const images = {
-    hero: data?.images?.heroImage || '/photo_2.png',
-    section1: data?.images?.image1 || '/photo_3.png',
-    section2: data?.images?.image2 || '/photo_4.png',
+    hero: data?.images?.heroImage || '/photo_4.png',
+    section1: data?.images?.image1 || '/photo_2.png',
+    section2: data?.images?.image2 || '/photo_3.png',
     gallery: data?.images?.gallery || ['/photo_2.png', '/photo_3.png', '/photo_4.png']
   };
+
 
   const ceremonyInfo = {
     name: data?.ceremonyLocation?.name || data?.location?.name || 'St. Peter\'s Church',
@@ -217,7 +218,15 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
 
   return (
     <div className={montserrat.className} style={{ backgroundColor: '#fff', color: '#1a1a1a', minHeight: '100vh', overflowX: 'hidden' }}>
-      <main style={{ maxWidth: '480px', margin: '0 auto', position: 'relative', backgroundColor: '#fff', boxShadow: '0 0 60px rgba(0,0,0,0.03)' }}>
+      <main style={{ 
+        maxWidth: '480px', 
+        margin: '20px auto', 
+        position: 'relative', 
+        backgroundColor: '#fff', 
+        boxShadow: '0 20px 80px rgba(0,0,0,0.08)', 
+        border: '8px solid #fdfdfd',
+        borderRadius: '4px'
+      }}>
 
         {/* Hero Section */}
         <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', position: 'relative', paddingBottom: '60px' }}>
@@ -350,21 +359,23 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
         {/* Timeline */}
         <section style={{ padding: '100px 20px' }}>
           <Reveal>
-            <h2 style={{ fontSize: '0.7rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.4, marginBottom: '60px', textAlign: 'center', fontWeight: 600 }}>WEDDING TIMELINE</h2>
+            <h2 style={{ fontSize: '0.95rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.5, marginBottom: '60px', textAlign: 'center', fontWeight: 600 }}>WEDDING TIMELINE</h2>
             <MinimalTimeline data={data} />
           </Reveal>
         </section>
 
 
 
+
         {/* RSVP */}
         <section style={{ padding: '100px 20px', backgroundColor: '#fafafa' }}>
           <Reveal>
-            <h2 style={{ fontSize: '0.7rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.4, marginBottom: '25px', textAlign: 'center', fontWeight: 600 }}>RSVP</h2>
-            <p style={{ textAlign: 'center', fontSize: '0.95rem', marginBottom: '50px', opacity: 0.5, fontStyle: 'italic' }}>Please kindly respond by June 30, 2026</p>
+            <h2 style={{ fontSize: '0.95rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.5, marginBottom: '25px', textAlign: 'center', fontWeight: 600 }}>RSVP</h2>
+            <p style={{ textAlign: 'center', fontSize: '1rem', marginBottom: '50px', opacity: 0.5, fontStyle: 'italic' }}>Please kindly respond by June 30, 2026</p>
             <MinimalRSVP orderId={orderId} data={data} />
           </Reveal>
         </section>
+
 
         {/* Gallery */}
         <section style={{ padding: '60px 10px' }}>
@@ -408,7 +419,18 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
           </Reveal>
         </section>
 
+        {/* Thank You Section */}
+        <section style={{ padding: '100px 40px', textAlign: 'center' }}>
+          <Reveal>
+            <h2 className={playfair.className} style={{ fontSize: '2.5rem', marginBottom: '25px', fontWeight: 400 }}>Thank You</h2>
+            <p style={{ fontSize: '1.05rem', lineHeight: 1.8, opacity: 0.6, maxWidth: '300px', margin: '0 auto', fontStyle: 'italic' }}>
+              We look forward to celebrating our special day with all of you. Your presence is our greatest gift.
+            </p>
+          </Reveal>
+        </section>
+
         {/* Footer */}
+
         <footer style={{ padding: '80px 20px', textAlign: 'center', borderTop: '1px solid #f0f0f0', opacity: 0.3, fontSize: '0.7rem', letterSpacing: '3px', fontWeight: 600 }}>
           {data?.brideName?.toUpperCase() || 'SILVIA'} & {data?.groomName?.toUpperCase() || 'MASSIMILIANO'} • 2026
         </footer>
