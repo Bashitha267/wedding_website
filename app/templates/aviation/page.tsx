@@ -262,11 +262,14 @@ const BoardingPass = ({ data, orderId }: { data: any, orderId?: string }) => {
       background: THEME.white,
       borderRadius: '20px',
       overflow: 'hidden',
-      boxShadow: '0 15px 50px rgba(0,0,0,0.4)',
       border: '1px solid #ddd',
       position: 'relative',
-      color: THEME.navy
+      color: THEME.navy,
+      backgroundImage: 'url("/boarding_pass_bg.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
     }}>
+
       {/* Perforation Line */}
       <div className="perforation" style={{ position: 'absolute', left: '72%', top: 0, bottom: 0, width: '1px', borderLeft: '2px dashed #ccc', zIndex: 5 }}></div>
       
@@ -281,7 +284,8 @@ const BoardingPass = ({ data, orderId }: { data: any, orderId?: string }) => {
 
       <div className="boarding-pass-flex" style={{ display: 'flex', minHeight: '320px' }}>
         {/* Left Side - Main Info & Form */}
-        <div className="boarding-main" style={{ flex: '0 0 72%', padding: '30px', textAlign: 'left' }}>
+        <div className="boarding-main" style={{ flex: '0 0 72%', padding: '30px', textAlign: 'left', backgroundColor: 'rgba(255,255,255,0.4)' }}>
+
           <h3 className={THEME.fontScript} style={{ fontSize: '2.8rem', color: THEME.gold, textAlign: 'center', margin: '0 0 25px' }}>We're Getting Married!</h3>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
@@ -426,11 +430,12 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
       {/* Fixed Background - Clouds */}
       <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
         <Image 
-          src="https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=2065&auto=format&fit=crop" 
+          src="/aviation_hero_bg.png" 
           alt="Sky Background" 
           fill 
           style={{ objectFit: 'cover', opacity: 0.5 }} 
         />
+
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(26,43,76,0.8), rgba(26,43,76,0.6))' }} />
       </div>
 
@@ -447,7 +452,8 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
 
       {/* Cover Page / Passport Style */}
       <div style={{ width: '100%', height: '100vh', backgroundColor: '#000', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'fixed', top: 0, left: 0, zIndex: 1000, transition: 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)', transform: isOpen ? 'translateY(-100%)' : 'translateY(0)', opacity: isOpen ? 0 : 1, cursor: 'pointer', overflow: 'hidden' }} onClick={handleOpen}>
-        <Image src="/wedding_hero_image_1775197041013.png" alt="Cover" fill style={{ objectFit: 'cover', opacity: 0.6 }} priority />
+        <Image src="/aviation_cover.png" alt="Cover" fill style={{ objectFit: 'cover', opacity: 0.6 }} priority />
+
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%)', zIndex: 1 }} />
         <div style={{ position: 'relative', textAlign: 'center', width: '100%', zIndex: 2, padding: '0 20px' }}>
           <Reveal>

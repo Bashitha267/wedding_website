@@ -69,5 +69,14 @@ export const templates: Product[] = [
     image: "/poruwa_final_clean.png",
     description: "A traditional Sri Lankan Sinhala Poruwa wedding template with rich gold and maroon tones, featuring a serene background video of the Poruwa ceremony.",
     theme: "Traditional Sri Lankan"
+  },
+  {
+    id: "minimal",
+    name: "The Luxe Minimalist",
+    image: "/luxe_floral_header.png",
+    description: "A sophisticated, high-end minimalist design inspired by modern Italian weddings. Features a personalized wax seal, elegant serif typography, and a refined ivory palette.",
+
+    theme: "Minimal Luxury"
   }
 ];
+
