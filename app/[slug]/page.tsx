@@ -18,6 +18,8 @@ import AviationTheme from '@/app/templates/aviation/page';
 import ChristianTemplate from '@/app/templates/christian/page';
 import PoruwaTemplate from '@/app/templates/poruwa/page';
 import MinimalTemplate from '@/app/templates/minimal/page';
+import CarTemplate from '@/app/templates/car/page';
+
 
 
 
@@ -39,6 +41,7 @@ const templateMap: Record<string, React.ElementType> = {
   'christian': ChristianTemplate,
   'poruwa': PoruwaTemplate,
   'minimal': MinimalTemplate,
+  'car': CarTemplate,
 };
 
 

@@ -77,6 +77,13 @@ export const templates: Product[] = [
     description: "A sophisticated, high-end minimalist design inspired by modern Italian weddings. Features a personalized wax seal, elegant serif typography, and a refined ivory palette.",
 
     theme: "Minimal Luxury"
+  },
+  {
+    id: "car",
+    name: "Forever Journey",
+    image: "/templates/car/hero.png",
+    description: "A vintage-inspired romantic template featuring a classic red convertible car, scenic sunset views, and a charming wooden signpost theme.",
+    theme: "Vintage Romantic"
   }
 ];
 
