@@ -207,11 +207,22 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
 
   const initials = `${(data?.brideName?.[0] || 'S')}${(data?.groomName?.[0] || 'M')}`;
 
+  // Dynamic image gathering from user data
+  const userImages = data?.images || {};
+  const galleryArray = Array.isArray(userImages.gallery) ? userImages.gallery : [];
+  
+  // Combine all possible user images into a single gallery list, removing duplicates/nulls
+  const combinedGallery = Array.from(new Set([
+    userImages.image1, 
+    userImages.image2, 
+    userImages.image3, 
+    userImages.image4,
+    ...galleryArray
+  ])).filter(Boolean) as string[];
+
   const images = {
-    hero: data?.images?.heroImage || '/photo_4.png',
-    section1: data?.images?.image1 || '/photo_2.png',
-    section2: data?.images?.image2 || '/photo_3.png',
-    gallery: data?.images?.gallery || ['/photo_2.png', '/photo_3.png', '/photo_4.png']
+    hero: userImages.heroImage || '/photo_4.png',
+    gallery: combinedGallery.length > 0 ? combinedGallery : ['/photo_2.png', '/photo_3.png', '/photo_4.png']
   };
 
 
@@ -498,12 +509,14 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
         </section>
 
 
-        {/* Gallery */}
         <section style={{ padding: '60px 10px' }}>
+          <Reveal>
+            <h2 style={{ fontSize: '0.7rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.4, marginBottom: '40px', fontWeight: 600, textAlign: 'center' }}>OUR GALLERY</h2>
+          </Reveal>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
-            {images.gallery.slice(0, 4).map((img: string, i: number) => (
+            {images.gallery.map((img: string, i: number) => (
               <Reveal key={i} delay={i * 100}>
-                <div style={{ height: '240px', position: 'relative', borderRadius: '2px', overflow: 'hidden' }}>
+                <div style={{ height: '280px', position: 'relative', borderRadius: '2px', overflow: 'hidden', boxShadow: '0 5px 15px rgba(0,0,0,0.03)' }}>
                   <Image src={img} alt={`Gallery ${i}`} fill style={{ objectFit: 'cover' }} />
                 </div>
               </Reveal>
