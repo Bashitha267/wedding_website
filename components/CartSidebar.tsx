@@ -140,7 +140,6 @@ export default function CartSidebar() {
                   <div>
                     <h3 style={{ margin: '0 0 5px 0', fontSize: '1.2rem' }}>{item.name}</h3>
                     <p style={{ margin: 0, color: 'var(--bw-gray-medium)', fontSize: '0.9rem' }}>{item.theme}</p>
-                    <p style={{ margin: '5px 0 0 0', fontWeight: 600 }}>$149.00 USD</p>
                   </div>
                 </div>
               ) : (
