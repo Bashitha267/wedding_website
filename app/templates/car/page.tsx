@@ -11,6 +11,16 @@ const alexBrush = Alex_Brush({ weight: '400', subsets: ['latin'] });
 const cormorant = Cormorant_Garamond({ weight: ['300', '400', '500', '600', '700'], subsets: ['latin'] });
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['300', '400', '600'] });
 
+// Music Icon
+const MusicIcon = ({ muted }: { muted: boolean }) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 18V5l12-2v13" />
+    <circle cx="6" cy="18" r="3" />
+    <circle cx="18" cy="16" r="3" />
+    {muted && <line x1="1" y1="1" x2="23" y2="23" />}
+  </svg>
+);
+
 // Custom Countdown
 const CarCountdown = ({ data }: { data?: any }) => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -46,9 +56,9 @@ const CarCountdown = ({ data }: { data?: any }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
       {items.map(item => (
-        <div key={item.label} style={{ textAlign: 'center', backgroundColor: '#fff', padding: '15px 10px', borderRadius: '5px', minWidth: '75px', boxShadow: '0 4px 15px rgba(0,0,0,0.08)', border: '1px solid #f0f0f0' }}>
-          <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#c14d4d', lineHeight: 1 }}>{item.value.toString().padStart(2, '0')}</div>
-          <div style={{ fontSize: '0.65rem', letterSpacing: '1px', opacity: 0.5, fontWeight: 800, marginTop: '5px' }}>{item.label}</div>
+        <div key={item.label} style={{ textAlign: 'center', backgroundColor: '#fff', padding: '12px 8px', borderRadius: '5px', minWidth: '70px', boxShadow: '0 4px 10px rgba(0,0,0,0.05)', border: '1px solid #f8f8f8' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#c14d4d', lineHeight: 1.2 }}>{item.value.toString().padStart(2, '0')}</div>
+          <div style={{ fontSize: '0.6rem', letterSpacing: '1px', opacity: 0.5, fontWeight: 800, marginTop: '2px' }}>{item.label}</div>
         </div>
       ))}
     </div>
@@ -182,6 +192,9 @@ const CarRSVP = ({ orderId, data }: { orderId?: string, data?: any }) => {
 };
 
 export default function CarTemplate({ data, orderId }: { data: any, orderId?: string }) {
+  const [muted, setMuted] = useState(false);
+  const audioUrl = data?.musicUrl || "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3";
+
   return (
     <div className={cormorant.className} style={{ 
       backgroundColor: '#f5f1ea', 
@@ -194,6 +207,27 @@ export default function CarTemplate({ data, orderId }: { data: any, orderId?: st
       backgroundAttachment: 'fixed',
       padding: '40px 0'
     }}>
+      <audio id="bg-music" loop autoPlay muted={muted}>
+        <source src={audioUrl} type="audio/mpeg" />
+      </audio>
+
+      {/* Floating Music Toggle */}
+      <button 
+        onClick={() => {
+          const audio = document.getElementById('bg-music') as HTMLAudioElement;
+          if (audio && audio.paused) audio.play().catch(() => {});
+          setMuted(!muted);
+        }}
+        style={{ 
+          position: 'fixed', bottom: '20px', right: '20px', zIndex: 4000,
+          width: '45px', height: '45px', borderRadius: '50%',
+          backgroundColor: 'rgba(255,255,255,0.9)', border: '1px solid #eee',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 5px 15px rgba(0,0,0,0.1)', cursor: 'pointer'
+        }}
+      >
+        <MusicIcon muted={muted} />
+      </button>
       <main style={{ 
         maxWidth: '450px', 
         margin: '0 auto', 
@@ -208,10 +242,9 @@ export default function CarTemplate({ data, orderId }: { data: any, orderId?: st
         
         {/* Top Header */}
         <section style={{ 
-          padding: '25px 30px 30px', 
+          padding: '25px 30px 40px', 
           textAlign: 'center', 
           position: 'relative',
-          minHeight: '70vh',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center'
@@ -264,7 +297,11 @@ export default function CarTemplate({ data, orderId }: { data: any, orderId?: st
             <p style={{ fontSize: '0.8rem', letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.6, marginTop: '30px', fontWeight: 500 }}>
               INVITE YOU TO CELEBRATE THE BEGINNING OF THEIR
             </p>
-            <h2 className={alexBrush.className} style={{ fontSize: '2.5rem', margin: '10px 0', color: '#c14d4d' }}>Forever Journey</h2>
+            <h2 className={alexBrush.className} style={{ fontSize: '2.5rem', margin: '5px 0 25px', color: '#c14d4d' }}>Forever Journey</h2>
+            
+            <div style={{ transform: 'scale(0.9)', marginTop: '10px' }}>
+              <CarCountdown data={data} />
+            </div>
           </Reveal>
         </section>
 
@@ -376,13 +413,7 @@ export default function CarTemplate({ data, orderId }: { data: any, orderId?: st
           </Reveal>
         </section>
 
-        {/* Countdown Section */}
-        <section style={{ padding: '80px 20px', backgroundColor: '#fcfaf7', textAlign: 'center' }}>
-          <Reveal>
-            <h3 style={{ fontSize: '0.9rem', letterSpacing: '5px', textTransform: 'uppercase', opacity: 0.5, marginBottom: '40px', fontWeight: 800 }}>THE COUNTDOWN</h3>
-            <CarCountdown data={data} />
-          </Reveal>
-        </section>
+
 
         {/* Timeline Section */}
         <section style={{ padding: '100px 20px' }}>

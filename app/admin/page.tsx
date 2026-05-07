@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, History, LayoutTemplate, X, Check, Trash2, PenTool, Search, Filter, ChevronLeft, ChevronRight, Users, Disc, MessageSquare, Eye, EyeOff } from 'lucide-react';
+import { LayoutDashboard, History, LayoutTemplate, X, Check, Trash2, PenTool, Search, Filter, ChevronLeft, ChevronRight, Users, Disc, MessageSquare, Eye, EyeOff, Menu } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useEffect } from 'react';
 
@@ -15,7 +15,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [editingOrder, setEditingOrder] = useState<any>(null);
   const [viewingImage, setViewingImage] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ username: '', password: '', status: '' });
+  const [editForm, setEditForm] = useState({ username: '', password: '', slug: '', phone: '' });
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState('');
@@ -108,23 +109,32 @@ export default function AdminDashboard() {
     setEditingOrder(order);
     setEditForm({ 
       username: order.client_username || '', 
-      password: '', // Password hash would be set/reset here
-      status: order.status 
+      password: '', 
+      slug: order.slug || '',
+      phone: order.customer_phone || ''
     });
   };
 
-  const saveEdit = () => {
-    setOrders(orders.map(o => {
-      if (o.id === editingOrder.id) {
-        return {
-          ...o,
+  const saveEdit = async () => {
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ 
           client_username: editForm.username || null,
-          status: editForm.status
-        };
-      }
-      return o;
-    }));
-    setEditingOrder(null);
+          slug: editForm.slug || null,
+          customer_phone: editForm.phone || null
+        })
+        .eq('id', editingOrder.id);
+
+      if (error) throw error;
+      
+      alert('Order updated successfully!');
+      fetchOrders();
+      setEditingOrder(null);
+    } catch (err: any) {
+      console.error(err);
+      alert(`Update failed: ${err.message}`);
+    }
   };
 
   const deleteOrder = (id: string) => {
@@ -138,6 +148,7 @@ export default function AdminDashboard() {
     try {
       const { data, error } = await supabase.rpc('toggle_order_access', { 
         p_username: order.client_username, 
+        p_order_id: order.id,
         p_is_active: nextActiveState
       });
 
@@ -151,21 +162,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleCompleteOrder = async (orderId: string) => {
-    try {
-      const { error } = await supabase
-        .from('orders')
-        .update({ status: 'completed' })
-        .eq('id', orderId);
 
-      if (error) throw error;
-      alert(`Order ${orderId} marked as completed!`);
-      fetchOrders();
-    } catch (err: any) {
-      console.error(err);
-      alert(`Operation failed: ${err.message}`);
-    }
-  };
 
   const fetchOrderRSVPs = async (order: any) => {
       setSelectedOrderForRSVP(order);
@@ -267,12 +264,77 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8f9fa', position: 'relative' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .sidebar {
+            position: fixed !important;
+            top: 0;
+            bottom: 0;
+            z-index: 2000;
+            transition: transform 0.3s ease !important;
+            transform: translateX(-100%);
+            left: 0 !important;
+          }
+          .main-content {
+            padding: 20px !important;
+            width: 100% !important;
+          }
+          .mobile-menu-btn {
+            display: flex !important;
+          }
+          .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            transition: opacity 0.3s ease;
+          }
+        }
+        @media (min-width: 769px) {
+          .mobile-menu-btn, .sidebar-close-btn, .sidebar-overlay {
+            display: none !important;
+          }
+          .sidebar {
+            transform: none !important;
+          }
+        }
+      `}</style>
+
+      {/* Sidebar Overlay for Mobile */}
+      {isSidebarOpen && (
+        <div 
+          className="sidebar-overlay" 
+          onClick={() => setIsSidebarOpen(false)} 
+          style={{ opacity: 1 }}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside style={{ width: '250px', backgroundColor: 'var(--bw-black)', color: 'white', padding: '20px 0' }}>
-        <div style={{ padding: '0 20px 20px', borderBottom: '1px solid #333', marginBottom: '20px' }}>
-          <h2 style={{ fontSize: '1.8rem', margin: 0 }}>KNOT STORY</h2>
-          <p style={{ fontSize: '0.9rem', opacity: 0.6, margin: 0 }}>Admin Portal</p>
+      <aside 
+        className="sidebar"
+        style={{ 
+          width: '280px', backgroundColor: '#111', color: 'white', padding: '20px 0',
+          display: 'flex', flexDirection: 'column', height: '100vh', position: 'sticky', top: 0,
+          transform: isSidebarOpen ? 'translateX(0)' : undefined
+        }}
+      >
+        <div style={{ padding: '0 20px 20px', borderBottom: '1px solid #333', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h2 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 800, letterSpacing: '-0.5px' }}>KNOT STORY</h2>
+            <p style={{ fontSize: '0.8rem', opacity: 0.5, margin: 0 }}>Admin Portal</p>
+          </div>
+          <button 
+            className="sidebar-close-btn"
+            onClick={() => setIsSidebarOpen(false)}
+            style={{ 
+              background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', 
+              cursor: 'pointer', padding: '8px', borderRadius: '50%', display: 'flex',
+              alignItems: 'center', justifyContent: 'center'
+            }}
+          >
+            <X size={20} />
+          </button>
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <button 
@@ -326,7 +388,17 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main Content */}
-      <main style={{ flex: 1, padding: '40px' }}>
+      <main className="main-content" style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
+        {/* Mobile Header Toggle */}
+        <div className="mobile-menu-btn" style={{ marginBottom: '20px', alignItems: 'center', gap: '15px' }}>
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            style={{ padding: '8px', backgroundColor: 'white', border: '1px solid #ddd', borderRadius: '6px', cursor: 'pointer' }}
+          >
+            <Menu size={24} />
+          </button>
+          <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Admin Dashboard</h2>
+        </div>
         {activeTab === 'dashboard' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
@@ -377,9 +449,7 @@ export default function AdminDashboard() {
                       <td style={{ padding: '12px' }}>
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                           <button onClick={() => handleToggleAccess(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#28a745', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>APPROVE</button>
-                          <button onClick={() => handleCompleteOrder(order.id)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#17a2b8', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>COMPLETE</button>
-                          <button onClick={() => startEdit(order)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}><PenTool size={16} /></button>
-                          <button onClick={() => { if(confirm('Delete order?')) deleteOrder(order.id) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc3545' }}><Trash2 size={16} /></button>
+                          <button onClick={() => { if(confirm('Delete order?')) deleteOrder(order.id) }} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#dc3545', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>REMOVE</button>
                         </div>
                       </td>
                       <td style={{ padding: '12px' }}>
@@ -408,14 +478,13 @@ export default function AdminDashboard() {
                     <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>USERNAME</th>
                     <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>DATE</th>
                     <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>URL</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>STATUS</th>
                     <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>ACTIONS</th>
                     <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>EDITOR</th>
                   </tr>
                 </thead>
                 <tbody>
                   {getFilteredOrders('completed').length === 0 ? (
-                    <tr><td colSpan={9} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>No history records found matching your criteria.</td></tr>
+                    <tr><td colSpan={8} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>No history records found matching your criteria.</td></tr>
                   ) : paginate(getFilteredOrders('completed')).map((order, index) => (
                     <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '1rem' }}>
                       <td style={{ padding: '12px', color: '#999' }}>{(currentPage-1)*itemsPerPage + index + 1}</td>
@@ -427,12 +496,10 @@ export default function AdminDashboard() {
                         <a href={`/${order.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', fontWeight: 700, textDecoration: 'none', border: '1px solid #007bff', padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem' }}>LIVE</a>
                       </td>
                       <td style={{ padding: '12px' }}>
-                         <span style={{ padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#e6f4ea', color: '#1e7e34', textTransform: 'uppercase' }}>COMPLETED</span>
-                      </td>
-                      <td style={{ padding: '12px' }}>
-                        <div style={{ display: 'flex', gap: '8px' }}>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                           <button onClick={() => handleToggleAccess(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#6c757d', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>BLOCK ACCESS</button>
                            <button onClick={() => startEdit(order)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}><PenTool size={16} /></button>
-                           <button onClick={() => { if(confirm('Delete order?')) deleteOrder(order.id) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc3545' }}><Trash2 size={16} /></button>
+                           <button onClick={() => { if(confirm('Delete order?')) deleteOrder(order.id) }} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#dc3545', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>REMOVE</button>
                         </div>
                       </td>
                       <td style={{ padding: '12px' }}>
@@ -639,12 +706,12 @@ export default function AdminDashboard() {
                           {feedback.is_published ? <EyeOff size={14} /> : <Eye size={14} />}
                           {feedback.is_published ? 'Unpublish' : 'Publish'}
                         </button>
-                        <button 
+                         <button 
                           onClick={() => deleteFeedback(feedback.id)} 
                           title="Delete"
-                          style={{ background: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', padding: '5px', cursor: 'pointer' }}
+                          style={{ background: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', padding: '5px 10px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 600 }}
                         >
-                          <Trash2 size={16} />
+                          REMOVE
                         </button>
                       </div>
                     </td>
@@ -691,15 +758,22 @@ export default function AdminDashboard() {
                 />
               </div>
               <div>
-                <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem' }}>Order Status</label>
-                <select 
-                  value={editForm.status}
-                  onChange={(e) => setEditForm({...editForm, status: e.target.value})}
+                <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem' }}>Slug (URL Path)</label>
+                <input 
+                  type="text" 
+                  value={editForm.slug}
+                  onChange={(e) => setEditForm({...editForm, slug: e.target.value})}
                   style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
-                >
-                  <option value="pending">Pending</option>
-                  <option value="completed">Completed</option>
-                </select>
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.9rem' }}>Contact Number</label>
+                <input 
+                  type="text" 
+                  value={editForm.phone}
+                  onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
+                  style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}
+                />
               </div>
               
               <button onClick={saveEdit} className="btn-primary" style={{ marginTop: '10px', width: '100%' }}>

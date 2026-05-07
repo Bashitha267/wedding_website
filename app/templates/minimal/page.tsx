@@ -9,6 +9,16 @@ import { Montserrat, Playfair_Display } from 'next/font/google';
 const montserrat = Montserrat({ subsets: ['latin'], weight: ['300', '400', '500', '600'] });
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'], style: ['italic', 'normal'] });
 
+// Music Icon
+const MusicIcon = ({ muted }: { muted: boolean }) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 18V5l12-2v13" />
+    <circle cx="6" cy="18" r="3" />
+    <circle cx="18" cy="16" r="3" />
+    {muted && <line x1="1" y1="1" x2="23" y2="23" />}
+  </svg>
+);
+
 // Custom RSVP component for this template
 const MinimalRSVP = ({ orderId, data }: { orderId?: string, data?: any }) => {
   const [formData, setFormData] = useState({ name: '', contact: '', adults: 1, children: 0, dietary: '' });
@@ -188,7 +198,12 @@ const MinimalTimeline = ({ data }: { data?: any }) => {
 };
 
 export default function MinimalTemplate({ data, orderId }: { data: any, orderId?: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isUnsealing, setIsUnsealing] = useState(false);
+  const [muted, setMuted] = useState(false);
   const [locationType, setLocationType] = useState<'ceremony' | 'reception'>('ceremony');
+
+  const audioUrl = data?.musicUrl || "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3";
 
   const initials = `${(data?.brideName?.[0] || 'S')}${(data?.groomName?.[0] || 'M')}`;
 
@@ -216,32 +231,134 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
 
   const activeLocation = locationType === 'ceremony' ? ceremonyInfo : receptionInfo;
 
+  const handleOpen = () => {
+    if (isUnsealing) return;
+    setIsUnsealing(true);
+    
+    // Play music
+    const audio = document.getElementById('bg-music') as HTMLAudioElement;
+    if (audio) {
+      audio.play().catch(e => console.log("Audio play blocked", e));
+    }
+
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 1200);
+  };
+
   return (
     <div className={montserrat.className} style={{ backgroundColor: '#fff', color: '#1a1a1a', minHeight: '100vh', overflowX: 'hidden' }}>
+      
+      <audio id="bg-music" loop muted={muted}>
+        <source src={audioUrl} type="audio/mpeg" />
+      </audio>
+
+      {/* Floating Music Toggle */}
+      {isOpen && (
+        <button 
+          onClick={() => setMuted(!muted)}
+          style={{ 
+            position: 'fixed', bottom: '20px', right: '20px', zIndex: 4000,
+            width: '45px', height: '45px', borderRadius: '50%',
+            backgroundColor: 'rgba(255,255,255,0.9)', border: '1px solid #eee',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 5px 15px rgba(0,0,0,0.1)', cursor: 'pointer'
+          }}
+        >
+          <MusicIcon muted={muted} />
+        </button>
+      )}
+
+      {/* Envelope Section */}
+      {!isOpen && (
+        <div 
+          onClick={handleOpen}
+          style={{ 
+            position: 'fixed', inset: 0, zIndex: 3000, 
+            backgroundColor: '#f9f9f9',
+            display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+            cursor: 'pointer', overflow: 'hidden'
+          }}
+        >
+          <div style={{ 
+            position: 'relative', width: '300px', height: '210px',
+            transform: isUnsealing ? 'scale(1.1) translateY(20px)' : 'scale(1)',
+            transition: 'transform 1.2s ease-in-out',
+            perspective: '1000px'
+          }}>
+             {/* Card inside */}
+             <div style={{
+               position: 'absolute', inset: '10px',
+               background: '#fff', zIndex: 1,
+               transform: isUnsealing ? 'translateY(-80px)' : 'translateY(0)',
+               transition: 'transform 1s ease-in-out 0.3s',
+               display: 'flex', alignItems: 'center', justifyContent: 'center',
+               boxShadow: '0 5px 15px rgba(0,0,0,0.05)'
+             }}>
+                <div style={{ border: '1px solid #eee', width: '85%', height: '85%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   <span className={playfair.className} style={{ fontSize: '1.2rem', opacity: 0.3 }}>{initials}</span>
+                </div>
+             </div>
+
+             {/* Envelope Image Base */}
+             <div style={{ 
+               position: 'absolute', inset: 0, zIndex: 2, 
+               borderRadius: '4px', boxShadow: '0 15px 45px rgba(0,0,0,0.1)',
+               overflow: 'hidden'
+             }}>
+               <Image src="/minimal_envelope_base.png" alt="Envelope" fill style={{ objectFit: 'cover' }} />
+             </div>
+
+
+
+             {/* Wax Seal */}
+             {!isUnsealing && (
+               <div style={{ 
+                 position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)', 
+                 zIndex: 5, transition: 'opacity 0.3s'
+               }}>
+                 <div style={{ width: '45px', height: '45px', backgroundColor: '#1a1a1a', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
+                    <span style={{ color: '#fff', fontSize: '0.8rem', fontWeight: 600 }}>{initials}</span>
+                 </div>
+               </div>
+             )}
+          </div>
+
+          <div style={{ marginTop: '40px', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.7rem', letterSpacing: '6px', textTransform: 'uppercase', opacity: 0.4, marginBottom: '10px', fontWeight: 600 }}>INVITATION</div>
+            <div className={playfair.className} style={{ fontSize: '1.6rem', marginBottom: '10px', letterSpacing: '1px' }}>{data?.brideName || 'Silvia'} & {data?.groomName || 'Massimiliano'}</div>
+            <div className="bounce-soft" style={{ fontSize: '0.6rem', letterSpacing: '4px', opacity: 0.4, marginTop: '10px' }}>TAP TO UNSEAL</div>
+          </div>
+        </div>
+      )}
+
       <main style={{ 
         maxWidth: '480px', 
-        margin: '20px auto', 
+        margin: '0 auto', 
         position: 'relative', 
         backgroundColor: '#fff', 
         boxShadow: '0 20px 80px rgba(0,0,0,0.08)', 
         border: '8px solid #fdfdfd',
-        borderRadius: '4px'
+        borderTop: 'none',
+        borderRadius: '0 0 4px 4px',
+        opacity: isOpen ? 1 : 0,
+        transition: 'opacity 0.8s ease-in'
       }}>
 
         {/* Hero Section */}
-        <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', position: 'relative', paddingBottom: '60px' }}>
+        <section style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#fff', position: 'relative', paddingBottom: '40px', paddingTop: 0 }}>
 
           {/* Blended Floral Header */}
-          <div style={{ width: '100%', height: '450px', position: 'relative', zIndex: 1 }}>
-            <Image src="/luxe_floral_header.png" alt="Floral Design" fill style={{ objectFit: 'cover', objectPosition: 'center' }} priority />
+          <div style={{ width: '100%', height: '280px', position: 'relative', zIndex: 1, marginTop: '-10px' }}>
+            <Image src="/luxe_floral_header.png" alt="Floral Design" fill style={{ objectFit: 'cover', objectPosition: 'top' }} priority />
             {/* Gradient Overlay for Blending */}
             <div style={{
               position: 'absolute',
               bottom: 0,
               left: 0,
               right: 0,
-              height: '250px',
-              background: 'linear-gradient(to top, #ffffff 20%, transparent 100%)',
+              height: '180px',
+              background: 'linear-gradient(to top, #ffffff 15%, transparent 100%)',
               zIndex: 2
             }}></div>
           </div>
@@ -251,35 +368,35 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
 
           <Reveal delay={500}>
             <div style={{ textAlign: 'center', padding: '0 30px' }}>
-              <p style={{ fontSize: '0.7rem', letterSpacing: '5px', textTransform: 'uppercase', opacity: 0.5, marginBottom: '25px', fontWeight: 600 }}>
+              <p style={{ fontSize: '0.65rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.5, marginBottom: '15px', fontWeight: 600 }}>
                 YOU ARE INVITED TO THE WEDDING OF
               </p>
 
-              <h1 className={playfair.className} style={{ fontSize: '4.2rem', margin: '0', fontWeight: 400, lineHeight: 1, letterSpacing: '-1px' }}>
+              <h1 className={playfair.className} style={{ fontSize: '3.5rem', margin: '0', fontWeight: 400, lineHeight: 0.9, letterSpacing: '-1px' }}>
                 {data?.brideName || 'Silvia'}
               </h1>
-              <div className={playfair.className} style={{ fontSize: '2.5rem', opacity: 0.3, margin: '15px 0' }}>&</div>
-              <h1 className={playfair.className} style={{ fontSize: '4.2rem', margin: '0', fontWeight: 400, lineHeight: 1, letterSpacing: '-1px' }}>
+              <div className={playfair.className} style={{ fontSize: '2rem', opacity: 0.3, margin: '10px 0' }}>&</div>
+              <h1 className={playfair.className} style={{ fontSize: '3.5rem', margin: '0', fontWeight: 400, lineHeight: 0.9, letterSpacing: '-1px' }}>
                 {data?.groomName || 'Massimiliano'}
               </h1>
 
-              <div style={{ marginTop: '50px', fontSize: '1.1rem', fontWeight: 500, letterSpacing: '2px' }}>
+              <div style={{ marginTop: '35px', fontSize: '1rem', fontWeight: 500, letterSpacing: '2px' }}>
                 {data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase() : '20 SEPTEMBER 2026'}
               </div>
-              <p style={{ fontSize: '0.85rem', opacity: 0.4, marginTop: '12px', letterSpacing: '1px', fontWeight: 500 }}>
+              <p style={{ fontSize: '0.8rem', opacity: 0.4, marginTop: '8px', letterSpacing: '1px', fontWeight: 500, marginBottom: '20px' }}>
                 {data?.location?.city?.toUpperCase() || 'TERRASINI, SICILIA'}
               </p>
             </div>
           </Reveal>
 
-          <div style={{ marginTop: '80px', opacity: 0.15 }}>
-            <div style={{ width: '1px', height: '70px', backgroundColor: '#1a1a1a' }}></div>
+          <div style={{ marginTop: '40px', opacity: 0.1 }}>
+            <div style={{ width: '1px', height: '40px', backgroundColor: '#1a1a1a' }}></div>
           </div>
         </section>
 
         {/* Main Couple Photo */}
         <Reveal>
-          <div style={{ height: '550px', width: '100%', position: 'relative', marginBottom: '80px' }}>
+          <div style={{ height: '380px', width: '100%', position: 'relative', marginBottom: '40px' }}>
             <Image src={images.hero} alt="Couple" fill style={{ objectFit: 'cover' }} />
           </div>
         </Reveal>
@@ -288,9 +405,13 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
         <section style={{ padding: '40px 20px 80px', textAlign: 'center' }}>
           <Reveal>
             <h2 style={{ fontSize: '0.7rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.4, marginBottom: '40px', fontWeight: 600 }}>COUNTDOWN</h2>
-            <MinimalCountdown data={data} />
+            <div style={{ transform: 'scale(0.9)' }}>
+              <MinimalCountdown data={data} />
+            </div>
           </Reveal>
         </section>
+
+
 
         {/* Location Toggle */}
         <section style={{ padding: '80px 20px', textAlign: 'center', backgroundColor: '#fafafa' }}>

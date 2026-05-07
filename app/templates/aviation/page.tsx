@@ -88,26 +88,7 @@ const FlightPath = () => (
   </div>
 );
 
-// Blending Image for Cover
-const BlendingImage = ({ src, size = '100%', align = 'center' }: { src: string, size?: string, align?: 'left' | 'right' | 'center' }) => (
-  <div style={{
-    display: 'flex',
-    justifyContent: align === 'left' ? 'flex-start' : align === 'right' ? 'flex-end' : 'center',
-    width: '100%',
-    margin: '30px 0'
-  }}>
-    <div style={{
-      position: 'relative',
-      width: size,
-      aspectRatio: '1/1',
-      maskImage: 'radial-gradient(circle, black 45%, transparent 100%)',
-      WebkitMaskImage: 'radial-gradient(circle, black 45%, transparent 100%)',
-      overflow: 'hidden'
-    }}>
-      <Image src={src} alt="Moment" fill style={{ objectFit: 'cover' }} unoptimized={src.startsWith('http')} />
-    </div>
-  </div>
-);
+
 
 // SVG Icons
 const MusicIcon = ({ muted }: { muted: boolean }) => (
@@ -401,6 +382,7 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
 
 export default function AviationTheme({ data, orderId }: { data: any, orderId?: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isUnsealing, setIsUnsealing] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   
@@ -419,10 +401,16 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
   };
 
   const handleOpen = () => {
-    setIsOpen(true);
+    if (isUnsealing) return;
+    setIsUnsealing(true);
+    
     const audio = document.getElementById('bg-music') as HTMLAudioElement;
     if (audio) { audio.play().catch(e => console.log("Audio play blocked:", e)); }
-    if (videoRef.current) { videoRef.current.play().catch(e => console.log("Video play blocked:", e)); }
+    
+    setTimeout(() => {
+      setIsOpen(true);
+      if (videoRef.current) { videoRef.current.play().catch(e => console.log("Video play blocked:", e)); }
+    }, 1500);
   };
 
   return (
@@ -450,23 +438,70 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
         </button>
       )}
 
-      {/* Cover Page / Passport Style */}
-      <div style={{ width: '100%', height: '100vh', backgroundColor: '#000', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'fixed', top: 0, left: 0, zIndex: 1000, transition: 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)', transform: isOpen ? 'translateY(-100%)' : 'translateY(0)', opacity: isOpen ? 0 : 1, cursor: 'pointer', overflow: 'hidden' }} onClick={handleOpen}>
-        <Image src="/aviation_cover.png" alt="Cover" fill style={{ objectFit: 'cover', opacity: 0.6 }} priority />
+      {/* Envelope Opening Animation */}
+      {!isOpen && (
+        <div 
+          onClick={handleOpen}
+          style={{ 
+            position: 'fixed', inset: 0, zIndex: 3000, 
+            backgroundColor: '#000',
+            display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+            cursor: 'pointer', overflow: 'hidden'
+          }}
+        >
+          <Image src="/aviation_hero_bg.png" alt="Sky" fill style={{ objectFit: 'cover', opacity: 0.4 }} />
+          
+          <div style={{ 
+            position: 'relative', width: '340px', height: '240px',
+            transform: isUnsealing ? 'scale(1.1) translateY(20px)' : 'scale(1)',
+            transition: 'transform 1.5s ease-in-out',
+            perspective: '1000px'
+          }}>
+             {/* Invitation Peak (Hidden inside) */}
+             <div style={{
+               position: 'absolute', top: '15px', left: '15px', right: '15px', bottom: '15px',
+               background: THEME.white, borderRadius: '4px', zIndex: 1,
+               transform: isUnsealing ? 'translateY(-110px)' : 'translateY(0)',
+               transition: 'transform 1.2s ease-in-out 0.4s',
+               display: 'flex', alignItems: 'center', justifyContent: 'center',
+               boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+             }}>
+                <div style={{ border: `1px solid ${THEME.gold}`, width: '90%', height: '90%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   <Plane size={30} color={THEME.gold} />
+                </div>
+             </div>
 
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%)', zIndex: 1 }} />
-        <div style={{ position: 'relative', textAlign: 'center', width: '100%', zIndex: 2, padding: '0 20px' }}>
-          <Reveal>
-            <div className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 4rem)', color: THEME.gold, marginBottom: '20px', textShadow: '2px 2px 20px rgba(0,0,0,0.8)', letterSpacing: '4px' }}>Invitation</div>
-            
-            <BlendingImage src={img0} size="240px" align="center" />
-            
-            <h2 className={THEME.fontDisplay} style={{ fontSize: 'clamp(1.8rem, 8vw, 2.8rem)', color: THEME.white, marginBottom: '10px', textShadow: '0 4px 15px rgba(0,0,0,1)', letterSpacing: '6px', fontWeight: 700 }}>{data?.brideName || 'Sarah'} & {data?.groomName || 'Mark'}</h2>
-            
-            <div className={`bounce-soft ${THEME.fontBody}`} style={{ fontSize: '0.85rem', letterSpacing: '8px', fontWeight: 900, color: THEME.gold, textTransform: 'uppercase', marginTop: '40px', textShadow: '0 2px 10px rgba(0,0,0,1)' }}>TAP TO OPEN</div>
-          </Reveal>
+             {/* Envelope Image Base */}
+             <div style={{ 
+               position: 'absolute', inset: 0, zIndex: 2, 
+               borderRadius: '8px', boxShadow: '0 25px 60px rgba(0,0,0,0.6)',
+               overflow: 'hidden'
+             }}>
+               <Image src="/aviation_envelope_base.png" alt="Envelope" fill style={{ objectFit: 'cover' }} />
+             </div>
+
+
+
+             {/* Gold Wax Seal */}
+             {!isUnsealing && (
+               <div style={{ 
+                 position: 'absolute', top: '60%', left: '50%', transform: 'translate(-50%, -50%)', 
+                 zIndex: 5, transition: 'opacity 0.3s'
+               }}>
+                 <div style={{ width: '60px', height: '60px', backgroundColor: THEME.gold, borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 4px 15px rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.3)' }}>
+                    <Heart size={28} color="#fff" fill="#fff" />
+                 </div>
+               </div>
+             )}
+          </div>
+
+          <div style={{ marginTop: '50px', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.8rem', letterSpacing: '6px', textTransform: 'uppercase', color: THEME.gold, marginBottom: '15px', fontWeight: 800 }}>INVITATION</div>
+            <h2 className={THEME.fontDisplay} style={{ color: THEME.white, fontSize: '1.8rem', letterSpacing: '4px', fontWeight: 700, marginBottom: '10px' }}>{data?.brideName || 'Sarah'} & {data?.groomName || 'Mark'}</h2>
+            <div className="bounce-soft" style={{ color: THEME.gold, letterSpacing: '6px', fontSize: '0.7rem', fontWeight: 900, marginTop: '20px' }}>TAP TO UNSEAL</div>
+          </div>
         </div>
-      </div>
+      )}
 
       {isOpen && (
         <main style={{ position: 'relative', zIndex: 1, maxWidth: '500px', margin: '0 auto', padding: '0 20px' }}>
