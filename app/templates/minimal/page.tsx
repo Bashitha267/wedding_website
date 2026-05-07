@@ -227,18 +227,28 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
 
 
   const ceremonyInfo = {
-    name: data?.ceremonyLocation?.name || data?.location?.name || 'St. Peter\'s Church',
-    address: data?.ceremonyLocation?.address || data?.location?.address || '123 Heaven Gate, Grace City',
-    time: data?.ceremonyTime || '2:30 PM',
-    mapUrl: data?.ceremonyLocation?.mapUrl || data?.location?.mapUrl || '#'
+    name: data?.ceremonyLocation?.name || data?.location?.name || '',
+    address: data?.ceremonyLocation?.address || data?.location?.address || '',
+    time: data?.ceremonyTime || (data?.eventDate ? new Date(data.eventDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''),
+    mapUrl: data?.ceremonyLocation?.mapUrl || data?.location?.mapUrl || ''
   };
 
   const receptionInfo = {
-    name: data?.receptionLocation?.name || 'The Grand Ballroom',
-    address: data?.receptionLocation?.address || '456 Celebration Ave, Party Town',
-    time: data?.receptionTime || '6:00 PM',
-    mapUrl: data?.receptionLocation?.mapUrl || '#'
+    name: data?.receptionLocation?.name || '',
+    address: data?.receptionLocation?.address || '',
+    time: data?.receptionTime || '',
+    mapUrl: data?.receptionLocation?.mapUrl || ''
   };
+
+  const hasCeremony = !!ceremonyInfo.name;
+  const hasReception = !!receptionInfo.name;
+
+  // Default to what is available
+  useEffect(() => {
+    if (!hasCeremony && hasReception) setLocationType('reception');
+  }, [hasCeremony, hasReception]);
+
+  if (!hasCeremony && !hasReception) return null;
 
   const activeLocation = locationType === 'ceremony' ? ceremonyInfo : receptionInfo;
 
@@ -407,10 +417,28 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
 
         {/* Main Couple Photo */}
         <Reveal>
-          <div style={{ height: '380px', width: '100%', position: 'relative', marginBottom: '40px' }}>
+          <div style={{ height: '380px', width: '100%', position: 'relative', marginBottom: '20px' }}>
             <Image src={images.hero} alt="Couple" fill style={{ objectFit: 'cover' }} />
           </div>
         </Reveal>
+
+        {/* Announcements */}
+        {data?.announcements && (
+          <section style={{ padding: '60px 40px', textAlign: 'center', backgroundColor: '#fcfcfc' }}>
+            <Reveal>
+               <div style={{ display: 'inline-block', marginBottom: '20px' }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="1" opacity="0.4">
+                    <path d="M18 8a6 6 0 0 0-12 0c0 7 3 9 3 9h6s3-2 3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+               </div>
+               <h3 className={playfair.className} style={{ fontSize: '1.2rem', letterSpacing: '2px', marginBottom: '15px', fontWeight: 400 }}>ANNOUNCEMENT</h3>
+               <p style={{ fontSize: '1.1rem', lineHeight: '1.8', opacity: 0.7, fontStyle: 'italic', maxWidth: '350px', margin: '0 auto' }}>
+                 "{data.announcements}"
+               </p>
+            </Reveal>
+          </section>
+        )}
 
         {/* Countdown */}
         <section style={{ padding: '40px 20px 80px', textAlign: 'center' }}>
@@ -429,58 +457,64 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
           <Reveal>
             <h2 style={{ fontSize: '0.7rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.4, marginBottom: '45px', fontWeight: 600 }}>THE LOCATION</h2>
 
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '45px' }}>
-              <button
-                onClick={() => setLocationType('ceremony')}
-                style={{
-                  padding: '12px 28px',
-                  borderRadius: '0',
-                  border: '1px solid #1a1a1a',
-                  backgroundColor: locationType === 'ceremony' ? '#1a1a1a' : 'transparent',
-                  color: locationType === 'ceremony' ? 'white' : '#1a1a1a',
-                  fontSize: '0.75rem',
-                  letterSpacing: '2px',
-                  cursor: 'pointer',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                  fontWeight: 600
-                }}
-              >
-                CEREMONY
-              </button>
-              <button
-                onClick={() => setLocationType('reception')}
-                style={{
-                  padding: '12px 28px',
-                  borderRadius: '0',
-                  border: '1px solid #1a1a1a',
-                  backgroundColor: locationType === 'reception' ? '#1a1a1a' : 'transparent',
-                  color: locationType === 'reception' ? 'white' : '#1a1a1a',
-                  fontSize: '0.75rem',
-                  letterSpacing: '2px',
-                  cursor: 'pointer',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                  fontWeight: 600
-                }}
-              >
-                RECEPTION
-              </button>
-            </div>
+            {hasCeremony && hasReception && (
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '45px' }}>
+                <button
+                  onClick={() => setLocationType('ceremony')}
+                  style={{
+                    padding: '12px 28px',
+                    borderRadius: '0',
+                    border: '1px solid #1a1a1a',
+                    backgroundColor: locationType === 'ceremony' ? '#1a1a1a' : 'transparent',
+                    color: locationType === 'ceremony' ? 'white' : '#1a1a1a',
+                    fontSize: '0.75rem',
+                    letterSpacing: '2px',
+                    cursor: 'pointer',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    fontWeight: 600
+                  }}
+                >
+                  CEREMONY
+                </button>
+                <button
+                  onClick={() => setLocationType('reception')}
+                  style={{
+                    padding: '12px 28px',
+                    borderRadius: '0',
+                    border: '1px solid #1a1a1a',
+                    backgroundColor: locationType === 'reception' ? '#1a1a1a' : 'transparent',
+                    color: locationType === 'reception' ? 'white' : '#1a1a1a',
+                    fontSize: '0.75rem',
+                    letterSpacing: '2px',
+                    cursor: 'pointer',
+                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                    fontWeight: 600
+                  }}
+                >
+                  RECEPTION
+                </button>
+              </div>
+            )}
 
-            <div style={{ minHeight: '400px' }}>
+            <div>
               <Reveal key={locationType}>
-                <h3 className={playfair.className} style={{ fontSize: '1.8rem', marginBottom: '12px', fontWeight: 400 }}>{activeLocation.name}</h3>
-                <p style={{ fontSize: '0.9rem', opacity: 0.5, marginBottom: '25px', lineHeight: 1.6 }}>{activeLocation.address}</p>
-                <div style={{ fontSize: '1.1rem', fontWeight: 500, marginBottom: '35px', letterSpacing: '1px' }}>{activeLocation.time}</div>
+                {activeLocation.name && <h3 className={playfair.className} style={{ fontSize: '1.8rem', marginBottom: '12px', fontWeight: 400 }}>{activeLocation.name}</h3>}
+                {activeLocation.address && <p style={{ fontSize: '0.9rem', opacity: 0.5, marginBottom: '25px', lineHeight: 1.6 }}>{activeLocation.address}</p>}
+                {activeLocation.time && <div style={{ fontSize: '1.1rem', fontWeight: 500, marginBottom: '35px', letterSpacing: '1px' }}>{activeLocation.time}</div>}
 
-                <div style={{ height: '280px', width: '100%', borderRadius: '2px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginBottom: '35px' }}>
-                  <iframe
-                    src={activeLocation.mapUrl.includes('google.com/maps') ? activeLocation.mapUrl : `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3430.292!2d-118.243!3d34.052!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDAzJzA3LjIiTiAxMTjCsDE0JzM0LjgiVw!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus`}
-                    width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-                  ></iframe>
-                </div>
-                <a href={activeLocation.mapUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '12px 0', borderBottom: '1px solid #1a1a1a', color: '#1a1a1a', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '3px', fontWeight: 600 }}>
-                  VIEW ON MAP
-                </a>
+                {activeLocation.mapUrl && activeLocation.mapUrl !== '#' && activeLocation.mapUrl.includes('google.com/maps') && (
+                  <>
+                    <div style={{ height: '280px', width: '100%', borderRadius: '2px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginBottom: '35px' }}>
+                      <iframe
+                        src={activeLocation.mapUrl}
+                        width="100%" height="100%" style={{ border: 0 }} loading="lazy"
+                      ></iframe>
+                    </div>
+                    <a href={activeLocation.mapUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '12px 0', borderBottom: '1px solid #1a1a1a', color: '#1a1a1a', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '3px', fontWeight: 600 }}>
+                      VIEW ON MAP
+                    </a>
+                  </>
+                )}
               </Reveal>
             </div>
           </Reveal>
@@ -499,11 +533,31 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
 
 
 
+        {/* Dress Code */}
+        {(data?.dressCode?.title || (typeof data?.dressCode === 'string' && data.dressCode)) && (
+          <section style={{ padding: '80px 20px', textAlign: 'center' }}>
+            <Reveal>
+               <h2 style={{ fontSize: '0.7rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.4, marginBottom: '25px', fontWeight: 600 }}>DRESS CODE</h2>
+               <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>
+                 {data?.dressCode?.icon || data?.dressCodeEmoji || '👗'}
+               </div>
+               <h3 className={playfair.className} style={{ fontSize: '1.8rem', marginBottom: '10px', fontWeight: 400 }}>
+                 {typeof data.dressCode === 'object' ? data.dressCode.title : data.dressCode}
+               </h3>
+               {(data?.dressCode?.description || data?.dressCodeDescription) && (
+                 <p style={{ fontSize: '0.9rem', opacity: 0.5, maxWidth: '280px', margin: '0 auto', lineHeight: 1.6 }}>
+                   {typeof data.dressCode === 'object' ? data.dressCode.description : data.dressCodeDescription}
+                 </p>
+               )}
+            </Reveal>
+          </section>
+        )}
+
         {/* RSVP */}
         <section style={{ padding: '100px 20px', backgroundColor: '#fafafa' }}>
           <Reveal>
             <h2 style={{ fontSize: '0.95rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.5, marginBottom: '25px', textAlign: 'center', fontWeight: 600 }}>RSVP</h2>
-            <p style={{ textAlign: 'center', fontSize: '1rem', marginBottom: '50px', opacity: 0.5, fontStyle: 'italic' }}>Please kindly respond by June 30, 2026</p>
+            {data?.rsvpDeadline && <p style={{ textAlign: 'center', fontSize: '1rem', marginBottom: '50px', opacity: 0.5, fontStyle: 'italic' }}>Please kindly respond by {data.rsvpDeadline}</p>}
             <MinimalRSVP orderId={orderId} data={data} />
           </Reveal>
         </section>

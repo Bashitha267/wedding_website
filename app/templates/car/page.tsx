@@ -464,13 +464,35 @@ export default function CarTemplate({ data, orderId }: { data: any, orderId?: st
               "Life is a journey, and love is what makes that journey worthwhile. We can't wait to celebrate the start of our new adventure with you."
             </p>
             
-            <div style={{ marginTop: '50px', paddingTop: '40px', borderTop: '1px solid #f0f0f0' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '4px', opacity: 0.5, marginBottom: '15px' }}>DRESS CODE</div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1a1a1a', letterSpacing: '1px' }}>
-                {data?.dressCode || 'FORMAL / SEMI-FORMAL'}
+            {/* Announcements */}
+            {data?.announcements && (
+              <div style={{ marginTop: '50px', paddingTop: '40px', borderTop: '1px solid #f0f0f0' }}>
+                <div style={{ color: '#c14d4d', marginBottom: '15px' }}>
+                  <Disc size={20} />
+                </div>
+                <p style={{ fontSize: '1.1rem', lineHeight: '1.8', opacity: 0.7, fontStyle: 'italic', maxWidth: '320px', margin: '0 auto' }}>
+                  "{data.announcements}"
+                </p>
               </div>
-              <p style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '8px' }}>Your elegance will add to our joy</p>
-            </div>
+            )}
+
+            {/* Dress Code */}
+            {(data?.dressCode?.title || (typeof data?.dressCode === 'string' && data.dressCode)) && (
+              <div style={{ marginTop: '50px', paddingTop: '40px', borderTop: '1px solid #f0f0f0' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>
+                  {data?.dressCode?.icon || data?.dressCodeEmoji || '🤵‍♂️  👰‍♀️'}
+                </div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '4px', opacity: 0.5, marginBottom: '15px' }}>DRESS CODE</div>
+                <div style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1a1a1a', letterSpacing: '1px' }}>
+                  {typeof data.dressCode === 'object' ? data.dressCode.title : data.dressCode}
+                </div>
+                {(data?.dressCode?.description || data?.dressCodeDescription) && (
+                  <p style={{ fontSize: '0.8rem', opacity: 0.5, marginTop: '8px' }}>
+                    {typeof data.dressCode === 'object' ? data.dressCode.description : data.dressCodeDescription}
+                  </p>
+                )}
+              </div>
+            )}
           </Reveal>
         </section>
 

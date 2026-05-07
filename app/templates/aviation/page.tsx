@@ -609,6 +609,37 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
              <a href="#" className={THEME.fontBody} style={{ display: 'inline-block', padding: '16px 45px', background: THEME.gold, color: THEME.white, borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '2px', boxShadow: '0 8px 25px rgba(197, 160, 89, 0.4)' }}>FLIGHT DIRECTIONS</a>
           </GlassSection>
 
+          {/* Announcements */}
+          {data?.announcements && (
+            <GlassSection>
+               <div style={{ color: THEME.gold, marginBottom: '20px' }}>
+                 <Wind size={30} />
+               </div>
+               <div className={THEME.fontDisplay} style={{ fontSize: '0.85rem', letterSpacing: '5px', color: THEME.gold, marginBottom: '15px', fontWeight: 800 }}>IN-FLIGHT ANNOUNCEMENT</div>
+               <p className={THEME.fontAccent} style={{ fontSize: '1.4rem', fontStyle: 'italic', color: THEME.white, lineHeight: 1.6 }}>
+                 "{data.announcements}"
+               </p>
+            </GlassSection>
+          )}
+
+          {/* Dress Code */}
+          {(data?.dressCode?.title || (typeof data?.dressCode === 'string' && data.dressCode)) && (
+            <GlassSection>
+               <div style={{ fontSize: '3rem', marginBottom: '20px' }}>
+                 {data?.dressCode?.icon || '🤵‍♂️  👰‍♀️'}
+               </div>
+               <div className={THEME.fontDisplay} style={{ fontSize: '0.85rem', letterSpacing: '5px', color: THEME.gold, marginBottom: '15px', fontWeight: 800 }}>DRESS CODE</div>
+               <h2 className={THEME.fontDisplay} style={{ fontSize: '2.2rem', marginBottom: '12px', color: THEME.white }}>
+                 {typeof data.dressCode === 'object' ? data.dressCode.title : data.dressCode}
+               </h2>
+               {(data?.dressCode?.description || data?.dressCodeDescription) && (
+                 <p className={THEME.fontBody} style={{ opacity: 0.9, color: THEME.white, fontWeight: 400, letterSpacing: '1px' }}>
+                   {typeof data.dressCode === 'object' ? data.dressCode.description : data.dressCodeDescription}
+                 </p>
+               )}
+            </GlassSection>
+          )}
+
           <Reveal delay={200}>
             <BoardingPass data={data} orderId={orderId} />
           </Reveal>
