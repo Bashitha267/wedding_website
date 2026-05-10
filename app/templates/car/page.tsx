@@ -5,7 +5,7 @@ import Reveal from '@/components/Reveal';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import { Alex_Brush, Cormorant_Garamond, Montserrat } from 'next/font/google';
-import { Calendar, Clock, MapPin, Car, Heart, Music, Camera } from 'lucide-react';
+import { Calendar, Clock, MapPin, Car, Heart, Music, Camera, Disc } from 'lucide-react';
 
 const alexBrush = Alex_Brush({ weight: '400', subsets: ['latin'] });
 const cormorant = Cormorant_Garamond({ weight: ['300', '400', '500', '600', '700'], subsets: ['latin'] });

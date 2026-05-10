@@ -751,7 +751,7 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                     {totalAdults}A | {totalChildren}C
                   </div>
                 </div>
-              </div>
+
 
                 {/* Seats */}
                 {[...Array(table.seats)].map((_, i) => {
