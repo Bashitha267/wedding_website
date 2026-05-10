@@ -216,15 +216,15 @@ export default function ClientDashboard() {
   if (!user || !order) return <div style={{ padding: '50px', textAlign: 'center' }}>Loading your dashboard...</div>;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff9f9', position: 'relative' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#ffffff', position: 'relative' }}>
       {/* Mobile Header */}
       <div style={{ 
         display: 'none', 
-        position: 'fixed', top: 0, left: 0, right: 0, height: '60px', 
-        backgroundColor: 'white', borderBottom: '1px solid #fee6ea', zIndex: 100,
-        padding: '0 20px', alignItems: 'center', justifyContent: 'space-between'
+        position: 'fixed', top: 0, left: 0, right: 0, height: '64px', 
+        backgroundColor: '#ffffff', borderBottom: '1px solid #eeeeee', zIndex: 100,
+        padding: '0 24px', alignItems: 'center', justifyContent: 'space-between'
       }} className="mobile-header">
-        <h2 className="font-romantic" style={{ fontSize: '1.5rem', margin: 0, color: 'var(--rose-dark)' }}>Client Area</h2>
+        <h2 className="font-romantic" style={{ fontSize: '1.6rem', margin: 0, color: '#000000' }}>Client Area</h2>
         <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -232,30 +232,30 @@ export default function ClientDashboard() {
 
       {/* Sidebar */}
       <aside style={{ 
-        width: '250px', backgroundColor: 'var(--card-bg)', borderRight: '1px solid #fee6ea', 
-        padding: '20px 0', flexShrink: 0,
+        width: '260px', backgroundColor: '#ffffff', borderRight: '1px solid #eeeeee', 
+        padding: '24px 0', flexShrink: 0,
         position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 1000,
         transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
-        transition: 'transform 0.3s ease'
+        transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px 20px', borderBottom: '1px solid #fee6ea', marginBottom: '20px' }}>
-          <div>
-            <h2 className="font-romantic" style={{ fontSize: '2rem', margin: 0, color: 'var(--rose-dark)' }}>Client Area</h2>
-            <p style={{ fontSize: '0.8rem', opacity: 0.6, margin: 0 }}>Welcome, {user.name}</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 24px 24px', borderBottom: '1px solid #eeeeee', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+             <img src="/logo.png" alt="Logo" style={{ width: '120px' }} />
           </div>
           <button className="mobile-only" onClick={() => setIsSidebarOpen(false)} style={{ display: 'none', background: 'none', border: 'none' }}>
              <X size={20} />
           </button>
         </div>
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '0 12px' }}>
           <button 
             onClick={() => { setActiveTab('template'); if(window.innerWidth < 768) setIsSidebarOpen(false); }}
             style={{ 
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
-              backgroundColor: activeTab === 'template' ? 'var(--rose-light)' : 'transparent',
-              color: activeTab === 'template' ? 'var(--rose-dark)' : 'var(--text-main)', 
-              border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
-              fontWeight: activeTab === 'template' ? 600 : 400
+              display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', 
+              backgroundColor: activeTab === 'template' ? '#000000' : 'transparent',
+              color: activeTab === 'template' ? '#ffffff' : '#666666', 
+              border: 'none', borderRadius: '8px', width: '100%', textAlign: 'left', cursor: 'pointer',
+              fontWeight: activeTab === 'template' ? 600 : 400,
+              transition: 'all 0.2s ease'
             }}
           >
             <PenTool size={18} /> Edit Template
@@ -263,11 +263,12 @@ export default function ClientDashboard() {
           <button 
             onClick={() => { setActiveTab('confirms'); if(window.innerWidth < 768) setIsSidebarOpen(false); }}
             style={{ 
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
-              backgroundColor: activeTab === 'confirms' ? 'var(--rose-light)' : 'transparent',
-              color: activeTab === 'confirms' ? 'var(--rose-dark)' : 'var(--text-main)', 
-              border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
-              fontWeight: activeTab === 'confirms' ? 600 : 400
+              display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', 
+              backgroundColor: activeTab === 'confirms' ? '#000000' : 'transparent',
+              color: activeTab === 'confirms' ? '#ffffff' : '#666666', 
+              border: 'none', borderRadius: '8px', width: '100%', textAlign: 'left', cursor: 'pointer',
+              fontWeight: activeTab === 'confirms' ? 600 : 400,
+              transition: 'all 0.2s ease'
             }}
           >
             <Users size={18} /> RSVPs ({rsvps.length})
@@ -275,20 +276,28 @@ export default function ClientDashboard() {
           <button 
             onClick={() => { setActiveTab('seating'); if(window.innerWidth < 768) setIsSidebarOpen(false); }}
             style={{ 
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
-              backgroundColor: activeTab === 'seating' ? 'var(--rose-light)' : 'transparent',
-              color: activeTab === 'seating' ? 'var(--rose-dark)' : 'var(--text-main)', 
-              border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
-              fontWeight: activeTab === 'seating' ? 600 : 400
+              display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', 
+              backgroundColor: activeTab === 'seating' ? '#000000' : 'transparent',
+              color: activeTab === 'seating' ? '#ffffff' : '#666666', 
+              border: 'none', borderRadius: '8px', width: '100%', textAlign: 'left', cursor: 'pointer',
+              fontWeight: activeTab === 'seating' ? 600 : 400,
+              transition: 'all 0.2s ease'
             }}
           >
             <Disc size={18} /> Seating Chart
           </button>
         </nav>
-        <div style={{ position: 'absolute', bottom: '20px', padding: '0 20px' }}>
+        <div style={{ position: 'absolute', bottom: '24px', left: 0, right: 0, padding: '0 24px' }}>
             <button 
                 onClick={() => { localStorage.removeItem('wedding_client'); router.push('/client/login'); }}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)', fontSize: '0.9rem', opacity: 0.8 }}
+                style={{ 
+                  display: 'flex', alignItems: 'center', gap: '10px', width: '100%',
+                  background: 'none', border: '1px solid #eeeeee', borderRadius: '8px',
+                  padding: '10px', cursor: 'pointer', color: '#666666', fontSize: '0.9rem',
+                  justifyContent: 'center', transition: 'all 0.2s ease'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
             >
                 Logout
             </button>
@@ -298,83 +307,86 @@ export default function ClientDashboard() {
       {/* Main Content Area */}
       <main style={{ 
         flex: 1, 
-        marginLeft: isSidebarOpen ? '250px' : '0',
-        padding: '40px', 
+        marginLeft: isSidebarOpen ? '260px' : '0',
+        padding: '48px', 
         overflowY: 'auto', 
         height: '100vh', 
         paddingBottom: '100px',
-        transition: 'margin-left 0.3s ease'
+        transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         
         {/* Status indicator */}
         <div style={{ 
-          position: 'fixed', bottom: '20px', left: isSidebarOpen ? '270px' : '20px', 
-          backgroundColor: 'white', padding: '10px 20px', borderRadius: '30px', 
-          boxShadow: '0 4px 15px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '10px',
+          position: 'fixed', bottom: '24px', right: '24px', 
+          backgroundColor: '#000000', color: '#ffffff', padding: '12px 24px', borderRadius: '40px', 
+          boxShadow: '0 8px 24px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', gap: '12px',
           zIndex: 50, transition: 'all 0.3s ease'
         }}>
           {saveStatus === 'saving' ? (
-             <><span className="spinner-small" /> Saving changes...</>
+             <><span className="spinner-small" style={{ borderLeftColor: '#ffffff' }} /> Syncing...</>
           ) : (
-             <><CheckCircle size={16} color="#28a745" /> All changes saved</>
+             <><CheckCircle size={16} color="#ffffff" /> All changes synced</>
           )}
         </div>
 
         {/* Feedback Encouragement Banner */}
         <div style={{ 
-          backgroundColor: 'var(--rose-vibrant)', 
-          color: 'white', 
-          padding: '20px 25px', 
-          borderRadius: '10px', 
-          marginBottom: '30px',
+          backgroundColor: '#000000', 
+          color: '#ffffff', 
+          padding: '24px 32px', 
+          borderRadius: '16px', 
+          marginBottom: '40px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          boxShadow: '0 4px 15px rgba(227, 99, 135, 0.2)',
+          boxShadow: '0 12px 32px rgba(0,0,0,0.1)',
           flexWrap: 'wrap',
-          gap: '20px'
+          gap: '24px'
         }}>
           <div>
-            <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>We Value Your Experience!</h3>
-            <p style={{ margin: '5px 0 0', fontSize: '0.95rem', opacity: 0.95 }}>
-              Your feedbacks are really grateful to us. Be kind to add a feedback about your wedding template experience.
+            <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 600 }}>We Value Your Experience</h3>
+            <p style={{ margin: '8px 0 0', fontSize: '1rem', opacity: 0.7 }}>
+              Your feedback helps us create better memories. Share your thoughts about your wedding template.
             </p>
           </div>
           <Link href="/feedback" style={{ 
-            backgroundColor: 'white', 
-            color: 'var(--rose-vibrant)', 
-            padding: '10px 25px', 
-            borderRadius: '6px', 
+            backgroundColor: '#ffffff', 
+            color: '#000000', 
+            padding: '12px 28px', 
+            borderRadius: '10px', 
             textDecoration: 'none', 
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            transition: 'all 0.2s ease',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            fontWeight: 600,
+            fontSize: '0.95rem',
+            transition: 'all 0.2s ease'
           }}>
             Give Feedback
           </Link>
         </div>
 
         {/* Universal Top Bar */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '40px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px', backgroundColor: '#ffffff', padding: '24px', borderRadius: '16px', border: '1px solid #eeeeee' }}>
                 <div>
-                   <div style={{ fontSize: '0.8rem', color: 'var(--rose-medium)', fontWeight: 600, letterSpacing: '1px' }}>YOUR LIVE INVITATION URL</div>
-                   <div style={{ fontSize: '1.2rem', fontWeight: 500 }}>{typeof window !== 'undefined' ? window.location.host : 'localhost:3000'}/{order.slug}</div>
+                   <div style={{ fontSize: '0.75rem', color: '#888888', fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '4px' }}>LIVE INVITATION URL</div>
+                   <div style={{ fontSize: '1.3rem', fontWeight: 600, color: '#000000' }}>{typeof window !== 'undefined' ? window.location.host : 'localhost:3000'}/{order.slug}</div>
                 </div>
-                <button className="btn-outline" onClick={handleCopyLink} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', fontSize: '0.9rem' }}>
-                    {copied ? <><CheckCircle size={16} /> Copied!</> : <><Copy size={16} /> Share Link</>}
+                <button onClick={handleCopyLink} style={{ 
+                  display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 24px', 
+                  fontSize: '0.95rem', borderRadius: '10px', backgroundColor: '#000000', color: '#ffffff',
+                  border: 'none', cursor: 'pointer', transition: 'all 0.2s ease'
+                }}>
+                    {copied ? <><CheckCircle size={18} /> Copied!</> : <><Copy size={18} /> Copy Link</>}
                 </button>
             </div>
 
-            <div style={{ display: 'flex', gap: '15px' }}>
-                <div style={{ backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', border: '1px solid #fee6ea', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.7rem', color: '#888', fontWeight: 600 }}>TOTAL GUESTS</div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--rose-dark)' }}>{rsvps.length}</div>
+            <div style={{ display: 'flex', gap: '20px' }}>
+                <div style={{ flex: 1, backgroundColor: '#ffffff', padding: '20px', borderRadius: '16px', border: '1px solid #eeeeee', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#888888', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>TOTAL GUESTS</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 700, color: '#000000', marginTop: '8px' }}>{rsvps.length}</div>
                 </div>
-                <div style={{ backgroundColor: 'white', padding: '15px 25px', borderRadius: '10px', border: '1px solid #fee6ea', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.7rem', color: '#888', fontWeight: 600 }}>TOTAL TABLES</div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--rose-dark)' }}>{templateDraft?.tables?.length || 0}</div>
+                <div style={{ flex: 1, backgroundColor: '#ffffff', padding: '20px', borderRadius: '16px', border: '1px solid #eeeeee', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#888888', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>TOTAL TABLES</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 700, color: '#000000', marginTop: '8px' }}>{templateDraft?.tables?.length || 0}</div>
                 </div>
             </div>
         </div>
@@ -383,13 +395,13 @@ export default function ClientDashboard() {
           <div style={{ display: 'flex', gap: '50px', alignItems: 'flex-start' }}>
             {/* Left Column: Form Editor */}
             <div style={{ flex: 1, maxWidth: '800px' }}>
-              <h1 style={{ marginBottom: '30px', color: 'var(--rose-dark)' }}>Customize Your Template</h1>
+              <h1 style={{ marginBottom: '30px', color: '#000000' }}>Customize Your Template</h1>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
                 
                 {/* Names */}
-                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
-                  <h3 style={{ marginBottom: '15px', color: 'var(--rose-dark)' }}>Couple Names</h3>
+                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
+                  <h3 style={{ marginBottom: '15px', color: '#000000' }}>Couple Names</h3>
                   <div style={{ display: 'flex', gap: '20px' }}>
                     <div style={{ flex: 1 }}>
                       <label style={{ fontSize: '0.9rem', display: 'block', marginBottom: '5px' }}>Bride's Name</label>
@@ -403,8 +415,8 @@ export default function ClientDashboard() {
                 </div>
 
                 {/* Images Section */}
-                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><ImageIcon size={20} color="var(--rose-medium)" /> Manage Images</h3>
+                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><ImageIcon size={20} color="#000000" /> Manage Images</h3>
                   <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '15px' }}>Upload your photos via Cloudinary.</p>
                   
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
@@ -435,7 +447,7 @@ export default function ClientDashboard() {
                      </div>
                   </div>
 
-                  <hr style={{ borderColor: '#fee6ea', margin: '20px 0' }} />
+                  <hr style={{ borderColor: '#eeeeee', margin: '24px 0' }} />
                   <label style={{ fontSize: '0.9rem', display: 'block', marginBottom: '5px' }}>Gallery Slider (Upload Multiple)</label>
                   <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'gallery', true)} disabled={uploading} multiple />
                   <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
@@ -455,8 +467,8 @@ export default function ClientDashboard() {
                 {/* Date & Location Side by Side */}
                 <div style={{ display: 'flex', gap: '30px' }}>
                   {/* Date */}
-                  <div style={{ flex: 1, backgroundColor: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><Calendar size={20} color="var(--rose-medium)" /> Date & Time</h3>
+                  <div style={{ flex: 1, backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><Calendar size={20} color="#000000" /> Date & Time</h3>
                     <input 
                        type="datetime-local" 
                        value={templateDraft?.eventDate ? templateDraft.eventDate.substring(0,16) : ''} 
@@ -466,16 +478,16 @@ export default function ClientDashboard() {
                   </div>
                   
                   {/* Location */}
-                  <div style={{ flex: 1, backgroundColor: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><MapPin size={20} color="var(--rose-medium)" /> Location</h3>
+                  <div style={{ flex: 1, backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><MapPin size={20} color="#000000" /> Location</h3>
                     <input type="text" placeholder="Venue Name" value={templateDraft?.location?.name || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), name: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '10px' }} />
                     <textarea placeholder="Full Address / Google Maps Link" value={templateDraft?.location?.address || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), address: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', resize: 'vertical', minHeight: '60px' }} />
                   </div>
                 </div>
 
                 {/* Music */}
-                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><Music size={20} color="var(--rose-medium)" /> Background Music</h3>
+                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><Music size={20} color="#000000" /> Background Music</h3>
                   <input 
                      type="text" 
                      value={templateDraft?.musicUrl || ''} 
@@ -487,7 +499,7 @@ export default function ClientDashboard() {
                 </div>
 
                 {/* Dress Code */}
-                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
+                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
                   <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>👗 Dress Code</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                      <input type="text" placeholder="Title (e.g. Formal Attire)" value={templateDraft?.dressCode?.title || ''} onChange={e => setTemplateDraft({...templateDraft, dressCode: {...(templateDraft.dressCode || {}), title: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }} />
@@ -497,7 +509,7 @@ export default function ClientDashboard() {
                 </div>
 
                 {/* Announcements */}
-                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
+                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
                   <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>📢 Announcements</h3>
                   <textarea 
                      value={templateDraft?.announcements || ''} 
@@ -508,8 +520,8 @@ export default function ClientDashboard() {
                 </div>
 
                 {/* Itinerary / Timeline */}
-                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea' }}>
-                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><Clock size={20} color="var(--rose-medium)" /> Itinerary Map</h3>
+                <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><Clock size={20} color="#000000" /> Itinerary Map</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                     {(templateDraft?.timeline || []).map((item: any, i: number) => (
                       <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -591,20 +603,20 @@ export default function ClientDashboard() {
 
         {activeTab === 'confirms' && (
           <div>
-            <h1 style={{ marginBottom: '30px', color: 'var(--rose-dark)' }}>RSVP Responses</h1>
-            <div style={{ backgroundColor: 'white', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #fee6ea', overflow: 'hidden' }}>
+            <h1 style={{ marginBottom: '30px', color: '#000000' }}>RSVP Responses</h1>
+            <div style={{ backgroundColor: 'white', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee', overflow: 'hidden' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                <thead style={{ backgroundColor: 'var(--rose-light)' }}>
+                <thead style={{ backgroundColor: '#f5f5f5' }}>
                   <tr>
-                    <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Guest Name</th>
-                    <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Contact Number</th>
-                    <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Attendance</th>
-                    <th style={{ padding: '15px 20px', fontWeight: 600, color: 'var(--rose-dark)' }}>Assigned Table</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#000000' }}>Guest Name</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#000000' }}>Contact Number</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#000000' }}>Attendance</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#000000' }}>Assigned Table</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rsvps.map(rsvp => (
-                    <tr key={rsvp.id} style={{ borderBottom: '1px solid #fee6ea' }}>
+                    <tr key={rsvp.id} style={{ borderBottom: '1px solid #eeeeee' }}>
                       <td style={{ padding: '15px 20px' }}>{rsvp.name}</td>
                       <td style={{ padding: '15px 20px', color: '#666' }}>{rsvp.contact_number}</td>
                       <td style={{ padding: '15px 20px' }}>
@@ -620,7 +632,7 @@ export default function ClientDashboard() {
                       <td style={{ padding: '15px 20px' }}>
                         {rsvp.table_number ? (
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <span style={{ fontWeight: 600, color: 'var(--rose-medium)' }}>Table {rsvp.table_number}</span>
+                            <span style={{ fontWeight: 600, color: '#000000' }}>Table {rsvp.table_number}</span>
                             <button 
                               onClick={() => handleTableAssign(rsvp.id, '')}
                               style={{ 
@@ -635,7 +647,7 @@ export default function ClientDashboard() {
                           <button 
                             onClick={() => setActiveTab('seating')}
                             style={{ 
-                              padding: '6px 12px', backgroundColor: 'var(--rose-medium)', color: 'white', 
+                              padding: '6px 12px', backgroundColor: '#000000', color: 'white', 
                               border: 'none', borderRadius: '4px', fontSize: '0.75rem', cursor: 'pointer',
                               fontWeight: 600
                             }}
@@ -688,7 +700,7 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ color: 'var(--rose-dark)' }}>Seating Arrangement</h1>
+        <h1 style={{ color: '#000000' }}>Seating Arrangement</h1>
         <button className="btn-primary" onClick={addNewTable}>+ Create New Table</button>
       </div>
 
@@ -702,7 +714,7 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
           return (
             <div key={table.id} style={{ 
                 backgroundColor: 'white', padding: '30px', borderRadius: '15px', 
-                boxShadow: '0 10px 30px rgba(0,0,0,0.05)', border: '1px solid #fee6ea',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.05)', border: '1px solid #eeeeee',
                 display: 'flex', flexDirection: 'column', alignItems: 'center'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '20px', alignItems: 'center' }}>
@@ -722,7 +734,7 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                         }
                     });
                   }}
-                  style={{ fontWeight: 700, fontSize: '1.2rem', border: 'none', color: 'var(--rose-dark)', width: '120px' }}
+                  style={{ fontWeight: 700, fontSize: '1.2rem', border: 'none', color: '#000000', width: '120px' }}
                 />
                 <button onClick={() => addSeatToTable(table.id)} style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd', cursor: 'pointer' }}>+ Add Seat</button>
               </div>
@@ -731,14 +743,15 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                 {/* Visual Table */}
                 <div style={{ 
                   width: '100px', height: '100px', borderRadius: '50%', 
-                  backgroundColor: 'var(--rose-light)', border: '2px dashed var(--rose-dark)',
+                  backgroundColor: '#f5f5f5', border: '2px dashed #000000',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, flexDirection: 'column'
                 }}>
-                  <span style={{ fontWeight: 800, color: 'var(--rose-dark)', fontSize: '1.1rem' }}>{totalHeadcount} / {table.seats}</span>
-                  <div style={{ fontSize: '0.65rem', color: 'var(--rose-medium)', marginTop: '2px' }}>
+                  <span style={{ fontWeight: 800, color: '#000000', fontSize: '1.1rem' }}>{totalHeadcount} / {table.seats}</span>
+                  <div style={{ fontSize: '0.65rem', color: '#666666', marginTop: '2px' }}>
                     {totalAdults}A | {totalChildren}C
                   </div>
                 </div>
+              </div>
 
                 {/* Seats */}
                 {[...Array(table.seats)].map((_, i) => {
@@ -777,7 +790,7 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                         position: 'absolute',
                         transform: `translate(${x}px, ${y}px)`,
                         width: '35px', height: '35px', borderRadius: '50%',
-                        backgroundColor: guestAtSeat ? (isChild ? '#ffb6c1' : 'var(--rose-vibrant)') : '#eee',
+                        backgroundColor: guestAtSeat ? (isChild ? '#888888' : '#000000') : '#eee',
                         border: guestAtSeat ? 'none' : '2px solid #ddd',
                         cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                         zIndex: 10, transition: 'all 0.2s ease',
@@ -814,7 +827,7 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '15px', width: '400px', maxHeight: '500px', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ margin: 0, color: 'var(--rose-dark)' }}>Assign Guest</h2>
+              <h2 style={{ margin: 0, color: '#000000' }}>Assign Guest</h2>
               <button onClick={() => setShowAssignModal(null)} style={{ border: 'none', background: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
             </div>
             
@@ -831,10 +844,10 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                   }}
                   style={{ 
                     padding: '12px', textAlign: 'left', borderRadius: '8px', 
-                    border: '1px solid #fee6ea', backgroundColor: '#fff', cursor: 'pointer',
+                    border: '1px solid #eeeeee', backgroundColor: '#fff', cursor: 'pointer',
                     transition: 'all 0.2s'
                   }}
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--rose-light)'}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
                   onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fff'}
                 >
                   <div style={{ fontWeight: 600 }}>{guest.name}</div>
@@ -848,9 +861,9 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
         </div>
       )}
 
-      <div style={{ marginTop: '40px', padding: '20px', backgroundColor: 'var(--rose-light)', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <p style={{ margin: 0, fontSize: '0.9rem', fontWeight: 500, color: 'var(--rose-dark)' }}>Don't forget to save your seating plan configuration!</p>
-        <button className="btn-primary" onClick={onSave} style={{ padding: '10px 25px' }}>Save Layout Changes</button>
+      <div style={{ marginTop: '40px', padding: '24px', backgroundColor: '#f5f5f5', borderRadius: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500, color: '#000000' }}>Don't forget to save your seating plan configuration!</p>
+        <button className="btn-primary" onClick={onSave} style={{ padding: '12px 28px' }}>Save Layout Changes</button>
       </div>
     </div>
   );

@@ -55,23 +55,43 @@ export default function AdminLogin() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'var(--bw-gray-light)'
+      backgroundColor: '#050505',
+      backgroundImage: 'radial-gradient(circle at center, #111 0%, #050505 100%)',
+      padding: '20px'
     }}>
       <div style={{
-        backgroundColor: 'var(--bw-white)',
-        padding: '40px',
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        backgroundColor: 'rgba(255, 255, 255, 0.03)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        padding: '48px 40px',
+        borderRadius: '24px',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
         width: '100%',
-        maxWidth: '400px',
-        textAlign: 'center'
+        maxWidth: '420px',
+        textAlign: 'center',
+        border: '1px solid rgba(255, 255, 255, 0.08)'
       }}>
-        <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>Admin Login</h1>
-        <p style={{ color: 'var(--bw-gray-medium)', marginBottom: '30px' }}>Enter your credentials to access the dashboard</p>
+        <div style={{ marginBottom: '32px' }}>
+          <img src="/logo.png" alt="Logo" style={{ width: '160px', display: 'block', margin: '0 auto', filter: 'brightness(0) invert(1)' }} />
+        </div>
+        
+        <h1 className="font-romantic" style={{ 
+          fontSize: '2.8rem', 
+          marginBottom: '8px', 
+          color: '#ffffff',
+          fontWeight: '400'
+        }}>Admin Login</h1>
+        
+        <p style={{ 
+          color: 'rgba(255, 255, 255, 0.5)', 
+          marginBottom: '40px', 
+          fontSize: '0.9rem',
+          letterSpacing: '0.5px'
+        }}>Secure access for administrators</p>
 
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ position: 'relative' }}>
-            <User style={{ position: 'absolute', top: '12px', left: '12px', color: 'var(--bw-gray-medium)' }} size={20} />
+            <User style={{ position: 'absolute', top: '14px', left: '16px', color: 'rgba(255, 255, 255, 0.4)' }} size={18} />
             <input 
               type="text" 
               placeholder="Username" 
@@ -79,45 +99,88 @@ export default function AdminLogin() {
               onChange={(e) => setUsername(e.target.value)}
               style={{
                 width: '100%',
-                padding: '12px 12px 12px 40px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                fontFamily: 'var(--font-body)'
+                padding: '14px 16px 14px 48px',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '12px',
+                fontSize: '0.95rem',
+                color: '#ffffff',
+                fontFamily: 'var(--font-body)',
+                outline: 'none',
+                transition: 'all 0.3s ease'
               }}
               required
             />
           </div>
           
           <div style={{ position: 'relative' }}>
-            <Lock style={{ position: 'absolute', top: '12px', left: '12px', color: 'var(--bw-gray-medium)' }} size={20} />
+            <Lock style={{ position: 'absolute', top: '14px', left: '16px', color: 'rgba(255, 255, 255, 0.4)' }} size={18} />
             <input 
               type="password" 
-              placeholder="Password (hashed in DB)" 
+              placeholder="Password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={{
                 width: '100%',
-                padding: '12px 12px 12px 40px',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                fontFamily: 'var(--font-body)'
+                padding: '14px 16px 14px 48px',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '12px',
+                fontSize: '0.95rem',
+                color: '#ffffff',
+                fontFamily: 'var(--font-body)',
+                outline: 'none',
+                transition: 'all 0.3s ease'
               }}
               required
             />
           </div>
 
-          <button type="submit" className="btn-primary" style={{ marginTop: '10px' }} disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+          <button type="submit" style={{ 
+            marginTop: '12px',
+            backgroundColor: '#ffffff',
+            color: '#000000',
+            padding: '14px',
+            border: 'none',
+            borderRadius: '12px',
+            fontFamily: 'var(--font-body)',
+            fontSize: '0.9rem',
+            letterSpacing: '1.5px',
+            textTransform: 'uppercase',
+            fontWeight: '600',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            opacity: loading ? 0.7 : 1,
+            transition: 'all 0.3s ease'
+          }} disabled={loading}>
+            {loading ? 'Authorizing...' : 'Enter Dashboard'}
           </button>
         </form>
 
-        {error && <p style={{ color: 'red', marginTop: '15px', fontSize: '0.9rem' }}>{error}</p>}
+        {error && (
+          <div style={{ 
+            marginTop: '20px', 
+            padding: '12px', 
+            backgroundColor: 'rgba(255, 82, 82, 0.1)', 
+            border: '1px solid rgba(255, 82, 82, 0.2)', 
+            borderRadius: '8px',
+            color: '#ff5252',
+            fontSize: '0.85rem'
+          }}>
+            {error}
+          </div>
+        )}
 
-        <div style={{ marginTop: '20px' }}>
-          <Link href="/" style={{ color: 'var(--bw-gray-medium)', textDecoration: 'none', fontSize: '0.9rem' }}>
-            &larr; Back to Home
+        <div style={{ marginTop: '32px' }}>
+          <Link href="/" style={{ 
+            color: 'rgba(255, 255, 255, 0.4)', 
+            textDecoration: 'none', 
+            fontSize: '0.85rem',
+            transition: 'color 0.3s ease'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.color = '#ffffff'}
+          onMouseOut={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.4)'}
+          >
+            &larr; Return to Marketplace
           </Link>
         </div>
       </div>
