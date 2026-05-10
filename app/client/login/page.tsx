@@ -53,21 +53,18 @@ export default function ClientLogin() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#050505',
-      backgroundImage: 'radial-gradient(circle at center, #111 0%, #050505 100%)',
+      backgroundColor: '#ffffff',
       padding: '20px'
     }}>
       <div style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.03)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
+        backgroundColor: '#000000',
         padding: '48px 40px',
         borderRadius: '24px',
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
         width: '100%',
         maxWidth: '420px',
         textAlign: 'center',
-        border: '1px solid rgba(255, 255, 255, 0.08)'
+        border: '1px solid #111'
       }}>
         <div style={{ marginBottom: '32px' }}>
           <img src="/logo.png" alt="Logo" style={{ width: '160px', display: 'block', margin: '0 auto', filter: 'brightness(0) invert(1)' }} />
