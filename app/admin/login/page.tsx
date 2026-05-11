@@ -73,7 +73,7 @@ export default function AdminLogin() {
         border: '1px solid rgba(255, 255, 255, 0.08)'
       }}>
         <div style={{ marginBottom: '32px' }}>
-          <img src="/logo.png" alt="Logo" style={{ width: '160px', display: 'block', margin: '0 auto', filter: 'brightness(0) invert(1)' }} />
+          <img src="https://res.cloudinary.com/dnfbik3if/image/upload/v1776967066/logo_bfzkos.png" alt="KNOT STORY Logo" style={{ width: '160px', display: 'block', margin: '0 auto', filter: 'brightness(0) invert(1)' }} />
         </div>
         
         <h1 className="font-romantic" style={{ 

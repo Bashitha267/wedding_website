@@ -240,7 +240,7 @@ export default function ClientDashboard() {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 24px 24px', borderBottom: '1px solid #eeeeee', marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-             <img src="/logo.png" alt="Logo" style={{ width: '120px' }} />
+             <img src="https://res.cloudinary.com/dnfbik3if/image/upload/v1776967066/logo_bfzkos.png" alt="KNOT STORY Logo" style={{ width: '120px' }} />
           </div>
           <button className="mobile-only" onClick={() => setIsSidebarOpen(false)} style={{ display: 'none', background: 'none', border: 'none' }}>
              <X size={20} />

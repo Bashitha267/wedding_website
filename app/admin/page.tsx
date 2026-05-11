@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('pending');
   const [orders, setOrders] = useState<any[]>([]);
   const [rsvps, setRSVPs] = useState<any[]>([]);
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
@@ -139,6 +139,13 @@ export default function AdminDashboard() {
 
   const deleteOrder = (id: string) => {
     setOrders(orders.filter(o => o.id !== id));
+  };
+
+  const markAsCompleted = async (order: any) => {
+    if (!confirm(`Mark ${order.customer_name} as Completed?`)) return;
+    const { error } = await supabase.from('orders').update({ status: 'completed' }).eq('id', order.id);
+    if (error) alert('Failed to update status');
+    else fetchOrders();
   };
 
   const handleToggleAccess = async (order: any) => {
@@ -354,50 +361,25 @@ export default function AdminDashboard() {
           </button>
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-          <button 
-            onClick={() => setActiveTab('dashboard')}
-            style={{ 
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
-              backgroundColor: activeTab === 'dashboard' ? '#333' : 'transparent',
-              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
-              fontSize: '1.1rem'
-            }}
-          >
-            <LayoutDashboard size={18} /> Dashboard
-          </button>
-          <button 
-            onClick={() => setActiveTab('history')}
-            style={{ 
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
-              backgroundColor: activeTab === 'history' ? '#333' : 'transparent',
-              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
-              fontSize: '1.1rem'
-            }}
-          >
-            <History size={18} /> History
-          </button>
-          <button 
-            onClick={() => setActiveTab('rsvps')}
-            style={{ 
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
-              backgroundColor: activeTab === 'rsvps' ? '#333' : 'transparent',
-              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
-              fontSize: '1.1rem'
-            }}
-          >
-             <Check size={18} /> RSVPs
-          </button>
-          <button 
-            onClick={() => setActiveTab('feedbacks')}
-            style={{ 
-              display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
-              backgroundColor: activeTab === 'feedbacks' ? '#333' : 'transparent',
-              color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
-              fontSize: '1.1rem'
-            }}
-          >
-             <MessageSquare size={18} /> Feedbacks
-          </button>
+          {[{ id: 'pending', label: 'Pending', icon: <LayoutDashboard size={18} /> },
+            { id: 'approved', label: 'Approved & Processing', icon: <Check size={18} /> },
+            { id: 'completed', label: 'Completed', icon: <Disc size={18} /> },
+            { id: 'rsvps', label: 'RSVPs', icon: <Users size={18} /> },
+            { id: 'feedbacks', label: 'Feedbacks', icon: <MessageSquare size={18} /> },
+          ].map(item => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px',
+                backgroundColor: activeTab === item.id ? '#333' : 'transparent',
+                color: 'white', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer',
+                fontSize: '1.05rem'
+              }}
+            >
+              {item.icon} {item.label}
+            </button>
+          ))}
         </nav>
         <div style={{ position: 'absolute', bottom: '20px', padding: '0 20px' }}>
             <Link href="/admin/login" style={{ color: '#aaa', textDecoration: 'none', fontSize: '0.9rem' }}>Logout</Link>
@@ -416,122 +398,72 @@ export default function AdminDashboard() {
           </button>
           <h2 style={{ margin: 0, fontSize: '1.2rem' }}>Admin Dashboard</h2>
         </div>
-        {activeTab === 'dashboard' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-              <h1 style={{ margin: 0 }}>Dashboard</h1>
-              <div style={{ display: 'flex', gap: '20px' }}>
-                <div style={{ backgroundColor: 'white', padding: '15px 25px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-                  <div style={{ fontSize: '0.9rem', color: '#666' }}>Ongoing</div>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 600 }}>{orders.filter(o => o.status === 'pending').length}</div>
-                </div>
+        {['pending', 'approved', 'completed'].includes(activeTab) && (() => {
+          const statusMap: Record<string, { label: string; statusFilter: string; badgeColor: string; badgeBg: string; badgeText: string }> = {
+            pending:   { label: 'Pending Requests', statusFilter: 'pending',   badgeColor: '#d93025', badgeBg: '#fce8e6', badgeText: 'PENDING' },
+            approved:  { label: 'Approved & Processing', statusFilter: 'completed', badgeColor: '#155724', badgeBg: '#d4edda', badgeText: 'APPROVED' },
+            completed: { label: 'Completed Orders', statusFilter: 'completed', badgeColor: '#1a5276', badgeBg: '#d6eaf8', badgeText: 'COMPLETED' },
+          };
+          const cfg = statusMap[activeTab];
+          const filtered = getFilteredOrders(cfg.statusFilter);
+          return (
+            <div>
+              <h1 style={{ marginBottom: '30px' }}>{cfg.label}</h1>
+              <SearchAndFilterBar />
+              <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
+                  <thead style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #eee' }}>
+                    <tr>
+                      <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem', width: '40px' }}>#</th>
+                      <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CUSTOMER</th>
+                      <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CONTACT</th>
+                      <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>USERNAME</th>
+                      <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>DATE</th>
+                      <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>URL</th>
+                      <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>STATUS</th>
+                      <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>ACTIONS</th>
+                      <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>EDITOR</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr><td colSpan={9} style={{ padding: '20px', textAlign: 'center' }}>Loading...</td></tr>
+                    ) : filtered.length === 0 ? (
+                      <tr><td colSpan={9} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>No orders found.</td></tr>
+                    ) : paginate(filtered).map((order, index) => (
+                      <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '1rem' }}>
+                        <td style={{ padding: '12px', color: '#999' }}>{(currentPage-1)*itemsPerPage + index + 1}</td>
+                        <td style={{ padding: '12px', fontWeight: 600, color: '#333' }}>{order.customer_name}</td>
+                        <td style={{ padding: '12px', color: '#666' }}>{order.customer_phone || 'N/A'}</td>
+                        <td style={{ padding: '12px', fontWeight: 600 }}>{order.client_username || '-'}</td>
+                        <td style={{ padding: '12px', color: '#666' }}>{new Date(order.created_at).toLocaleDateString()}</td>
+                        <td style={{ padding: '12px' }}>
+                          <a href={`/${order.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', fontWeight: 700, textDecoration: 'none', border: '1px solid #007bff', padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem' }}>LIVE</a>
+                        </td>
+                        <td style={{ padding: '12px' }}>
+                          <span style={{ padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 700, backgroundColor: cfg.badgeBg, color: cfg.badgeColor, textTransform: 'uppercase' }}>{cfg.badgeText}</span>
+                        </td>
+                        <td style={{ padding: '12px' }}>
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            {activeTab === 'pending' && <button onClick={() => handleToggleAccess(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#28a745', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>APPROVE</button>}
+                            {activeTab === 'approved' && <button onClick={() => handleToggleAccess(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#6c757d', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>BLOCK</button>}
+                            {activeTab === 'approved' && <button onClick={() => markAsCompleted(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#1a5276', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>COMPLETE</button>}
+                            <button onClick={() => startEdit(order)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}><PenTool size={16} /></button>
+                            <button onClick={() => { if(confirm('Delete order?')) deleteOrder(order.id) }} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#dc3545', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>REMOVE</button>
+                          </div>
+                        </td>
+                        <td style={{ padding: '12px' }}>
+                          <Link href={`/admin/editor/${order.id}`} style={{ color: '#007bff', fontWeight: 700, textDecoration: 'none', fontSize: '0.75rem', border: '1px solid #007bff', padding: '4px 10px', borderRadius: '4px', backgroundColor: '#f0f7ff' }}>Edit Template</Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
+              <Pagination totalItems={filtered.length} />
             </div>
-
-            <SearchAndFilterBar />
-
-            <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
-                <thead style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #eee' }}>
-                  <tr>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem', width: '40px' }}>#</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CUSTOMER</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CONTACT</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>USERNAME</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>DATE</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>URL</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>STATUS</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>ACTIONS</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>EDITOR</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr><td colSpan={9} style={{ padding: '20px', textAlign: 'center' }}>Loading orders...</td></tr>
-                  ) : getFilteredOrders('pending').length === 0 ? (
-                    <tr><td colSpan={9} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>No orders found matching your criteria.</td></tr>
-                  ) : paginate(getFilteredOrders('pending')).map((order, index) => (
-                    <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '1rem' }}>
-                      <td style={{ padding: '12px', color: '#999' }}>{(currentPage-1)*itemsPerPage + index + 1}</td>
-                      <td style={{ padding: '12px', fontWeight: 600, color: '#333' }}>{order.customer_name}</td>
-                      <td style={{ padding: '12px', color: '#666' }}>{order.customer_phone || 'N/A'}</td>
-                      <td style={{ padding: '12px', fontWeight: 600 }}>{order.client_username || '-'}</td>
-                      <td style={{ padding: '12px', color: '#666' }}>{new Date(order.created_at).toLocaleDateString()}</td>
-                      <td style={{ padding: '12px' }}>
-                        <a href={`/${order.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', fontWeight: 700, textDecoration: 'none', border: '1px solid #007bff', padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem' }}>LIVE</a>
-                      </td>
-                      <td style={{ padding: '12px' }}>
-                        <span style={{ padding: '4px 10px', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#fce8e6', color: '#d93025', textTransform: 'uppercase' }}>ONGOING</span>
-                      </td>
-                      <td style={{ padding: '12px' }}>
-                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                          <button onClick={() => handleToggleAccess(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#28a745', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>APPROVE</button>
-                          <button onClick={() => { if(confirm('Delete order?')) deleteOrder(order.id) }} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#dc3545', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>REMOVE</button>
-                        </div>
-                      </td>
-                      <td style={{ padding: '12px' }}>
-                        <Link href={`/admin/editor/${order.id}`} style={{ color: '#007bff', fontWeight: 700, textDecoration: 'none', fontSize: '0.75rem', border: '1px solid #007bff', padding: '4px 10px', borderRadius: '4px', backgroundColor: '#f0f7ff' }}>Edit Template</Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <Pagination totalItems={getFilteredOrders('pending').length} />
-          </div>
-        )}
-
-        {activeTab === 'history' && (
-          <div>
-            <h1 style={{ marginBottom: '30px' }}>Order History (Completed)</h1>
-            <SearchAndFilterBar />
-            <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
-                <thead style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #eee' }}>
-                  <tr>
-                     <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem', width: '40px' }}>#</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CUSTOMER</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CONTACT</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>USERNAME</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>DATE</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>URL</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>ACTIONS</th>
-                    <th style={{ padding: '15px 12px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>EDITOR</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {getFilteredOrders('completed').length === 0 ? (
-                    <tr><td colSpan={8} style={{ padding: '40px', textAlign: 'center', color: '#999' }}>No history records found matching your criteria.</td></tr>
-                  ) : paginate(getFilteredOrders('completed')).map((order, index) => (
-                    <tr key={order.id} style={{ borderBottom: '1px solid #eee', fontSize: '1rem' }}>
-                      <td style={{ padding: '12px', color: '#999' }}>{(currentPage-1)*itemsPerPage + index + 1}</td>
-                      <td style={{ padding: '12px', fontWeight: 600 }}>{order.customer_name}</td>
-                      <td style={{ padding: '12px', color: '#666' }}>{order.customer_phone || 'N/A'}</td>
-                      <td style={{ padding: '12px', fontWeight: 600 }}>{order.client_username || '-'}</td>
-                      <td style={{ padding: '12px', color: '#666' }}>{new Date(order.created_at).toLocaleDateString()}</td>
-                      <td style={{ padding: '12px' }}>
-                        <a href={`/${order.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', fontWeight: 700, textDecoration: 'none', border: '1px solid #007bff', padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem' }}>LIVE</a>
-                      </td>
-                      <td style={{ padding: '12px' }}>
-                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                           <button onClick={() => handleToggleAccess(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#6c757d', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>BLOCK ACCESS</button>
-                           <button onClick={() => startEdit(order)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}><PenTool size={16} /></button>
-                           <button onClick={() => { if(confirm('Delete order?')) deleteOrder(order.id) }} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#dc3545', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>REMOVE</button>
-                        </div>
-                      </td>
-                      <td style={{ padding: '12px' }}>
-                        <Link href={`/admin/editor/${order.id}`} style={{ color: '#007bff', fontWeight: 700, textDecoration: 'none', fontSize: '0.75rem', border: '1px solid #007bff', padding: '4px 10px', borderRadius: '4px', backgroundColor: '#f0f7ff' }}>
-                          Edit Template
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <Pagination totalItems={getFilteredOrders('completed').length} />
-          </div>
-        )}
+          );
+        })()}
 
         {activeTab === 'rsvps' && (
           <div>
