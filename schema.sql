@@ -38,7 +38,7 @@ CREATE TABLE orders (
     client_username VARCHAR(100) REFERENCES users(username) ON DELETE SET NULL, 
     -- Null when pending/unassigned. Links to the user account created by admin
     slug VARCHAR(255) UNIQUE, -- e.g., 'akashandchamudi' for the URL route
-    status VARCHAR(20) NOT NULL CHECK (status IN ('pending', 'completed')),
+    status VARCHAR(20) NOT NULL CHECK (status IN ('pending', 'approved', 'completed')),
     template_id VARCHAR(50) NOT NULL REFERENCES templates(id), -- e.g., 'template_1'
     
     -- Template Data stored as JSONB for flexibility (images, dates, locations, music, timeline)
