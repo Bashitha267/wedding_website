@@ -148,24 +148,23 @@ export default function AdminDashboard() {
     else fetchOrders();
   };
 
-  const handleToggleAccess = async (order: any) => {
-    const isCurrentlyActive = order.status === 'completed';
-    const nextActiveState = !isCurrentlyActive;
-    
-    try {
-      const { data, error } = await supabase.rpc('toggle_order_access', { 
-        p_username: order.client_username, 
-        p_order_id: order.id,
-        p_is_active: nextActiveState
-      });
+  const approveOrder = async (order: any) => {
+    if (!confirm(`Approve ${order.customer_name}'s order?`)) return;
+    const { error } = await supabase.from('orders').update({ status: 'approved' }).eq('id', order.id);
+    if (error) alert('Failed to approve order');
+    else {
+      alert(`${order.customer_name} has been approved!`);
+      fetchOrders();
+    }
+  };
 
-      if (error) throw error;
-      
-      alert(`${order.customer_name} access has been ${nextActiveState ? 'granted' : 'revoked'}!`);
-      fetchOrders(); 
-    } catch (err: any) {
-      console.error(err);
-      alert(`Operation failed: ${err.message}`);
+  const blockOrder = async (order: any) => {
+    if (!confirm(`Block / revert ${order.customer_name}'s order back to Pending?`)) return;
+    const { error } = await supabase.from('orders').update({ status: 'pending' }).eq('id', order.id);
+    if (error) alert('Failed to block order');
+    else {
+      alert(`${order.customer_name} has been reverted to Pending.`);
+      fetchOrders();
     }
   };
 
@@ -400,9 +399,9 @@ export default function AdminDashboard() {
         </div>
         {['pending', 'approved', 'completed'].includes(activeTab) && (() => {
           const statusMap: Record<string, { label: string; statusFilter: string; badgeColor: string; badgeBg: string; badgeText: string }> = {
-            pending:   { label: 'Pending Requests', statusFilter: 'pending',   badgeColor: '#d93025', badgeBg: '#fce8e6', badgeText: 'PENDING' },
-            approved:  { label: 'Approved & Processing', statusFilter: 'completed', badgeColor: '#155724', badgeBg: '#d4edda', badgeText: 'APPROVED' },
-            completed: { label: 'Completed Orders', statusFilter: 'completed', badgeColor: '#1a5276', badgeBg: '#d6eaf8', badgeText: 'COMPLETED' },
+            pending:   { label: 'Pending Requests',      statusFilter: 'pending',   badgeColor: '#d93025', badgeBg: '#fce8e6', badgeText: 'PENDING' },
+            approved:  { label: 'Approved & Processing', statusFilter: 'approved',  badgeColor: '#155724', badgeBg: '#d4edda', badgeText: 'APPROVED' },
+            completed: { label: 'Completed Orders',      statusFilter: 'completed', badgeColor: '#1a5276', badgeBg: '#d6eaf8', badgeText: 'COMPLETED' },
           };
           const cfg = statusMap[activeTab];
           const filtered = getFilteredOrders(cfg.statusFilter);
@@ -445,8 +444,8 @@ export default function AdminDashboard() {
                         </td>
                         <td style={{ padding: '12px' }}>
                           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                            {activeTab === 'pending' && <button onClick={() => handleToggleAccess(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#28a745', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>APPROVE</button>}
-                            {activeTab === 'approved' && <button onClick={() => handleToggleAccess(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#6c757d', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>BLOCK</button>}
+                            {activeTab === 'pending' && <button onClick={() => approveOrder(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#28a745', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>APPROVE</button>}
+                            {activeTab === 'approved' && <button onClick={() => blockOrder(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#6c757d', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>BLOCK</button>}
                             {activeTab === 'approved' && <button onClick={() => markAsCompleted(order)} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#1a5276', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>COMPLETE</button>}
                             <button onClick={() => startEdit(order)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}><PenTool size={16} /></button>
                             <button onClick={() => { if(confirm('Delete order?')) deleteOrder(order.id) }} style={{ padding: '5px 10px', border: 'none', borderRadius: '4px', background: '#dc3545', cursor: 'pointer', color: 'white', fontSize: '0.7rem', fontWeight: 600 }}>REMOVE</button>
