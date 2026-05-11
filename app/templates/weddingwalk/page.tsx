@@ -222,7 +222,7 @@ const WeddingRSVP = ({ orderId, data }: { orderId?: string, data?: any }) => {
           <button type="submit" className={THEME.fontBody} style={{ background: THEME.gold, color: '#fff', padding: '12px', borderRadius: '30px', fontWeight: 900, cursor: 'pointer' }}>CONFIRM</button>
         </form>
       )}
-      {status === 'success' && <div className={THEME.fontBody} style={{ color: THEME.gold, fontSize: '1.2rem', fontWeight: 700 }}>We look forward to seeing you!</div>}
+      {status === 'success' && <div className={THEME.fontBody} style={{ color: THEME.gold, fontSize: '1.2rem', fontWeight: 700 }}>Elegance awaits your presence!</div>}
     </div>
   );
 };
@@ -254,20 +254,20 @@ export default function WeddingWalkTemplate({ data, orderId }: { data: any, orde
   const img4 = gallery[4] || DEFAULT_IMAGES[4] || DEFAULT_IMAGES[0];
 
   return (
-    <div style={{ 
-      backgroundColor: '#FAF7F2', 
-      minHeight: '100vh', 
-      width: '100%', 
-      display: 'flex', 
+    <div style={{
+      backgroundColor: '#FAF7F2',
+      minHeight: '100vh',
+      width: '100%',
+      display: 'flex',
       justifyContent: 'center'
     }}>
-      <div className={THEME.fontBody} style={{ 
-        backgroundColor: THEME.cream, 
-        height: '100vh', 
-        width: '100%', 
-        maxWidth: '430px', 
+      <div className={THEME.fontBody} style={{
+        backgroundColor: THEME.cream,
+        height: '100vh',
+        width: '100%',
+        maxWidth: '430px',
         position: 'relative',
-        overflow: 'hidden', 
+        overflow: 'hidden',
         color: THEME.dark,
         boxShadow: '0 0 100px rgba(0,0,0,0.1)'
       }}>
@@ -280,7 +280,7 @@ export default function WeddingWalkTemplate({ data, orderId }: { data: any, orde
 
         {/* Layer 1: Scrollable Content Wrapper */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflowY: 'auto', zIndex: 1, scrollbarWidth: 'none' }}>
-          
+
           {isOpen && (
             <button onClick={toggleMusic} style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 2000, width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.8)', border: `1px solid ${THEME.gold}`, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.4rem', cursor: 'pointer', color: THEME.gold, boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
               <MusicIcon muted={isMuted} />
