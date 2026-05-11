@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ShoppingCart, X, CreditCard, User, Link as LinkIcon, Phone, Lock } from 'lucide-react';
+import { ShoppingCart, X, CreditCard, User, Link as LinkIcon, Phone, Lock, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function CartSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [item, setItem] = useState<any>(null);
+  const [showPassword, setShowPassword] = useState(false);
   
   // Checkout form state
   const [form, setForm] = useState({
@@ -172,7 +173,33 @@ export default function CartSidebar() {
                   </div>
                   <div style={{ position: 'relative' }}>
                     <Lock size={18} style={{ position: 'absolute', top: '12px', left: '12px', color: '#888' }} />
-                    <input type="password" placeholder="Create a Password" required value={form.password} onChange={e => setForm({...form, password: e.target.value})} style={inputStyle} />
+                    <input 
+                      type={showPassword ? "text" : "password"} 
+                      placeholder="Create a Password" 
+                      required 
+                      value={form.password} 
+                      onChange={e => setForm({...form, password: e.target.value})} 
+                      style={inputStyle} 
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#888',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0
+                      }}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
                   </div>
 
                   <h4 style={{ marginTop: '10px' }}>Confirmation</h4>

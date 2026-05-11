@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { PenTool, Users, Image as ImageIcon, Music, MapPin, Calendar, Clock, Disc, Copy, CheckCircle, Menu, X, Save } from 'lucide-react';
+import { PenTool, Users, Image as ImageIcon, Music, MapPin, Calendar, Clock, Disc, Copy, CheckCircle, Menu, X, Save, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'unsigned_preset'; 
@@ -693,6 +693,17 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
     onUpdateDraft({ ...templateDraft, tables: newTables });
   };
 
+  const deleteTable = (tableId: string, tableName: string) => {
+    if (!confirm(`Are you sure you want to delete ${tableName}? All guest assignments to this table will be cleared.`)) return;
+    
+    const newTables = tables.filter((t: any) => t.id !== tableId);
+    onUpdateDraft({ ...templateDraft, tables: newTables });
+
+    // Clear assignments for guests at this table
+    const guestsAtTable = rsvps.filter((r: any) => r.table_number === tableName);
+    guestsAtTable.forEach((r: any) => onAssignGuest(r.id, ''));
+  };
+
   const removeGuestFromSeat = (guestId: string) => {
     onAssignGuest(guestId, '');
   };
@@ -736,7 +747,20 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                   }}
                   style={{ fontWeight: 700, fontSize: '1.2rem', border: 'none', color: '#000000', width: '120px' }}
                 />
-                <button onClick={() => addSeatToTable(table.id)} style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd', cursor: 'pointer' }}>+ Add Seat</button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => addSeatToTable(table.id)} style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd', cursor: 'pointer', backgroundColor: 'white' }}>+ Add Seat</button>
+                  <button 
+                    onClick={() => deleteTable(table.id, table.name)} 
+                    style={{ 
+                      padding: '4px', borderRadius: '4px', border: '1px solid #ffcfcf', 
+                      cursor: 'pointer', backgroundColor: '#fff5f5', color: '#c53030',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}
+                    title="Delete Table"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
               </div>
 
               <div style={{ position: 'relative', width: '220px', height: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

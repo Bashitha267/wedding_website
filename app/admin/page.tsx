@@ -181,6 +181,23 @@ export default function AdminDashboard() {
     await supabase.from('rsvps').update({ table_number: table || null }).eq('id', id);
   };
 
+  const deleteRSVP = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this RSVP entry?')) return;
+    
+    const { error } = await supabase
+      .from('rsvps')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      alert('Failed to delete RSVP');
+    } else {
+      setOrderRSVPs(prev => prev.filter(r => r.id !== id));
+      // Also update the main rsvps state if needed, though orderRSVPs is what's shown in the modal
+      setRSVPs(prev => prev.filter(r => r.id !== id));
+    }
+  };
+
   const getFilteredOrders = (status: string | null) => {
     return orders.filter(order => {
         const matchesStatus = !status || order.status === status;
@@ -543,6 +560,7 @@ export default function AdminDashboard() {
                                     <th style={{ padding: '10px' }}>ADULTS</th>
                                     <th style={{ padding: '10px' }}>CHILDREN</th>
                                     <th style={{ padding: '10px' }}>TABLE</th>
+                                    <th style={{ padding: '10px' }}>ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -566,6 +584,14 @@ export default function AdminDashboard() {
                                                     </button>
                                                 )}
                                             </div>
+                                        </td>
+                                        <td style={{ padding: '10px' }}>
+                                            <button 
+                                                onClick={() => deleteRSVP(rsvp.id)}
+                                                style={{ padding: '5px 10px', background: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 600 }}
+                                            >
+                                                REMOVE
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -825,6 +851,17 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
     onUpdateDraft({ ...templateDraft, tables: newTables });
   };
 
+  const deleteTable = (tableId: string, tableName: string) => {
+    if (!confirm(`Are you sure you want to delete ${tableName}? All guest assignments to this table will be cleared.`)) return;
+    
+    const newTables = tables.filter((t: any) => t.id !== tableId);
+    onUpdateDraft({ ...templateDraft, tables: newTables });
+
+    // Clear assignments for guests at this table
+    const guestsAtTable = rsvps.filter((r: any) => r.table_number === tableName);
+    guestsAtTable.forEach((r: any) => onAssignGuest(r.id, ''));
+  };
+
   const removeGuestFromSeat = (guestId: string) => {
     onAssignGuest(guestId, '');
   };
@@ -868,7 +905,20 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
                   }}
                   style={{ fontWeight: 700, fontSize: '1.2rem', border: 'none', color: '#1c1e21', width: '120px' }}
                 />
-                <button onClick={() => addSeatToTable(table.id)} style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd', cursor: 'pointer' }}>+ Add Seat</button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => addSeatToTable(table.id)} style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd', cursor: 'pointer', backgroundColor: 'white' }}>+ Add Seat</button>
+                  <button 
+                    onClick={() => deleteTable(table.id, table.name)} 
+                    style={{ 
+                      padding: '4px', borderRadius: '4px', border: '1px solid #ffcfcf', 
+                      cursor: 'pointer', backgroundColor: '#fff5f5', color: '#dc3545',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}
+                    title="Delete Table"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
               </div>
 
               <div style={{ position: 'relative', width: '220px', height: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

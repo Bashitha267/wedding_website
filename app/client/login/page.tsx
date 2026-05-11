@@ -12,6 +12,8 @@ export default function ClientLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
    const [showPassword, setShowPassword] = useState(false);
+   const [isForgotPassword, setIsForgotPassword] = useState(false);
+   const [resetCode, setResetCode] = useState('');
    const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -83,8 +85,9 @@ export default function ClientLogin() {
           marginBottom: '40px', 
           fontSize: '0.9rem',
           letterSpacing: '0.5px'
-        }}>Access your wedding template dashboard</p>
+        }}>{isForgotPassword ? "Reset your account access" : "Access your wedding template dashboard"}</p>
 
+        {!isForgotPassword ? (
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ position: 'relative' }}>
             <User style={{ position: 'absolute', top: '14px', left: '16px', color: 'rgba(255, 255, 255, 0.4)' }} size={18} />
@@ -169,7 +172,78 @@ export default function ClientLogin() {
           }} disabled={loading}>
             {loading ? 'Authenticating...' : 'Sign In'}
           </button>
+          
+          <button 
+            type="button"
+            onClick={() => setIsForgotPassword(true)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255, 255, 255, 0.4)',
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              marginTop: '8px',
+              transition: 'color 0.3s ease'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.color = '#ffffff'}
+            onMouseOut={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.4)'}
+          >
+            Forgot Password?
+          </button>
         </form>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <h2 style={{ color: '#ffffff', fontSize: '1.5rem', marginBottom: '10px' }}>Reset Password</h2>
+          <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.9rem', marginBottom: '10px' }}>
+            Please enter the verification code sent to your registered phone number/email.
+          </p>
+          <div style={{ position: 'relative' }}>
+            <Lock style={{ position: 'absolute', top: '14px', left: '16px', color: 'rgba(255, 255, 255, 0.4)' }} size={18} />
+            <input 
+              type="text" 
+              placeholder="Enter Verification Code" 
+              value={resetCode}
+              onChange={(e) => setResetCode(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '14px 16px 14px 48px',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '12px',
+                fontSize: '0.95rem',
+                color: '#ffffff',
+                fontFamily: 'var(--font-body)',
+                outline: 'none'
+              }}
+            />
+          </div>
+          <button 
+            onClick={() => alert('Feature coming soon! Please contact admin.')}
+            style={{ 
+              backgroundColor: '#ffffff',
+              color: '#000000',
+              padding: '14px',
+              border: 'none',
+              borderRadius: '12px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Verify Code
+          </button>
+          <button 
+            onClick={() => setIsForgotPassword(false)}
+            style={{ 
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255, 255, 255, 0.4)',
+              cursor: 'pointer'
+            }}
+          >
+            Back to Login
+          </button>
+        </div>
+      )}
 
         {error && (
           <div style={{ 
