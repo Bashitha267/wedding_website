@@ -379,12 +379,20 @@ export default function ClientDashboard() {
                 </button>
             </div>
 
-            <div style={{ display: 'flex', gap: '20px' }}>
-                <div style={{ flex: 1, backgroundColor: '#ffffff', padding: '20px', borderRadius: '16px', border: '1px solid #eeeeee', textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#888888', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>TOTAL GUESTS</div>
-                    <div style={{ fontSize: '2rem', fontWeight: 700, color: '#000000', marginTop: '8px' }}>{rsvps.length}</div>
+            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                <div style={{ flex: 1, minWidth: '120px', backgroundColor: '#ffffff', padding: '20px', borderRadius: '16px', border: '1px solid #eeeeee', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#888888', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>TOTAL ADULTS</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 700, color: '#000000', marginTop: '8px' }}>
+                        {rsvps.reduce((sum: number, r: any) => sum + (Number(r.adult_count) || 0), 0)}
+                    </div>
                 </div>
-                <div style={{ flex: 1, backgroundColor: '#ffffff', padding: '20px', borderRadius: '16px', border: '1px solid #eeeeee', textAlign: 'center' }}>
+                <div style={{ flex: 1, minWidth: '120px', backgroundColor: '#ffffff', padding: '20px', borderRadius: '16px', border: '1px solid #eeeeee', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#888888', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>TOTAL CHILDREN</div>
+                    <div style={{ fontSize: '2rem', fontWeight: 700, color: '#000000', marginTop: '8px' }}>
+                        {rsvps.reduce((sum: number, r: any) => sum + (Number(r.children_count) || 0), 0)}
+                    </div>
+                </div>
+                <div style={{ flex: 1, minWidth: '120px', backgroundColor: '#ffffff', padding: '20px', borderRadius: '16px', border: '1px solid #eeeeee', textAlign: 'center' }}>
                     <div style={{ fontSize: '0.75rem', color: '#888888', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>TOTAL TABLES</div>
                     <div style={{ fontSize: '2rem', fontWeight: 700, color: '#000000', marginTop: '8px' }}>{templateDraft?.tables?.length || 0}</div>
                 </div>
@@ -693,15 +701,16 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
     onUpdateDraft({ ...templateDraft, tables: newTables });
   };
 
-  const deleteTable = (tableId: string, tableName: string) => {
-    if (!confirm(`Are you sure you want to delete ${tableName}? All guest assignments to this table will be cleared.`)) return;
+  const deleteTable = async (tableId: string, tableName: string) => {
+    if (!confirm(`Are you sure you want to delete ${tableName}? Guests assigned here will become unassigned and can be reassigned to another table.`)) return;
     
+    // First unassign all guests at this table (DB + optimistic state)
+    const guestsAtTable = rsvps.filter((r: any) => r.table_number === tableName);
+    await Promise.all(guestsAtTable.map((r: any) => onAssignGuest(r.id, '')));
+
+    // Then remove the table from the draft
     const newTables = tables.filter((t: any) => t.id !== tableId);
     onUpdateDraft({ ...templateDraft, tables: newTables });
-
-    // Clear assignments for guests at this table
-    const guestsAtTable = rsvps.filter((r: any) => r.table_number === tableName);
-    guestsAtTable.forEach((r: any) => onAssignGuest(r.id, ''));
   };
 
   const removeGuestFromSeat = (guestId: string) => {

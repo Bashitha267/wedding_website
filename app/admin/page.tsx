@@ -851,15 +851,16 @@ const SeatingChart = ({ rsvps, templateDraft, onUpdateDraft, onAssignGuest, onSa
     onUpdateDraft({ ...templateDraft, tables: newTables });
   };
 
-  const deleteTable = (tableId: string, tableName: string) => {
-    if (!confirm(`Are you sure you want to delete ${tableName}? All guest assignments to this table will be cleared.`)) return;
+  const deleteTable = async (tableId: string, tableName: string) => {
+    if (!confirm(`Are you sure you want to delete ${tableName}? Guests assigned here will become unassigned and can be reassigned to another table.`)) return;
     
+    // First unassign all guests at this table in DB + state
+    const guestsAtTable = rsvps.filter((r: any) => r.table_number === tableName);
+    await Promise.all(guestsAtTable.map((r: any) => onAssignGuest(r.id, '')));
+
+    // Then remove the table from the draft
     const newTables = tables.filter((t: any) => t.id !== tableId);
     onUpdateDraft({ ...templateDraft, tables: newTables });
-
-    // Clear assignments for guests at this table
-    const guestsAtTable = rsvps.filter((r: any) => r.table_number === tableName);
-    guestsAtTable.forEach((r: any) => onAssignGuest(r.id, ''));
   };
 
   const removeGuestFromSeat = (guestId: string) => {
