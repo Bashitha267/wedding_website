@@ -8,7 +8,7 @@ export default function CartSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [item, setItem] = useState<any>(null);
   const [showPassword, setShowPassword] = useState(false);
-  
+
   // Checkout form state
   const [form, setForm] = useState({
     name: '',
@@ -17,7 +17,7 @@ export default function CartSidebar() {
     username: '',
     password: ''
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -28,7 +28,7 @@ export default function CartSidebar() {
       }
       setIsOpen(true);
     };
-    
+
     window.addEventListener('open-cart', handleOpenCart);
     return () => window.removeEventListener('open-cart', handleOpenCart);
   }, []);
@@ -36,17 +36,17 @@ export default function CartSidebar() {
   const handlePay = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     // Simulate network delay for Mock Payment feel
     await new Promise(r => setTimeout(r, 1000));
-    
+
     try {
       if (!item || (!item.id && item.name !== 'The Eternal Blush')) {
         throw new Error("No valid template selected in cart.");
       }
-      
+
       const parsedTemplateId = item.id === '1' ? 'classic' : item.id;
-      
+
       const { data, error } = await supabase.rpc('checkout_order', {
         p_name: form.name,
         p_slug: form.url,
@@ -65,15 +65,15 @@ export default function CartSidebar() {
       }
 
       const whatsappMessage = encodeURIComponent(
-        `Hello Admin, I have placed an order for the ${item.name} template.\n\n` +
+        `Hello KnotStory, I have placed an order for the ${item.name} template.\n\n` +
         `*Customer Name:* ${form.name}\n` +
         `*Username:* ${form.username}\n` +
         `*Contact:* ${form.contact}\n` +
-        `*Slug:* ${form.url}\n\n` +
+        `*url:* ${form.url}\n\n` +
         `Please approve my account so I can start customizing.`
       );
       const whatsappUrl = `https://wa.me/94769996430?text=${whatsappMessage}`;
-      
+
       // We'll open WhatsApp after showing the success state or immediately 
       window.open(whatsappUrl, '_blank');
       setSuccess(true);
@@ -90,7 +90,7 @@ export default function CartSidebar() {
 
   return (
     <>
-      <div 
+      <div
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 2000,
@@ -98,7 +98,7 @@ export default function CartSidebar() {
         }}
         onClick={() => setIsOpen(false)}
       />
-      
+
       <div style={{
         position: 'fixed', top: 0, right: 0, bottom: 0,
         width: '100%', maxWidth: '450px',
@@ -125,8 +125,8 @@ export default function CartSidebar() {
               </p>
               <p>Your reserved URL: <b>/{form.url || 'your-url'}</b></p>
               <br />
-              <button 
-                className="btn-primary" 
+              <button
+                className="btn-primary"
                 onClick={() => setIsOpen(false)}
                 style={{ width: '100%' }}
               >
@@ -149,37 +149,37 @@ export default function CartSidebar() {
 
               {item && (
                 <form onSubmit={handlePay} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                  
+
                   <h4>Order Details</h4>
                   <div style={{ position: 'relative' }}>
                     <User size={18} style={{ position: 'absolute', top: '12px', left: '12px', color: '#888' }} />
-                    <input type="text" placeholder="Full Name" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} style={inputStyle} />
+                    <input type="text" placeholder="Full Name" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={inputStyle} />
                   </div>
-                  
+
                   <div style={{ position: 'relative' }}>
                     <LinkIcon size={18} style={{ position: 'absolute', top: '12px', left: '12px', color: '#888' }} />
-                    <input type="text" placeholder="Desired URL (e.g., akashandchamudi)" required value={form.url} onChange={e => setForm({...form, url: e.target.value})} style={inputStyle} />
+                    <input type="text" placeholder="Desired URL (e.g., akashandchamudi)" required value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} style={inputStyle} />
                   </div>
-                  
+
                   <div style={{ position: 'relative' }}>
                     <Phone size={18} style={{ position: 'absolute', top: '12px', left: '12px', color: '#888' }} />
-                    <input type="tel" placeholder="Contact Number" required value={form.contact} onChange={e => setForm({...form, contact: e.target.value})} style={inputStyle} />
+                    <input type="tel" placeholder="Contact Number" required value={form.contact} onChange={e => setForm({ ...form, contact: e.target.value })} style={inputStyle} />
                   </div>
 
                   <h4 style={{ marginTop: '10px' }}>Dashboard Account Registration</h4>
                   <div style={{ position: 'relative' }}>
                     <User size={18} style={{ position: 'absolute', top: '12px', left: '12px', color: '#888' }} />
-                    <input type="text" placeholder="Create a Username" required value={form.username} onChange={e => setForm({...form, username: e.target.value})} style={inputStyle} />
+                    <input type="text" placeholder="Create a Username" required value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} style={inputStyle} />
                   </div>
                   <div style={{ position: 'relative' }}>
                     <Lock size={18} style={{ position: 'absolute', top: '12px', left: '12px', color: '#888' }} />
-                    <input 
-                      type={showPassword ? "text" : "password"} 
-                      placeholder="Create a Password" 
-                      required 
-                      value={form.password} 
-                      onChange={e => setForm({...form, password: e.target.value})} 
-                      style={inputStyle} 
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Create a Password"
+                      required
+                      value={form.password}
+                      onChange={e => setForm({ ...form, password: e.target.value })}
+                      style={inputStyle}
                     />
                     <button
                       type="button"
@@ -214,7 +214,7 @@ export default function CartSidebar() {
           )}
         </div>
       </div>
-      
+
       <style jsx>{`
         @keyframes slideIn {
           from { transform: translateX(100%); }

@@ -75,8 +75,24 @@ export default function Home() {
                             <li><Link href="/" style={{ color: 'var(--bw-gray-dark)', textDecoration: 'none', fontSize: '0.9rem' }}>Home</Link></li>
                             <li><Link href="#products" style={{ color: 'var(--bw-gray-dark)', textDecoration: 'none', fontSize: '0.9rem' }}>Templates</Link></li>
                             <li><Link href="/contact" style={{ color: 'var(--bw-gray-dark)', textDecoration: 'none', fontSize: '0.9rem' }}>Contact</Link></li>
-
                             <li><Link href="/client/login" style={{ color: 'var(--bw-gray-dark)', textDecoration: 'none', fontSize: '0.9rem' }}>Client Login</Link></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style={{ fontSize: '0.9rem', letterSpacing: '2px', marginBottom: '20px', textTransform: 'uppercase' }}>Contact Us</h4>
+                        <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <li style={{ color: 'var(--bw-gray-dark)', fontSize: '0.9rem' }}>
+                                <span style={{ marginRight: '8px' }}>💬</span>
+                                <a href="https://wa.me/94769996430" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>WhatsApp</a>
+                            </li>
+                            <li style={{ color: 'var(--bw-gray-dark)', fontSize: '0.9rem' }}>
+                                <span style={{ marginRight: '8px' }}>✉️</span>
+                                <a href="mailto:invite.knotstory@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>Email Us</a>
+                            </li>
+                            <li style={{ color: 'var(--bw-gray-dark)', fontSize: '0.9rem' }}>
+                                <span style={{ marginRight: '8px' }}>📍</span>
+                                Negombo, Sri Lanka
+                            </li>
                         </ul>
                     </div>
                     <div>
@@ -90,7 +106,7 @@ export default function Home() {
                 </div>
                 <div className="container" style={{ marginTop: '60px', paddingTop: '30px', borderTop: '1px solid #ddd', textAlign: 'center' }}>
                     <p style={{ color: 'var(--bw-gray-medium)', fontSize: '0.8rem' }}>© 2026 KNOT STORY. ALL RIGHTS RESERVED.</p>
-                    <p style={{ color: 'var(--bw-gray-medium)', fontSize: '0.7rem', marginTop: '10px', opacity: 0.5, letterSpacing: '2px' }}>BY MATRIX</p>
+                    <p style={{ color: 'var(--bw-gray-medium)', fontSize: '1.2rem', marginTop: '15px', opacity: 0.8, letterSpacing: '4px', fontWeight: 'bold' }}>BY MATRIX</p>
                 </div>
             </footer>
 
