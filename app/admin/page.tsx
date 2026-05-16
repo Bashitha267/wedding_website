@@ -379,8 +379,22 @@ export default function AdminDashboard() {
               {item.icon} {item.label}
             </button>
           ))}
+          <div style={{ padding: '15px 20px', marginTop: '10px', borderTop: '1px solid #333' }}>
+            <Link 
+              href="/live" 
+              target="_blank" 
+              style={{ 
+                display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
+                backgroundColor: '#007bff', color: 'white', textDecoration: 'none', 
+                borderRadius: '8px', fontSize: '1rem', fontWeight: 600, justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(0,123,255,0.3)'
+              }}
+            >
+              <Eye size={18} /> Visit Live Site
+            </Link>
+          </div>
         </nav>
-        <div style={{ position: 'absolute', bottom: '20px', padding: '0 20px' }}>
+        <div style={{ position: 'absolute', bottom: '20px', padding: '0 20px', width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxSizing: 'border-box' }}>
             <Link href="/admin/login" style={{ color: '#aaa', textDecoration: 'none', fontSize: '0.9rem' }}>Logout</Link>
         </div>
       </aside>
@@ -407,7 +421,21 @@ export default function AdminDashboard() {
           const filtered = getFilteredOrders(cfg.statusFilter);
           return (
             <div>
-              <h1 style={{ marginBottom: '30px' }}>{cfg.label}</h1>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '15px' }}>
+                <h1 style={{ margin: 0 }}>{cfg.label}</h1>
+                <Link 
+                  href="/live" 
+                  target="_blank" 
+                  style={{ 
+                    display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', 
+                    backgroundColor: '#111', color: 'white', textDecoration: 'none', 
+                    borderRadius: '8px', fontSize: '0.9rem', fontWeight: 600,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                  }}
+                >
+                  <Eye size={18} /> Live Preview (/live)
+                </Link>
+              </div>
               <SearchAndFilterBar />
               <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
