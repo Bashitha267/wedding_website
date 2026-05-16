@@ -10,7 +10,6 @@ import Reveal from "@/components/Reveal";
 import CartSidebar from "@/components/CartSidebar";
 import Link from "next/link";
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
 
 export default function Home() {
     // START: Coming soon mode (prevents rendering the main page but keeps the code intact)
@@ -115,12 +114,13 @@ export default function Home() {
                         </div>
                     </div>
 
-                    {/* Footer Text & Loading Icon */}
+                    {/* Footer Text & Loading Bar */}
                     <div style={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        gap: '20px'
+                        gap: '20px',
+                        width: '100%'
                     }}>
                         <div style={{
                             fontFamily: 'system-ui, -apple-system, sans-serif',
@@ -134,12 +134,36 @@ export default function Home() {
                             STAY TUNED
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Loader2 
-                                size={28} 
-                                color="#333" 
-                                className="spinning-loader"
-                            />
+                        {/* Loading Bar Animation (Filled to 80% with continuous overflowing/shimmer animation, no percentage text) */}
+                        <div style={{ 
+                            width: '220px', 
+                            height: '6px', 
+                            backgroundColor: 'rgba(0, 0, 0, 0.08)', 
+                            borderRadius: '10px', 
+                            position: 'relative',
+                            overflow: 'hidden',
+                            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)'
+                        }}>
+                            <div className="loading-bar-fill" style={{
+                                position: 'absolute',
+                                left: 0,
+                                top: 0,
+                                height: '100%',
+                                width: '80%',
+                                borderRadius: '10px',
+                                background: 'linear-gradient(90deg, #111 0%, #555 50%, #111 100%)',
+                                backgroundSize: '200% 100%',
+                                boxShadow: '0 0 8px rgba(0,0,0,0.2)'
+                            }}>
+                                <div className="loading-bar-shimmer" style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    height: '100%',
+                                    width: '100%',
+                                    background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)',
+                                }} />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -150,13 +174,24 @@ export default function Home() {
                         to { opacity: 1; transform: scale(1) translateY(0); }
                     }
 
-                    @keyframes spin {
-                        from { transform: rotate(0deg); }
-                        to { transform: rotate(360deg); }
+                    @keyframes gradientFlow {
+                        0% { background-position: 200% 0; }
+                        100% { background-position: -200% 0; }
                     }
 
-                    :global(.spinning-loader) {
-                        animation: spin 1.5s linear infinite;
+                    @keyframes shimmerFlow {
+                        0% { transform: translateX(-100%); }
+                        100% { transform: translateX(100%); }
+                    }
+
+                    :global(.loading-bar-fill) {
+                        animation: gradientFlow 3s linear infinite;
+                        overflow: hidden;
+                        position: relative;
+                    }
+
+                    :global(.loading-bar-shimmer) {
+                        animation: shimmerFlow 1.5s ease-in-out infinite;
                     }
                 `}</style>
             </main>
