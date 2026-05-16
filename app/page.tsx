@@ -177,9 +177,7 @@ export default function Home() {
                     @keyframes smoothProgress {
                         0% { width: 0%; opacity: 0; }
                         15% { width: 15%; opacity: 1; }
-                        75% { width: 80%; opacity: 1; }
-                        85% { width: 80%; opacity: 1; }
-                        100% { width: 80%; opacity: 0; }
+                        100% { width: 80%; opacity: 1; }
                     }
 
                     @keyframes gradientFlow {
@@ -193,7 +191,7 @@ export default function Home() {
                     }
 
                     :global(.loading-bar-fill) {
-                        animation: smoothProgress 2.5s ease-in-out infinite, gradientFlow 3s linear infinite;
+                        animation: smoothProgress 2.5s ease-out forwards, gradientFlow 3s linear infinite;
                         overflow: hidden;
                         position: relative;
                     }
