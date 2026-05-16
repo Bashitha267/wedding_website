@@ -149,7 +149,7 @@ export default function Home() {
                                 left: 0,
                                 top: 0,
                                 height: '100%',
-                                width: '80%',
+                                width: '0%',
                                 borderRadius: '10px',
                                 background: 'linear-gradient(90deg, #111 0%, #555 50%, #111 100%)',
                                 backgroundSize: '200% 100%',
@@ -174,6 +174,14 @@ export default function Home() {
                         to { opacity: 1; transform: scale(1) translateY(0); }
                     }
 
+                    @keyframes smoothProgress {
+                        0% { width: 0%; opacity: 0; }
+                        15% { width: 15%; opacity: 1; }
+                        75% { width: 80%; opacity: 1; }
+                        85% { width: 80%; opacity: 1; }
+                        100% { width: 80%; opacity: 0; }
+                    }
+
                     @keyframes gradientFlow {
                         0% { background-position: 200% 0; }
                         100% { background-position: -200% 0; }
@@ -185,7 +193,7 @@ export default function Home() {
                     }
 
                     :global(.loading-bar-fill) {
-                        animation: gradientFlow 3s linear infinite;
+                        animation: smoothProgress 2.5s ease-in-out infinite, gradientFlow 3s linear infinite;
                         overflow: hidden;
                         position: relative;
                     }
