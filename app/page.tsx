@@ -57,7 +57,7 @@ export default function Home() {
                     {/* Logo Section */}
                     <div style={{ position: 'relative', width: '200px', height: '60px' }}>
                         <Image
-                            src="/logo.png"
+                            src="https://res.cloudinary.com/dnfbik3if/image/upload/v1776967066/logo_bfzkos.png"
                             alt="KNOT STORY Logo"
                             fill
                             style={{ objectFit: 'contain' }}
