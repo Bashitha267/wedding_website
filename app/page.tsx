@@ -10,8 +10,160 @@ import Reveal from "@/components/Reveal";
 import CartSidebar from "@/components/CartSidebar";
 import Link from "next/link";
 import Image from "next/image";
+import { Loader2 } from "lucide-react";
 
 export default function Home() {
+    // START: Coming soon mode (prevents rendering the main page but keeps the code intact)
+    const isComingSoon = true;
+
+    if (isComingSoon) {
+        return (
+            <main style={{
+                minHeight: '100vh',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#eaeaea',
+                // Simulating a soft, wavy/silky background with CSS gradients
+                backgroundImage: `
+                    radial-gradient(circle at 15% 50%, rgba(255,255,255,0.6) 0%, transparent 50%),
+                    radial-gradient(circle at 85% 30%, rgba(255,255,255,0.7) 0%, transparent 50%),
+                    linear-gradient(135deg, #e8e8e8 0%, #fdfdfd 40%, #e0e0e0 100%)
+                `,
+                padding: '20px',
+                position: 'relative',
+                overflow: 'hidden'
+            }}>
+                <div style={{
+                    width: '100%',
+                    maxWidth: '650px',
+                    aspectRatio: '1 / 1',
+                    maxHeight: '90vh',
+                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    borderRadius: '40px',
+                    border: '1.5px solid rgba(255, 255, 255, 0.7)',
+                    boxShadow: '0 30px 60px rgba(0,0,0,0.08), inset 0 0 20px rgba(255,255,255,0.5)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '8% 4%',
+                    position: 'relative',
+                    animation: 'fadeIn 1.5s ease-out'
+                }}>
+
+                    {/* Logo Section */}
+                    <div style={{ position: 'relative', width: '200px', height: '60px' }}>
+                        <Image
+                            src="/logo.png"
+                            alt="KNOT STORY Logo"
+                            fill
+                            style={{ objectFit: 'contain' }}
+                            priority
+                        />
+                    </div>
+
+                    {/* Main Text Section */}
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        width: '100%'
+                    }}>
+                        <div style={{
+                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                            fontWeight: 300,
+                            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+                            lineHeight: '0.9',
+                            color: '#333',
+                            textAlign: 'center',
+                            textTransform: 'uppercase',
+                            letterSpacing: '-1px'
+                        }}>
+                            WE ARE
+                        </div>
+                        <div style={{
+                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                            fontWeight: 300,
+                            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+                            lineHeight: '0.9',
+                            color: '#333',
+                            textAlign: 'center',
+                            textTransform: 'uppercase',
+                            letterSpacing: '-1px',
+                            marginBottom: '5px'
+                        }}>
+                            LAUNCHING
+                        </div>
+                        <div style={{
+                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                            fontWeight: 700,
+                            fontSize: 'clamp(6rem, 15vw, 11rem)',
+                            lineHeight: '0.85',
+                            textTransform: 'uppercase',
+                            letterSpacing: '-2px',
+                            background: 'linear-gradient(to bottom, #888888 0%, #111111 80%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                            color: 'transparent'
+                        }}>
+                            SOON
+                        </div>
+                    </div>
+
+                    {/* Footer Text & Loading Icon */}
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '20px'
+                    }}>
+                        <div style={{
+                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                            fontWeight: 400,
+                            fontSize: 'clamp(0.7rem, 2vw, 1rem)',
+                            letterSpacing: 'clamp(8px, 2vw, 20px)',
+                            color: '#111',
+                            textTransform: 'uppercase',
+                            marginLeft: 'clamp(8px, 2vw, 20px)' // Offset for true centering with large letter spacing
+                        }}>
+                            STAY TUNED
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Loader2 
+                                size={28} 
+                                color="#333" 
+                                className="spinning-loader"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <style jsx>{`
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: scale(0.95) translateY(20px); }
+                        to { opacity: 1; transform: scale(1) translateY(0); }
+                    }
+
+                    @keyframes spin {
+                        from { transform: rotate(0deg); }
+                        to { transform: rotate(360deg); }
+                    }
+
+                    :global(.spinning-loader) {
+                        animation: spin 1.5s linear infinite;
+                    }
+                `}</style>
+            </main>
+        );
+    }
+    // END: Coming soon mode
+
     return (
         <main style={{ backgroundColor: 'var(--bw-white)' }}>
             <CartSidebar />
@@ -46,11 +198,11 @@ export default function Home() {
                         </Reveal>
                     </div>
                     <div style={{ flex: 1, minWidth: '300px', position: 'relative', height: '500px', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}>
-                        <Image 
-                            src="/bespoke_roses_color.png" 
-                            alt="Custom Bespoke Wedding Design" 
-                            fill 
-                            style={{ objectFit: 'cover' }} 
+                        <Image
+                            src="/bespoke_roses_color.png"
+                            alt="Custom Bespoke Wedding Design"
+                            fill
+                            style={{ objectFit: 'cover' }}
                         />
                     </div>
                 </div>
