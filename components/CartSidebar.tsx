@@ -141,6 +141,13 @@ export default function CartSidebar() {
                   <div>
                     <h3 style={{ margin: '0 0 5px 0', fontSize: '1.2rem' }}>{item.name}</h3>
                     <p style={{ margin: 0, color: 'var(--bw-gray-medium)', fontSize: '0.9rem' }}>{item.theme}</p>
+                    {item.price != null ? (
+                      <p style={{ margin: '6px 0 0', fontWeight: 700, fontSize: '1.1rem', color: 'var(--bw-black)' }}>
+                        LKR {Number(item.price).toLocaleString()}
+                      </p>
+                    ) : (
+                      <p style={{ margin: '6px 0 0', fontSize: '0.85rem', color: '#aaa' }}>Price on request</p>
+                    )}
                   </div>
                 </div>
               ) : (

@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, History, LayoutTemplate, X, Check, Trash2, PenTool, Search, Filter, ChevronLeft, ChevronRight, Users, Disc, MessageSquare, Eye, EyeOff, Menu } from 'lucide-react';
+import { LayoutDashboard, History, LayoutTemplate, X, Check, Trash2, PenTool, Search, Filter, ChevronLeft, ChevronRight, Users, Disc, MessageSquare, Eye, EyeOff, Menu, DollarSign } from 'lucide-react';
+import { templates } from '@/app/data';
 import { supabase } from '@/lib/supabase';
 import { useEffect } from 'react';
 
@@ -17,6 +18,10 @@ export default function AdminDashboard() {
   const [viewingImage, setViewingImage] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ username: '', password: '', slug: '', phone: '' });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Template Pricing State
+  const [templatePrices, setTemplatePrices] = useState<Record<string, string>>({});
+  const [priceSaving, setPriceSaving] = useState<string | null>(null);
   
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,7 +39,29 @@ export default function AdminDashboard() {
     fetchOrders();
     fetchRSVPs();
     fetchFeedbacks();
+    fetchTemplatePrices();
   }, []);
+
+  const fetchTemplatePrices = async () => {
+    const { data } = await supabase.from('template_prices').select('template_id, price');
+    if (data) {
+      const map: Record<string, string> = {};
+      data.forEach((row: any) => { map[row.template_id] = String(row.price ?? ''); });
+      setTemplatePrices(map);
+    }
+  };
+
+  const saveTemplatePrice = async (templateId: string) => {
+    setPriceSaving(templateId);
+    const raw = templatePrices[templateId];
+    const price = raw === '' || raw == null ? null : Number(raw);
+    const { error } = await supabase
+      .from('template_prices')
+      .upsert({ template_id: templateId, price }, { onConflict: 'template_id' });
+    if (error) alert(`Failed to save price: ${error.message}`);
+    else await fetchTemplatePrices();
+    setPriceSaving(null);
+  };
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -365,6 +392,7 @@ export default function AdminDashboard() {
             { id: 'completed', label: 'Completed', icon: <Disc size={18} /> },
             { id: 'rsvps', label: 'RSVPs', icon: <Users size={18} /> },
             { id: 'feedbacks', label: 'Feedbacks', icon: <MessageSquare size={18} /> },
+            { id: 'pricing', label: 'Template Pricing', icon: <DollarSign size={18} /> },
           ].map(item => (
             <button
               key={item.id}
@@ -608,7 +636,73 @@ export default function AdminDashboard() {
                 </div>
             )}
         </div>
-      )}
+        )}
+
+        {activeTab === 'pricing' && (
+          <div>
+            <h1 style={{ marginBottom: '30px' }}>Template Pricing</h1>
+            <p style={{ color: '#666', marginBottom: '30px', fontSize: '0.95rem' }}>Set or update the price for each template. Leave blank to show "Price on request" on the public site.</p>
+            <div style={{ backgroundColor: 'white', borderRadius: '10px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #eee' }}>
+                  <tr>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>TEMPLATE</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>THEME</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CURRENT PRICE (LKR)</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>SET NEW PRICE</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {templates.map((t) => {
+                    const current = templatePrices[t.id];
+                    return (
+                      <tr key={t.id} style={{ borderBottom: '1px solid #eee' }}>
+                        <td style={{ padding: '16px 20px', fontWeight: 600, fontSize: '1rem' }}>{t.name}</td>
+                        <td style={{ padding: '16px 20px', color: '#888', fontSize: '0.9rem' }}>{t.theme}</td>
+                        <td style={{ padding: '16px 20px' }}>
+                          {current ? (
+                            <span style={{ fontWeight: 700, color: '#111' }}>LKR {Number(current).toLocaleString()}</span>
+                          ) : (
+                            <span style={{ color: '#aaa', fontSize: '0.85rem' }}>Not set</span>
+                          )}
+                        </td>
+                        <td style={{ padding: '16px 20px' }}>
+                          <input
+                            type="number"
+                            min="0"
+                            placeholder="e.g. 15000"
+                            value={templatePrices[t.id] ?? ''}
+                            onChange={(e) => setTemplatePrices(prev => ({ ...prev, [t.id]: e.target.value }))}
+                            style={{ padding: '8px 12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '1rem', width: '160px' }}
+                          />
+                        </td>
+                        <td style={{ padding: '16px 20px' }}>
+                          <button
+                            onClick={() => saveTemplatePrice(t.id)}
+                            disabled={priceSaving === t.id}
+                            style={{
+                              padding: '8px 20px',
+                              backgroundColor: priceSaving === t.id ? '#aaa' : '#28a745',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '6px',
+                              cursor: priceSaving === t.id ? 'default' : 'pointer',
+                              fontWeight: 600,
+                              fontSize: '0.85rem'
+                            }}
+                          >
+                            {priceSaving === t.id ? 'Saving...' : 'Save'}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
       {activeTab === 'feedbacks' && (
         <div>

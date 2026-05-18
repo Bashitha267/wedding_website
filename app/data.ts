@@ -10,14 +10,14 @@ export const templates: Product[] = [
   {
     id: "classic",
     name: "The Eternal Blush",
-    image: "https://res.cloudinary.com/dxoa3ashm/image/upload/q_auto/f_auto/v1775820733/Untitled_design_nalrft.jpg",
+    image: "https://res.cloudinary.com/dnfbik3if/image/upload/v1779136389/Screenshot_2026-05-19_015847_ja9yls.png",
     description: "A romantic and sophisticated design featuring soft blush tones, delicate floral accents, and timeless typography.",
     theme: "Romantic Blush"
   },
   {
     id: "earthy",
     name: "The Earthy Botanical",
-    image: "https://res.cloudinary.com/dnfbik3if/image/upload/q_auto/f_auto/v1776009671/earthy_l8luv4.jpg", // Using the generated image for now as a placeholder
+    image: "https://res.cloudinary.com/dnfbik3if/image/upload/v1779136389/Screenshot_2026-05-19_020018_itu9x6.png", // Using the generated image for now as a placeholder
     description: "A warm, organic design featuring rich brown tones, tan accents, and delicate botanical line art.",
     theme: "Earthy Botanical"
   },
@@ -31,7 +31,7 @@ export const templates: Product[] = [
   {
     id: "icy",
     name: "Icy Royal Forest",
-    image: "https://res.cloudinary.com/dnfbik3if/image/upload/q_auto/f_auto/v1776009817/2_lgtwrw.jpg",
+    image: "https://res.cloudinary.com/dnfbik3if/image/upload/v1779136389/Screenshot_2026-05-19_020035_rordri.png",
     description: "An ethereal winter design with arched frames, dusty blue roses, and frozen silver accents.",
     theme: "Icy Winter Tale"
   },
@@ -73,7 +73,7 @@ export const templates: Product[] = [
   {
     id: "minimal",
     name: "The Luxe Minimalist",
-    image: "/luxe_floral_header.png",
+    image: "https://res.cloudinary.com/dnfbik3if/image/upload/v1779136454/Screenshot_2026-05-19_020400_o6v70q.png",
     description: "A sophisticated, high-end minimalist design inspired by modern Italian weddings. Features a personalized wax seal, elegant serif typography, and a refined ivory palette.",
 
     theme: "Minimal Luxury"

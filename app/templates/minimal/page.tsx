@@ -227,17 +227,17 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
 
 
   const ceremonyInfo = {
-    name: data?.ceremonyLocation?.name || data?.location?.name || '',
-    address: data?.ceremonyLocation?.address || data?.location?.address || '',
-    time: data?.ceremonyTime || (data?.eventDate ? new Date(data.eventDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''),
-    mapUrl: data?.ceremonyLocation?.mapUrl || data?.location?.mapUrl || ''
+    name: data?.ceremonyLocation?.name || data?.location?.name || 'Cathedral of Santa Maria',
+    address: data?.ceremonyLocation?.address || data?.location?.address || 'Piazza del Duomo, Terrasini, Sicilia',
+    time: data?.ceremonyTime || (data?.eventDate ? new Date(data.eventDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '14:30'),
+    mapUrl: data?.ceremonyLocation?.mapUrl || data?.location?.mapUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3145.2132717088926!2d13.0827103!3d38.1504068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13198c6a67e8837d%3A0x7b6c507a2a0a25!2sDuomo%20di%20Terrasini!5e0!3m2!1sen!2sit!4v1716000000000!5m2!1sen!2sit'
   };
 
   const receptionInfo = {
-    name: data?.receptionLocation?.name || '',
-    address: data?.receptionLocation?.address || '',
-    time: data?.receptionTime || '',
-    mapUrl: data?.receptionLocation?.mapUrl || ''
+    name: data?.receptionLocation?.name || 'Villa Palagonia',
+    address: data?.receptionLocation?.address || 'Via Palagonia 12, Bagheria, Sicilia',
+    time: data?.receptionTime || '18:00',
+    mapUrl: data?.receptionLocation?.mapUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3146.425890831135!2d13.5113889!3d38.0791667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1319e1b5b5b5b5b5%3A0x123456789abcdef!2sVilla%20Palagonia!5e0!3m2!1sen!2sit!4v1716000000000!5m2!1sen!2sit'
   };
 
   const hasCeremony = !!ceremonyInfo.name;
