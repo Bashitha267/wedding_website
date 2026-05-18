@@ -54,244 +54,145 @@ const InvitationEnvelope = ({
 }) => {
   const isOpening = stage === 'opening';
   const isOpened = stage === 'opened';
+  const initials = `${(data?.brideName?.[0] || 'S')}${(data?.groomName?.[0] || 'M')}`;
 
   return (
     <div
+      onClick={onOpen}
       style={{
         width: '100%',
         height: '100vh',
         backgroundColor: '#f7f8f6',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         position: 'fixed',
         top: 0,
         left: 0,
-        zIndex: 1000,
+        zIndex: 3000,
         transition: 'opacity 0.8s ease, transform 1s cubic-bezier(0.2, 0.9, 0.2, 1)',
         transform: isOpened ? 'scale(1.05) translateY(-30px)' : 'scale(1) translateY(0)',
         opacity: isOpened ? 0 : 1,
         pointerEvents: isOpened ? 'none' : 'auto',
         overflow: 'hidden',
-        backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")'
+        backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
+        cursor: 'pointer'
       }}
-      onClick={onOpen}
     >
       <FloatingHearts count={15} color="#8a9a5b" />
+      
       <div style={{
-        width: '92%',
-        maxWidth: '430px',
-        height: '600px',
         position: 'relative',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        perspective: '1400px'
+        width: '320px',
+        height: '224px',
+        transform: isOpening ? 'scale(1.08) translateY(20px)' : 'scale(1)',
+        transition: 'transform 1.2s ease-in-out',
+        perspective: '1000px',
+        zIndex: 10
       }}>
+        {/* Card inside pulling up */}
+        <div style={{
+          position: 'absolute',
+          inset: '10px',
+          backgroundColor: 'var(--earthy-cream)',
+          borderRadius: '6px',
+          zIndex: 1,
+          transform: isOpening ? 'translateY(-80px)' : 'translateY(0)',
+          transition: 'transform 1s ease-in-out 0.3s',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
+          border: '1px solid rgba(138, 154, 91, 0.2)'
+        }}>
+          <div style={{
+            border: '1px solid rgba(138, 154, 91, 0.3)',
+            width: '85%',
+            height: '85%',
+            borderRadius: '4px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.2rem', color: 'var(--earthy-brown)', lineHeight: 1 }}>
+              {initials}
+            </div>
+            <div style={{ fontSize: '0.6rem', letterSpacing: '3px', color: 'var(--earthy-accent)', marginTop: '4px', fontWeight: 700, textTransform: 'uppercase' }}>
+              Wedding
+            </div>
+          </div>
+        </div>
+
+        {/* Envelope Image Base */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          borderRadius: '26px',
-          background: 'radial-gradient(circle at 20% 10%, rgba(255,255,255,0.4), transparent 55%), radial-gradient(circle at 80% 90%, rgba(138,154,91,0.25), transparent 50%)',
-          filter: 'blur(2px)',
-          opacity: 0.8
-        }} />
-
-        <div style={{
-          width: '100%',
-          maxWidth: '400px',
-          height: '540px',
-          position: 'relative',
-          transformStyle: 'preserve-3d',
-          transform: isOpening ? 'translateY(-16px) scale(1.01)' : 'translateY(0) scale(1)',
-          transition: 'transform 0.9s cubic-bezier(0.2, 0.9, 0.2, 1)'
+          zIndex: 2,
+          borderRadius: '8px',
+          boxShadow: '0 15px 45px rgba(62, 74, 62, 0.15)',
+          overflow: 'hidden'
         }}>
-          <div style={{
-            position: 'absolute',
-            top: '40px',
-            left: '20px',
-            right: '20px',
-            bottom: '145px',
-            backgroundColor: '#97aa6b',
-            borderRadius: '12px',
-            boxShadow: '0 22px 35px rgba(62, 74, 62, 0.25)',
-            transform: isOpening ? 'translateY(-140px) scale(1.01)' : 'translateY(0)',
-            transition: 'transform 0.95s cubic-bezier(0.2, 0.9, 0.2, 1)',
-            overflow: 'hidden',
-            zIndex: 2
-          }}>
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
-              opacity: 0.2
-            }} />
-
-            <div style={{ position: 'absolute', top: '-18px', left: '-30px', width: '140px', height: '140px', opacity: 0.9 }}>
-              <Image src={DECO_IMAGE} alt="leaves" fill style={{ objectFit: 'contain', transform: 'rotate(-8deg)' }} />
-            </div>
-            <div style={{ position: 'absolute', right: '-26px', bottom: '-14px', width: '140px', height: '140px', opacity: 0.9 }}>
-              <Image src={DECO_IMAGE} alt="leaves" fill style={{ objectFit: 'contain', transform: 'rotate(168deg)' }} />
-            </div>
-
-            <div style={{
-              position: 'absolute',
-              inset: '20px',
-              border: '1px solid rgba(255,255,255,0.18)',
-              borderRadius: '10px'
-            }} />
-
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              color: 'white',
-              padding: '20px'
-            }}>
-              <h1 style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '3.4rem',
-                lineHeight: 1.1,
-                marginBottom: '12px'
-              }}>
-                {data?.brideName || 'Bride'} & {data?.groomName || 'Groom'}
-              </h1>
-              <div style={{
-                fontSize: '0.82rem',
-                letterSpacing: '5px',
-                textTransform: 'uppercase',
-                fontWeight: 700,
-                opacity: 0.85
-              }}>
-                Wedding Invitation
-              </div>
-            </div>
-          </div>
-
-          <div style={{
-            position: 'absolute',
-            left: '20px',
-            right: '20px',
-            bottom: '40px',
-            height: '280px',
-            backgroundColor: '#8a9a5b',
-            borderRadius: '0 0 18px 18px',
-            boxShadow: '0 22px 45px rgba(0, 0, 0, 0.18)',
-            overflow: 'hidden',
-            zIndex: 5
-          }}>
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
-              opacity: 0.2
-            }} />
-            <div style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              top: '-140px',
-              margin: '0 auto',
-              width: 0,
-              height: 0,
-              borderLeft: '180px solid transparent',
-              borderRight: '180px solid transparent',
-              borderBottom: '140px solid #8a9a5b'
-            }} />
-          </div>
-
-          <div style={{
-            position: 'absolute',
-            left: '20px',
-            right: '20px',
-            bottom: '180px',
-            height: '190px',
-            transformOrigin: 'top center',
-            transformStyle: 'preserve-3d',
-            transform: isOpening ? 'rotateX(-178deg)' : 'rotateX(0deg)',
-            transition: 'transform 0.9s cubic-bezier(0.2, 0.9, 0.2, 1)',
-            zIndex: isOpening ? 1 : 7
-          }}>
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
-              backgroundColor: '#94a768',
-              boxShadow: 'inset 0 -1px 0 rgba(255,255,255,0.28), 0 10px 20px rgba(0,0,0,0.12)'
-            }} />
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
-              backgroundImage: 'url("https://www.transparenttextures.com/patterns/natural-paper.png")',
-              opacity: 0.16
-            }} />
-          </div>
-
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onOpen();
-            }}
-            disabled={isOpening}
-            style={{
-              position: 'absolute',
-              left: '50%',
-              bottom: '120px',
-              transform: isOpening ? 'translateX(-50%) scale(0.6)' : 'translateX(-50%) scale(1)',
-              width: '112px',
-              height: '112px',
-              borderRadius: '999px',
-              border: 'none',
-              background: 'transparent',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: isOpening ? 'default' : 'pointer',
-              zIndex: 9,
-              opacity: isOpening ? 0 : 1,
-              transition: 'all 0.5s ease',
-              filter: 'drop-shadow(0 14px 20px rgba(0,0,0,0.28))'
-            }}
-            aria-label="Open invitation envelope"
-          >
-            <div className="pulse" style={{ position: 'relative', width: '100%', height: '100%' }}>
-              <Image src="/sage_wax_seal.png" alt="Wax Seal" fill style={{ objectFit: 'contain' }} />
-            </div>
-          </button>
-
-          <div className="bounce-soft" style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: '32px',
-            textAlign: 'center',
-            color: '#f1f4e8',
-            letterSpacing: '5px',
-            fontWeight: 700,
-            fontSize: '0.82rem',
-            textTransform: 'uppercase',
-            zIndex: 10,
-            opacity: isOpening ? 0 : 0.95,
-            transition: 'opacity 0.35s ease'
-          }}>
-            Tap to open
-          </div>
+          <Image src="/earthy_envelope.png" alt="Earthy Envelope" fill style={{ objectFit: 'cover' }} priority />
         </div>
+
+        {/* Elegant Wax Seal */}
+        {!isOpening && (
+          <div style={{
+            position: 'absolute',
+            top: '55%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 5,
+            transition: 'opacity 0.3s ease'
+          }}>
+            <div className="pulse" style={{
+              width: '52px',
+              height: '52px',
+              backgroundColor: 'var(--earthy-accent)',
+              borderRadius: '50%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              boxShadow: '0 4px 12px rgba(62, 74, 62, 0.3), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2)',
+              border: '2px solid #97aa6b'
+            }}>
+              <span style={{
+                fontFamily: 'var(--font-display)',
+                color: '#ffffff',
+                fontSize: '1.4rem',
+                textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                lineHeight: 1
+              }}>
+                {initials}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
+      <div style={{ marginTop: '45px', textAlign: 'center', zIndex: 10 }}>
+        <div style={{ fontSize: '0.75rem', letterSpacing: '6px', textTransform: 'uppercase', color: 'var(--earthy-accent)', marginBottom: '10px', fontWeight: 700 }}>
+          INVITATION
+        </div>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '2.8rem', color: 'var(--earthy-brown)', marginBottom: '10px', lineHeight: 1 }}>
+          {data?.brideName || 'Sarah'} & {data?.groomName || 'Mark'}
+        </h1>
+        <div className="bounce-soft" style={{ fontSize: '0.7rem', letterSpacing: '5px', color: 'var(--earthy-accent)', marginTop: '12px', fontWeight: 700, textTransform: 'uppercase' }}>
+          TAP TO UNSEAL
+        </div>
+      </div>
+      
       <div style={{
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.06) 100%)',
+        background: 'radial-gradient(circle at center, transparent 0%, rgba(62,74,62,0.06) 100%)',
         zIndex: 0
       }} />
     </div>
