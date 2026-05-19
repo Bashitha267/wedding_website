@@ -14,11 +14,24 @@ export default function LandingHero() {
       overflow: 'hidden',
       padding: 0
     }}>
+      <style>{`
+        .hero-img {
+          object-fit: cover !important;
+          object-position: center center !important;
+          opacity: 0.8;
+        }
+        @media (min-width: 1025px) {
+          .hero-img {
+            object-fit: cover !important;
+            object-position: center 23% !important;
+          }
+        }
+      `}</style>
       <Image
         src="https://images.unsplash.com/photo-1549416878-b9ca95e26903?q=80&w=2070&auto=format&fit=crop"
         alt="Wedding Hero"
         fill
-        style={{ objectFit: 'cover', opacity: 0.8 }}
+        className="hero-img"
         priority
       />
       <div style={{
