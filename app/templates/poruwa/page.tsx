@@ -129,7 +129,7 @@ const WeddingCalendar = ({ data }: { data?: any }) => {
             </div>
           ))}
         </div>
-        <button 
+        <button
           onClick={() => {
             const title = encodeURIComponent(`${data?.brideName || 'Bride'} & ${data?.groomName || 'Groom'}'s Wedding`);
             const startStr = data?.eventDate
@@ -138,8 +138,8 @@ const WeddingCalendar = ({ data }: { data?: any }) => {
             const dates = `${startStr}/${startStr}`;
             const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}`;
             window.open(url, '_blank');
-          }} 
-          className={THEME.fontBody} 
+          }}
+          className={THEME.fontBody}
           style={{ background: THEME.gold, color: '#000', border: 'none', borderRadius: '30px', padding: '12px 25px', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '1px', cursor: 'pointer', marginTop: '10px' }}
         >
           ADD TO CALENDAR
@@ -209,32 +209,32 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
   const coverImage = data?.images?.heroImage || '/poruwa_final_clean.png';
 
   return (
-    <div style={{ 
-      backgroundColor: '#000', 
-      minHeight: '100vh', 
-      width: '100%', 
-      display: 'flex', 
+    <div style={{
+      backgroundColor: '#000',
+      minHeight: '100vh',
+      width: '100%',
+      display: 'flex',
       justifyContent: 'center'
     }}>
-      <div className={THEME.fontBody} style={{ 
-        backgroundColor: '#000', 
-        height: '100vh', 
-        width: '100%', 
-        maxWidth: '430px', 
+      <div className={THEME.fontBody} style={{
+        backgroundColor: '#000',
+        height: '100vh',
+        width: '100%',
+        maxWidth: '430px',
         position: 'relative',
-        overflow: 'hidden', 
+        overflow: 'hidden',
         color: '#fff',
         boxShadow: '0 0 100px rgba(0,0,0,0.8)'
       }}>
         {/* Layer 0: Background Video */}
         <video ref={videoRef} autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
-          <source src="/poruwa.mp4" type="video/mp4" />
+          <source src="/poruwanew.mp4" type="video/mp4" />
         </video>
         <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 0 }}></div>
 
         {/* Layer 1: Content Wrapper */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflowY: 'auto', zIndex: 1, scrollbarWidth: 'none' }}>
-          
+
           {/* Cover Page */}
           <div style={{ width: '100%', height: '100vh', backgroundColor: '#000', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, left: 0, zIndex: 1000, transition: 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)', transform: isOpen ? 'translateY(-100%)' : 'translateY(0)', opacity: isOpen ? 0 : 1, cursor: 'pointer', overflow: 'hidden' }} onClick={handleOpen}>
             <Image src={coverImage} alt="Cover" fill style={{ objectFit: 'cover', opacity: 0.9 }} priority />
@@ -256,10 +256,10 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
             <main style={{ position: 'relative', zIndex: 1, width: '100%', padding: '0 20px' }}>
               <section style={{ height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
                 <Reveal>
-                    <div style={{ fontSize: '0.8rem', letterSpacing: '6px', color: THEME.gold, marginBottom: '20px', fontWeight: 700 }}>AYUBOWAN</div>
-                    <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(3rem, 15vw, 4.5rem)', color: THEME.gold, marginBottom: '20px' }}>Wedding</h1>
-                    <BlendingImage src={image1} size="280px" align="center" />
-                    <h2 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: '#fff' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
+                  <div style={{ fontSize: '0.8rem', letterSpacing: '6px', color: THEME.gold, marginBottom: '20px', fontWeight: 700 }}>AYUBOWAN</div>
+                  <h1 className={THEME.fontDisplay} style={{ fontSize: 'clamp(3rem, 15vw, 4.5rem)', color: THEME.gold, marginBottom: '20px' }}>Wedding</h1>
+                  <BlendingImage src={image1} size="280px" align="center" />
+                  <h2 className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: '#fff' }}>{data?.groomName || 'Mark'} & {data?.brideName || 'Sarah'}</h2>
                 </Reveal>
               </section>
 
@@ -286,7 +286,7 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
                 <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 700 }}>THE VENUE</div>
                 <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px' }}>{data?.location?.name || 'Grand Kandyan Hall'}</h2>
                 <p className={THEME.fontBody} style={{ opacity: 0.8, color: THEME.goldLight, marginBottom: '30px' }}>{data?.location?.address || 'Kandy, Sri Lanka'}</p>
-                
+
                 <a
                   href={data?.location?.address || '#'}
                   target="_blank"
