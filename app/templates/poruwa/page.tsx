@@ -228,7 +228,7 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
       }}>
         {/* Layer 0: Background Video */}
         <video ref={videoRef} autoPlay loop muted playsInline style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
-          <source src="/poruwanew.mp4" type="video/mp4" />
+          <source src="/poruwanw.mp4" type="video/mp4" />
         </video>
         <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 0 }}></div>
 
