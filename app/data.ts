@@ -66,7 +66,7 @@ export const templates: Product[] = [
   {
     id: "poruwa",
     name: "Poruwa Tradition",
-    image: "/poruwafinal.jpeg",
+    image: "/templates/poruwaneww.jpeg",
     description: "A traditional Sri Lankan Sinhala Poruwa wedding template with rich gold and maroon tones, featuring a serene background video of the Poruwa ceremony.",
     theme: "Traditional Sri Lankan"
   },
