@@ -22,21 +22,29 @@ const OG_IMAGE = "https://res.cloudinary.com/dnfbik3if/image/upload/v1776967066/
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "KNOT STORY | Premium Digital Wedding Invitations Sri Lanka",
+    default: "KNOT STORY | Sri Lankan Wedding Invitations and Event Planning",
     template: "%s | KNOT STORY",
   },
   description:
-    "KNOT STORY crafts beautifully animated digital wedding invitations with RSVP management, seating charts, and custom designs. Celebrate love with elegance — Sri Lanka's premier wedding invitation studio.",
+    "KNOT STORY offers Sri Lankan wedding invitations, event planning, and homecoming celebrations with modern digital templates, RSVP tools, and custom designs inspired by viral TikTok trends.",
   keywords: [
+    "Sri Lankan wedding invitations",
+    "wedding invitation templates",
     "digital wedding invitations",
     "wedding invitation Sri Lanka",
+    "event planning Sri Lanka",
+    "Sri Lanka wedding planner",
+    "homecoming ceremony Sri Lanka",
+    "homecoming event planning",
+    "wedding invitation designs",
     "online wedding card",
     "RSVP management",
     "wedding seating chart",
     "animated wedding invitation",
     "custom wedding template",
     "wedding website Sri Lanka",
-    "premium wedding card",
+    "viral TikTok wedding trends",
+    "TikTok wedding invitations",
     "KNOT STORY",
   ],
   authors: [{ name: "KNOT STORY", url: SITE_URL }],
@@ -58,9 +66,9 @@ export const metadata: Metadata = {
     locale: "en_LK",
     url: SITE_URL,
     siteName: "KNOT STORY",
-    title: "KNOT STORY | Premium Digital Wedding Invitations",
+    title: "KNOT STORY | Sri Lankan Wedding Invitations and Event Planning",
     description:
-      "Stunning animated digital wedding invitations with live RSVP, seating charts & custom templates. Made with love in Sri Lanka.",
+      "Sri Lankan wedding invitations, homecoming celebrations, and event planning with digital templates, RSVP tools, and TikTok-inspired design trends.",
     images: [
       {
         url: OG_IMAGE,
@@ -72,9 +80,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "KNOT STORY | Premium Digital Wedding Invitations",
+    title: "KNOT STORY | Sri Lankan Wedding Invitations and Event Planning",
     description:
-      "Stunning animated digital wedding invitations with live RSVP, seating charts & custom templates.",
+      "Sri Lankan wedding invitations, homecoming celebrations, and event planning with digital templates and RSVP tools.",
     images: [OG_IMAGE],
     creator: "@knotstory",
   },
@@ -96,7 +104,7 @@ const jsonLd = {
   "@type": "LocalBusiness",
   name: "KNOT STORY",
   description:
-    "Premium digital wedding invitations with RSVP management, seating charts, and bespoke custom designs for your dream wedding.",
+    "Sri Lankan wedding invitations and event planning with RSVP management, seating charts, and custom digital templates for weddings and homecomings.",
   url: SITE_URL,
   logo: LOGO_URL,
   image: OG_IMAGE,
