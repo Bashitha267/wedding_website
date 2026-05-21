@@ -229,7 +229,7 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
   const thankYouImage = data?.images?.thankYouImage || gallery[4] || DEFAULT_IMAGES[4];
 
   // Using the generated cover image as default if no images are provided
-  const coverImage = data?.images?.heroImage || '/poruwa_final_clean.png';
+  const coverImage = data?.images?.heroImage || '/templates/poruwaneww.jpeg';
 
   return (
     <div className="desktop-bg-wrapper theme-poruwa" style={{
