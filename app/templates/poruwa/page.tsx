@@ -23,7 +23,18 @@ const THEME = {
   fontAccent: playfair.className,
 };
 
+const MUSIC_URL = "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3";
 const DEFAULT_IMAGES = ['/photo_2.png', '/photo_3.png', '/photo_4.png', '/photo_5.png'];
+
+const MusicIcon = ({ muted }: { muted: boolean }) => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    {muted ? (
+      <><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v10a3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3c1.29 0 2.42.81 2.83 2"></path><path d="M18 13V5a2 2 0 0 0-2-2H9"></path></>
+    ) : (
+      <><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></>
+    )}
+  </svg>
+);
 
 const HeartIcon = ({ size = 24, color = THEME.gold }: { size?: number, color?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke="none">
@@ -191,10 +202,22 @@ const PoruwaRSVP = ({ orderId, data }: { orderId?: string, data?: any }) => {
 
 export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const toggleMusic = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const audio = document.getElementById('bg-music') as HTMLAudioElement;
+    if (audio) {
+      audio.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
 
   const handleOpen = () => {
     setIsOpen(true);
+    const audio = document.getElementById('bg-music') as HTMLAudioElement;
+    if (audio) { audio.play().catch(e => console.log("Audio play blocked:", e)); }
     if (videoRef.current) { videoRef.current.play().catch(e => console.log("Video play blocked:", e)); }
   };
 
@@ -231,9 +254,16 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
           <source src="/poruwanw.mp4" type="video/mp4" />
         </video>
         <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 0 }}></div>
+        <audio id="bg-music" loop><source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" /></audio>
 
         {/* Layer 1: Content Wrapper */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflowY: 'auto', zIndex: 1, scrollbarWidth: 'none' }}>
+
+          {isOpen && (
+            <button onClick={toggleMusic} style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 2000, width: '50px', height: '50px', borderRadius: '50%', backgroundColor: 'rgba(0, 0, 0, 0.6)', border: `1px solid ${THEME.gold}`, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.4rem', cursor: 'pointer', color: THEME.gold }}>
+              <MusicIcon muted={isMuted} />
+            </button>
+          )}
 
           {/* Cover Page */}
           <div style={{ width: '100%', height: '100vh', backgroundColor: '#000', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, left: 0, zIndex: 1000, transition: 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)', transform: isOpen ? 'translateY(-100%)' : 'translateY(0)', opacity: isOpen ? 0 : 1, cursor: 'pointer', overflow: 'hidden' }} onClick={handleOpen}>
