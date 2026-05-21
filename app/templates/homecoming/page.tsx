@@ -250,7 +250,7 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
   const thankYouImage = data?.images?.thankYouImage || gallery[4] || DEFAULT_IMAGES[4];
 
   return (
-    <div style={{ 
+    <div className="desktop-bg-wrapper theme-homecoming" style={{ 
       backgroundColor: '#140505', 
       minHeight: '100vh', 
       width: '100%', 

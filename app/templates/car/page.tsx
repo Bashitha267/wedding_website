@@ -196,7 +196,7 @@ export default function CarTemplate({ data, orderId }: { data: any, orderId?: st
   const audioUrl = data?.musicUrl || "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3";
 
   return (
-    <div className={cormorant.className} style={{ 
+    <div className={`${cormorant.className} desktop-bg-wrapper theme-car`} style={{ 
       backgroundColor: '#f5f1ea', 
       color: '#333', 
       minHeight: '100vh', 

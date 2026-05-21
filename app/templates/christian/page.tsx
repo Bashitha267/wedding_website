@@ -245,7 +245,7 @@ export default function ChristianTemplate({ data, orderId }: { data: any, orderI
   const thankYouImage = data?.images?.thankYouImage || gallery[4] || DEFAULT_IMAGES[4];
 
   return (
-    <div style={{ 
+    <div className="desktop-bg-wrapper theme-christian" style={{ 
       backgroundColor: '#f5f7f9', 
       minHeight: '100vh', 
       width: '100%', 

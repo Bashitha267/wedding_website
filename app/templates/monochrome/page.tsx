@@ -341,7 +341,7 @@ export default function MonochromeTemplate({ data, orderId }: { data: any, order
     };
 
     return (
-        <div style={{ backgroundColor: '#eeeeee', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
+        <div className="desktop-bg-wrapper theme-monochrome" style={{ backgroundColor: '#eeeeee', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
             <main className="invitation-container monochrome-theme" style={{ position: 'relative', backgroundColor: 'white', boxShadow: '0 0 100px rgba(0,0,0,0.1)' }}>
                 <style jsx global>{`
                     .monochrome-theme .subheading { color: black !important; font-weight: 800 !important; letter-spacing: 6px !important; text-transform: uppercase !important; }

@@ -244,7 +244,7 @@ export default function IcyTemplate({ data, orderId }: { data: any, orderId?: st
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--icy-frost)', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
+    <div className="desktop-bg-wrapper theme-icy" style={{ backgroundColor: 'var(--icy-frost)', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
       <main className="invitation-container icy-theme" style={{ position: 'relative', backgroundColor: 'var(--icy-frost)', boxShadow: '0 0 80px rgba(106, 123, 138, 0.1)' }}>
         <style jsx global>{`
                     .icy-theme .subheading { color: var(--icy-blue) !important; font-weight: 800 !important; letter-spacing: 5px !important; text-transform: uppercase !important; }

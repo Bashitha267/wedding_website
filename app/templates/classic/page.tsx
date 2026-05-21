@@ -329,7 +329,7 @@ export default function ClassicTemplate({ data, orderId }: { data: any, orderId?
   };
 
   return (
-    <div style={{ backgroundColor: '#f0f0f0', minHeight: '100vh', display: 'flex', justifyContent: 'center' }}>
+    <div className="desktop-bg-wrapper theme-classic" style={{ backgroundColor: '#f0f0f0', minHeight: '100vh', width: '100%', display: 'flex', justifyContent: 'center' }}>
       <main className="invitation-container" style={{ position: 'relative', boxShadow: '0 0 50px rgba(0,0,0,0.1)' }}>
         <audio id="bg-music" loop>
           <source src={data?.musicUrl || MUSIC_URL} type="audio/mpeg" />

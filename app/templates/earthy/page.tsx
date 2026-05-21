@@ -518,7 +518,7 @@ export default function EarthyTemplate({ data, orderId }: { data: any, orderId?:
   }, []);
 
   return (
-    <div style={{
+    <div className="desktop-bg-wrapper theme-earthy" style={{
       backgroundColor: '#f8f9f8',
       minHeight: '100vh',
       display: 'flex',

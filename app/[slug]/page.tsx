@@ -72,7 +72,5 @@ export default async function InvitationPage(props: Props) {
     return <div>Error: Template format {order.template_id} is missing or broken.</div>;
   }
 
-  // 4. Render the chosen template! 
-  // Custom templates receive their JSON data and the orderId (for RSVPs)
   return <TemplateComponent data={order.template_data} orderId={order.id} />;
 }

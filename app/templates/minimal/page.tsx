@@ -268,7 +268,7 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
   };
 
   return (
-    <div className={montserrat.className} style={{ backgroundColor: '#fff', color: '#1a1a1a', minHeight: '100vh', overflowX: 'hidden' }}>
+    <div className={`${montserrat.className} desktop-bg-wrapper theme-minimal`} style={{ backgroundColor: '#fff', color: '#1a1a1a', minHeight: '100vh', overflowX: 'hidden' }}>
       
       <audio id="bg-music" loop muted={muted}>
         <source src={audioUrl} type="audio/mpeg" />

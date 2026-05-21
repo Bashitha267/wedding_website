@@ -209,7 +209,7 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
   const coverImage = data?.images?.heroImage || '/poruwa_final_clean.png';
 
   return (
-    <div style={{
+    <div className="desktop-bg-wrapper theme-poruwa" style={{
       backgroundColor: '#000',
       minHeight: '100vh',
       width: '100%',

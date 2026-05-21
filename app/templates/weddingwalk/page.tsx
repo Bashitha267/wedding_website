@@ -254,7 +254,7 @@ export default function WeddingWalkTemplate({ data, orderId }: { data: any, orde
   const img4 = gallery[4] || DEFAULT_IMAGES[4] || DEFAULT_IMAGES[0];
 
   return (
-    <div style={{
+    <div className="desktop-bg-wrapper theme-weddingwalk" style={{
       backgroundColor: '#FAF7F2',
       minHeight: '100vh',
       width: '100%',
