@@ -127,7 +127,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${alexBrush.variable} ${cormorantGaramond.variable}`}>
+    <html lang="en" className={`${alexBrush.variable} ${cormorantGaramond.variable}`} suppressHydrationWarning>
       <head>
         <Script
           id="json-ld"
