@@ -445,18 +445,19 @@ export default function FusionTemplate({ data, orderId }: { data: any, orderId?:
             <ItineraryTimeline data={data} />
 
             <section style={{ padding: '80px 0', textAlign: 'center' }}>
+
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
               <Reveal delay={200}>
                 <div style={{ fontSize: '0.8rem', letterSpacing: '5px', color: '#e0aeb4', marginBottom: '20px', fontWeight: 800 }}>THE SANCTUARY</div>
-                <h2 style={{ fontSize: '2.5rem', color: FUSION_TEXT, fontFamily: 'var(--font-display)', marginBottom: '10px' }}>{data?.location?.name || 'Willow Garden Pavilion'}</h2>
-                <p style={{ marginBottom: '30px', color: FUSION_TEXT, opacity: 0.7 }}>{data?.location?.address || '456 Serenity Lane, Harmony Valley'}</p>
+                <h2 style={{ fontSize: '2.5rem', color: FUSION_TEXT, fontFamily: 'var(--font-display)', marginBottom: '10px' }}>{loc?.name || 'Willow Garden Pavilion'}</h2>
+                <p style={{ marginBottom: '30px', color: FUSION_TEXT, opacity: 0.7 }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '456 Serenity Lane, Harmony Valley')}</p>
 
-                <div style={{ height: '350px', borderRadius: '50px', overflow: 'hidden', border: `2px solid ${FUSION_SG}`, boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginBottom: '30px' }}>
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.084897042588!2d80.635832!3d7.290572!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3662c95333f21%3A0x6a0a09e072f9602f!2sThe%20Grand%20Kandyan!5e0!3m2!1sen!2slk!4v1620000000000!5m2!1sen!2slk"
-                    width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-                  ></iframe>
-                </div>
-                <a href="#" target="_blank" rel="noopener noreferrer" style={{
+                <a href={loc?.address || "#"} target="_blank" rel="noopener noreferrer" style={{
                   display: 'inline-block',
                   backgroundColor: '#e0aeb4',
                   color: 'white',
@@ -469,6 +470,9 @@ export default function FusionTemplate({ data, orderId }: { data: any, orderId?:
                   boxShadow: '0 5px 15px rgba(224, 174, 180, 0.4)'
                 }}>GET DIRECTIONS</a>
               </Reveal>
+                </div>
+              ))}
+            
             </section>
 
             <PhotoCarousel data={data} />

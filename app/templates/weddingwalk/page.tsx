@@ -344,15 +344,21 @@ export default function WeddingWalkTemplate({ data, orderId }: { data: any, orde
 
               <WeddingCalendar onAdd={() => { }} data={data} />
 
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
               <GlassSection>
-                <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 900, textShadow: '0 1px 5px rgba(0,0,0,0.3)' }}>THE VENUE</div>
-                <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>{data?.location?.name || 'Grand Pavilion'}</h2>
-                <p className={THEME.fontBody} style={{ opacity: 0.95, color: '#fff', fontWeight: 500, textShadow: '0 1px 5px rgba(0,0,0,0.2)' }}>{data?.location?.address || '123 Dream Garden, Floral City'}</p>
-                <div style={{ height: '250px', borderRadius: '20px', overflow: 'hidden', border: `1px solid ${THEME.goldLight}`, margin: '30px 0' }}>
-                  <iframe src="https://www.google.com/maps/embed?..." width="100%" height="100%" style={{ border: 0 }}></iframe>
-                </div>
-                <a href="#" className={THEME.fontBody} style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#fff', borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '1px', boxShadow: '0 4px 15px rgba(197, 160, 89, 0.3)' }}>GET DIRECTIONS</a>
+                <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 900, textShadow: '0 1px 5px rgba(0,0,0,0.3)' }}>{idx === 0 ? "THE VENUE" : "SECONDARY VENUE"}</div>
+                <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>{loc?.name || 'Grand Pavilion'}</h2>
+                <p className={THEME.fontBody} style={{ opacity: 0.95, color: '#fff', fontWeight: 500, textShadow: '0 1px 5px rgba(0,0,0,0.2)' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '123 Dream Garden, Floral City')}</p>
+                
+                <a href={loc?.address || "#"} className={THEME.fontBody} style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#fff', borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '1px', boxShadow: '0 4px 15px rgba(197, 160, 89, 0.3)' }}>GET DIRECTIONS</a>
               </GlassSection>
+                </div>
+              ))}
 
               <GlassSection padding="80px 25px">
                 <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.5rem, 12vw, 3.5rem)', color: THEME.gold, marginBottom: '20px', textShadow: '0 4px 15px rgba(0,0,0,0.4)' }}>WITH LOVE</h3>

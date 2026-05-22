@@ -218,6 +218,52 @@ export default function ClientDashboard() {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#ffffff', position: 'relative' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .mobile-header {
+            display: flex !important;
+          }
+          .sidebar-nav {
+            position: fixed !important;
+            top: 0;
+            bottom: 0;
+            z-index: 1000;
+            width: 260px !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          }
+          .main-content {
+            margin-left: 0 !important;
+            padding: 24px !important;
+            padding-top: 88px !important;
+          }
+          .editor-layout {
+            flex-direction: column !important;
+            gap: 24px !important;
+          }
+          .preview-pane {
+            width: 100% !important;
+            max-width: 375px !important;
+            margin: 0 auto !important;
+            position: relative !important;
+            top: 0 !important;
+          }
+          .stats-grid {
+            flex-direction: column !important;
+          }
+          .mobile-close-btn {
+             display: block !important;
+          }
+          .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+          }
+        }
+      `}</style>
+      
+      {isSidebarOpen && <div className="sidebar-overlay mobile-close-btn" style={{ display: 'none' }} onClick={() => setIsSidebarOpen(false)} />}
+
       {/* Mobile Header */}
       <div style={{ 
         display: 'none', 
@@ -232,7 +278,7 @@ export default function ClientDashboard() {
       </div>
 
       {/* Sidebar */}
-      <aside style={{ 
+      <aside className="sidebar-nav" style={{ 
         width: '260px', backgroundColor: '#ffffff', borderRight: '1px solid #eeeeee', 
         padding: '24px 0', flexShrink: 0,
         position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 1000,
@@ -243,7 +289,7 @@ export default function ClientDashboard() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
              <img src="https://res.cloudinary.com/dnfbik3if/image/upload/v1776967066/logo_bfzkos.png" alt="KNOT STORY Logo" style={{ width: '120px' }} />
           </div>
-          <button className="mobile-only" onClick={() => setIsSidebarOpen(false)} style={{ display: 'none', background: 'none', border: 'none' }}>
+          <button className="mobile-close-btn" onClick={() => setIsSidebarOpen(false)} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer' }}>
              <X size={20} />
           </button>
         </div>
@@ -306,7 +352,7 @@ export default function ClientDashboard() {
       </aside>
 
       {/* Main Content Area */}
-      <main style={{ 
+      <main className="main-content" style={{ 
         flex: 1, 
         marginLeft: isSidebarOpen ? '260px' : '0',
         padding: '48px', 
@@ -380,7 +426,7 @@ export default function ClientDashboard() {
                 </button>
             </div>
 
-            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+            <div className="stats-grid" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: '120px', backgroundColor: '#ffffff', padding: '20px', borderRadius: '16px', border: '1px solid #eeeeee', textAlign: 'center' }}>
                     <div style={{ fontSize: '0.75rem', color: '#888888', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }}>TOTAL ADULTS</div>
                     <div style={{ fontSize: '2rem', fontWeight: 700, color: '#000000', marginTop: '8px' }}>
@@ -401,7 +447,7 @@ export default function ClientDashboard() {
         </div>
 
         {activeTab === 'template' && (
-          <div style={{ display: 'flex', gap: '50px', alignItems: 'flex-start' }}>
+          <div className="editor-layout" style={{ display: 'flex', gap: '50px', alignItems: 'flex-start' }}>
             {/* Left Column: Form Editor */}
             <div style={{ flex: 1, maxWidth: '800px' }}>
               <h1 style={{ marginBottom: '30px', color: '#000000' }}>Customize Your Template</h1>
@@ -474,7 +520,7 @@ export default function ClientDashboard() {
                 </div>
 
                 {/* Date & Location Side by Side */}
-                <div style={{ display: 'flex', gap: '30px' }}>
+                <div className="stats-grid" style={{ display: 'flex', gap: '30px' }}>
                   {/* Date */}
                   <div style={{ flex: 1, backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
                     <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><Calendar size={20} color="#000000" /> Date & Time</h3>
@@ -488,17 +534,14 @@ export default function ClientDashboard() {
                   
                   {/* Location */}
                   <div style={{ flex: 1, backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><MapPin size={20} color="#000000" /> {isChristian ? 'Hotel Location' : 'Location'}</h3>
-                    <input type="text" placeholder={isChristian ? 'Hotel Name' : 'Venue Name'} value={templateDraft?.location?.name || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), name: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '10px' }} />
-                    <textarea placeholder={isChristian ? 'Hotel Address / Google Maps Link' : 'Full Address / Google Maps Link'} value={templateDraft?.location?.address || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), address: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', resize: 'vertical', minHeight: '60px' }} />
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><MapPin size={20} color="#000000" /> Location Details</h3>
+                    <input type="text" placeholder="Main Venue / Hotel Name" value={templateDraft?.location?.name || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), name: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '10px' }} />
+                    <textarea placeholder="Main Venue Address / Google Maps Link" value={templateDraft?.location?.address || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), address: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', resize: 'vertical', minHeight: '60px' }} />
 
-                    {isChristian && (
-                      <>
-                        <div style={{ height: '12px' }} />
-                        <input type="text" placeholder="Church Name" value={templateDraft?.churchLocation?.name || ''} onChange={e => setTemplateDraft({...templateDraft, churchLocation: {...(templateDraft.churchLocation || {}), name: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '10px' }} />
-                        <textarea placeholder="Church Address / Google Maps Link" value={templateDraft?.churchLocation?.address || ''} onChange={e => setTemplateDraft({...templateDraft, churchLocation: {...(templateDraft.churchLocation || {}), address: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', resize: 'vertical', minHeight: '60px' }} />
-                      </>
-                    )}
+                    <div style={{ height: '20px' }} />
+                    <h4 style={{ fontSize: '0.9rem', marginBottom: '10px', color: '#555' }}>Secondary Location (Optional)</h4>
+                    <input type="text" placeholder="Church / Secondary Venue Name" value={templateDraft?.churchLocation?.name || ''} onChange={e => setTemplateDraft({...templateDraft, churchLocation: {...(templateDraft.churchLocation || {}), name: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '10px' }} />
+                    <textarea placeholder="Secondary Address / Google Maps Link" value={templateDraft?.churchLocation?.address || ''} onChange={e => setTemplateDraft({...templateDraft, churchLocation: {...(templateDraft.churchLocation || {}), address: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', resize: 'vertical', minHeight: '60px' }} />
                   </div>
                 </div>
 
@@ -594,7 +637,7 @@ export default function ClientDashboard() {
             </div>
 
             {/* Right Column: Live Mobile Preview */}
-            <div style={{
+            <div className="preview-pane" style={{
                width: '375px',
                height: '750px',
                border: '14px solid #111',

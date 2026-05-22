@@ -312,13 +312,19 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
 
               <WeddingCalendar data={data} />
 
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
               <GlassSection>
-                <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 700 }}>THE VENUE</div>
-                <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px' }}>{data?.location?.name || 'Grand Kandyan Hall'}</h2>
-                <p className={THEME.fontBody} style={{ opacity: 0.8, color: THEME.goldLight, marginBottom: '30px' }}>{data?.location?.address || 'Kandy, Sri Lanka'}</p>
+                <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 700 }}>{idx === 0 ? "THE VENUE" : "SECONDARY VENUE"}</div>
+                <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px' }}>{loc?.name || 'Grand Kandyan Hall'}</h2>
+                <p className={THEME.fontBody} style={{ opacity: 0.8, color: THEME.goldLight, marginBottom: '30px' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || 'Kandy, Sri Lanka')}</p>
 
                 <a
-                  href={data?.location?.address || '#'}
+                  href={loc?.address || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={THEME.fontBody}
@@ -327,6 +333,8 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
                   VIEW LOCATION
                 </a>
               </GlassSection>
+                </div>
+              ))}
 
               <GlassSection padding="60px 25px">
                 <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 10vw, 3rem)', color: THEME.gold, marginBottom: '20px' }}>Ayubowan</h3>

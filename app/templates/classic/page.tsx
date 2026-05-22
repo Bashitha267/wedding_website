@@ -464,19 +464,23 @@ export default function ClassicTemplate({ data, orderId }: { data: any, orderId?
                 <SectionImage src={data?.images?.image2 || "/photo_3.png"} alt="Hands" height="250px" />
 
                 <section style={{ padding: '40px 0', textAlign: 'center' }}>
-                  <Reveal delay={200}>
-                    <div className="subheading" style={{ marginBottom: '15px' }}>LOCATION</div>
-                    <h2 style={{ fontSize: '1.8rem', marginBottom: '10px' }}>{data?.location?.name || 'The Rose Garden Estates'}</h2>
-                    <p style={{ marginBottom: '25px', opacity: 0.8, fontSize: '0.9rem' }}>{data?.location?.address || '123 Romance Lane, Loving Valley'}</p>
 
-                    <div style={{ height: '250px', borderRadius: '15px', overflow: 'hidden', boxShadow: '0 5px 15px rgba(0,0,0,0.1)', marginBottom: '20px' }}>
-                      <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3430.292!2d-118.243!3d34.052!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDAzJzA3LjIiTiAxMTjCsDE0JzM0LjgiVw!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus"
-                        width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-                      ></iframe>
-                    </div>
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
+                  <Reveal delay={200}>
+                    <div className="subheading" style={{ marginBottom: '15px' }}>{idx === 0 ? "LOCATION" : "SECONDARY LOCATION"}</div>
+                    <h2 style={{ fontSize: '1.8rem', marginBottom: '10px' }}>{loc?.name || 'The Rose Garden Estates'}</h2>
+                    <p style={{ marginBottom: '25px', opacity: 0.8, fontSize: '0.9rem' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '123 Romance Lane, Loving Valley')}</p>
+
                     <a href="https://maps.app.goo.gl/example" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ padding: '10px 30px', fontSize: '0.9rem' }}>VIEW LOCATION</a>
                   </Reveal>
+                </div>
+              ))}
+            
                 </section>
 
                 <PhotoCarousel data={data} />

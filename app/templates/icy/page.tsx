@@ -340,12 +340,22 @@ export default function IcyTemplate({ data, orderId }: { data: any, orderId?: st
               <BlendedImage src={data?.images?.image2 || "/photo_3.png"} alt="Ceremony" height="400px" />
 
               <section style={{ padding: '60px 0', textAlign: 'center' }}>
+
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
                 <Reveal delay={200}>
-                  <div style={{ fontSize: '0.9rem', letterSpacing: '8px', color: 'var(--icy-blue)', marginBottom: '20px', fontWeight: 800 }}>LOCATION</div>
-                  <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-display)', color: 'var(--icy-dark)', marginBottom: '15px' }}>{data?.location?.name || 'Frost Garden Estates'}</h2>
-                  <p style={{ marginBottom: '40px', opacity: 0.8, fontSize: '1rem', color: 'var(--icy-dark)' }}>{data?.location?.address || '456 Snow Peak, Winter Valley'}</p>
-                  <a href={data?.location?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none' }}>VIEW LOCATION</a>
+                  <div style={{ fontSize: '0.9rem', letterSpacing: '8px', color: 'var(--icy-blue)', marginBottom: '20px', fontWeight: 800 }}>{idx === 0 ? "LOCATION" : "SECONDARY LOCATION"}</div>
+                  <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-display)', color: 'var(--icy-dark)', marginBottom: '15px' }}>{loc?.name || 'Frost Garden Estates'}</h2>
+                  <p style={{ marginBottom: '40px', opacity: 0.8, fontSize: '1rem', color: 'var(--icy-dark)' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '456 Snow Peak, Winter Valley')}</p>
+                  <a href={loc?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none' }}>VIEW LOCATION</a>
                 </Reveal>
+                </div>
+              ))}
+            
               </section>
 
               <BlendedImage src={data?.images?.gallery?.[0] || "/photo_4.png"} alt="The Couple" height="550px" />

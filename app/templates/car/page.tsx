@@ -372,11 +372,20 @@ export default function CarTemplate({ data, orderId }: { data: any, orderId?: st
                 <div style={{ width: '1px', flex: 1, backgroundColor: '#f0f0f0' }}></div>
               </div>
 
-              <div style={{ flex: 1, textAlign: 'center' }}>
-                <MapPin size={24} color="#c14d4d" style={{ marginBottom: '15px' }} />
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2.5px', marginBottom: '12px', opacity: 0.8 }}>VENUE</div>
-                <div style={{ fontSize: '1rem', fontWeight: 800, color: '#c14d4d' }}>{data?.location?.name?.toUpperCase() || 'GRAND ROYAL'}</div>
-                <div style={{ fontSize: '0.85rem', opacity: 0.5 }}>{data?.location?.city?.toUpperCase() || 'COLOMBO'}</div>
+              <div style={{ flex: 1, textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                <div>
+                  <MapPin size={24} color="#c14d4d" style={{ marginBottom: '15px' }} />
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2.5px', marginBottom: '12px', opacity: 0.8 }}>VENUE</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 800, color: '#c14d4d' }}>{data?.location?.name?.toUpperCase() || 'GRAND ROYAL'}</div>
+                  <div style={{ fontSize: '0.85rem', opacity: 0.5 }}>{data?.location?.address?.toUpperCase() || data?.location?.city?.toUpperCase() || 'COLOMBO'}</div>
+                </div>
+                {(data?.churchLocation?.name || data?.churchLocation?.address) && (
+                  <div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2.5px', marginBottom: '12px', opacity: 0.8 }}>SECONDARY VENUE</div>
+                    <div style={{ fontSize: '1rem', fontWeight: 800, color: '#c14d4d' }}>{data?.churchLocation?.name?.toUpperCase()}</div>
+                    <div style={{ fontSize: '0.85rem', opacity: 0.5 }}>{data?.churchLocation?.address?.toUpperCase() || data?.churchLocation?.city?.toUpperCase()}</div>
+                  </div>
+                )}
               </div>
             </div>
             

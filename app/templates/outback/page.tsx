@@ -420,25 +420,28 @@ export default function OutbackTemplate({ data, orderId }: { data: any, orderId?
                         <PhotoCarousel data={data} />
 
                         <section style={{ padding: '60px 0', textAlign: 'center' }}>
-                            <Reveal delay={200}>
-                                <div style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.accent, marginBottom: '15px', fontWeight: 800 }}>THE VENUE</div>
-                                <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-display)', color: THEME.primary, marginBottom: '10px' }}>{data?.location?.name}</h2>
-                                <p style={{ color: THEME.secondary, marginBottom: '30px', fontSize: '0.9rem' }}>{data?.location?.address}</p>
-                                
-                                <div style={{ height: '350px', borderRadius: '40px 40px 0 0', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', marginBottom: '30px' }}>
-                                    <iframe
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.084897042588!2d80.635832!3d7.290572!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3662c95333f21%3A0x6a0a09e072f9602f!2sThe%20Grand%20Kandyan!5e0!3m2!1sen!2slk!4v1620000000000"
-                                        width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-                                    ></iframe>
-                                </div>
 
-                                <a href="#" target="_blank" style={{ 
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
+                            <Reveal delay={200}>
+                                <div style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.accent, marginBottom: '15px', fontWeight: 800 }}>{idx === 0 ? "THE VENUE" : "SECONDARY VENUE"}</div>
+                                <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-display)', color: THEME.primary, marginBottom: '10px' }}>{loc?.name}</h2>
+                                <p style={{ color: THEME.secondary, marginBottom: '30px', fontSize: '0.9rem' }}>{loc?.address?.startsWith('http') ? '' : loc?.address}</p>
+
+                                <a href={loc?.address || "#"} target="_blank" style={{ 
                                     display: 'inline-block', backgroundColor: THEME.primary, 
                                     color: 'white', padding: '14px 45px', fontSize: '0.9rem', 
                                     fontWeight: 800, letterSpacing: '3px', textDecoration: 'none',
                                     boxShadow: '0 10px 20px rgba(192, 108, 82, 0.3)'
                                 }}>GET DIRECTIONS</a>
                             </Reveal>
+                </div>
+              ))}
+            
                         </section>
 
                         <RSVPFooter orderId={orderId} data={data} />

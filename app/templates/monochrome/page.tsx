@@ -435,15 +435,23 @@ export default function MonochromeTemplate({ data, orderId }: { data: any, order
                             <SectionImage src={data?.images?.image2 || "/photo_3.png"} alt="Ceremony" height="400px" tornTop />
 
                             <section style={{ padding: '80px 0', textAlign: 'center' }}>
+
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
                                 <Reveal delay={200}>
-                                    <div style={{ fontSize: '0.8rem', letterSpacing: '8px', opacity: 0.5, marginBottom: '20px', fontWeight: 800 }}>LOCATION</div>
-                                    <h2 style={{ fontSize: '3.5rem', fontFamily: 'var(--font-display)', color: 'black', marginBottom: '15px' }}>{data?.location?.name || 'The Rose Garden Estates'}</h2>
-                                    <p style={{ marginBottom: '40px', opacity: 0.7, fontSize: '1rem', color: 'black' }}>{data?.location?.address || '123 Romance Lane, Loving Valley'}</p>
-                                    <div style={{ height: '300px', backgroundColor: '#eee', marginBottom: '40px', overflow: 'hidden' }}>
-                                        <iframe src="https://www.google.com/maps/embed?..." width="100%" height="100%" style={{ border: 0, filter: 'grayscale(1) invert(0.9)' }} loading="lazy"></iframe>
-                                    </div>
-                                    <a href={data?.location?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-block' }}>VIEW LOCATION</a>
+                                    <div style={{ fontSize: '0.8rem', letterSpacing: '8px', opacity: 0.5, marginBottom: '20px', fontWeight: 800 }}>{idx === 0 ? "LOCATION" : "SECONDARY LOCATION"}</div>
+                                    <h2 style={{ fontSize: '3.5rem', fontFamily: 'var(--font-display)', color: 'black', marginBottom: '15px' }}>{loc?.name || 'The Rose Garden Estates'}</h2>
+                                    <p style={{ marginBottom: '40px', opacity: 0.7, fontSize: '1rem', color: 'black' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '123 Romance Lane, Loving Valley')}</p>
+                                    
+                                    <a href={loc?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-block' }}>VIEW LOCATION</a>
                                 </Reveal>
+                </div>
+              ))}
+            
                             </section>
 
                             <SectionImage src={data?.images?.gallery?.[0] || "/photo_4.png"} alt="Gallery" height="500px" tornTop tornBottom />

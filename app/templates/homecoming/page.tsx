@@ -336,36 +336,36 @@ export default function HomecomingTemplate({ data, orderId }: { data: any, order
 
               <WeddingCalendar onAdd={() => { }} data={data} />
 
-              <GlassSection>
-                <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 700 }}>THE VENUE</div>
-                <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px' }}>{data?.location?.name || 'Grand Royal Ballroom'}</h2>
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
+                  <GlassSection>
+                    <div className={THEME.fontDisplay} style={{ fontSize: '0.8rem', letterSpacing: '4px', color: THEME.gold, marginBottom: '15px', fontWeight: 700 }}>{idx === 0 ? "THE VENUE" : "SECONDARY VENUE"}</div>
+                    <h2 className={THEME.fontDisplay} style={{ fontSize: '2rem', marginBottom: '10px' }}>{loc?.name || 'Grand Royal Ballroom'}</h2>
 
-                {data?.location?.address && !data.location.address.startsWith('http') && (
-                  <p className={THEME.fontBody} style={{ opacity: 0.8, color: THEME.goldLight, marginBottom: '10px' }}>
-                    {data.location.address}
-                  </p>
-                )}
+                    <p className={THEME.fontBody} style={{ opacity: 0.8, color: THEME.goldLight, marginBottom: '10px' }}>
+                      {loc?.address?.startsWith('http') ? '' : loc?.address}
+                    </p>
 
-                {data?.location?.address && data.location.address.includes('google.com/maps/embed') ? (
-                  <div style={{ height: '250px', borderRadius: '20px', overflow: 'hidden', border: `1px solid ${THEME.gold}`, margin: '30px 0' }}>
-                    <iframe src={data.location.address} width="100%" height="100%" style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}></iframe>
-                  </div>
-                ) : (
-                  <div style={{ margin: '30px 0' }}>
-                    <div style={{ height: '2px', width: '40px', background: THEME.gold, margin: '0 auto 20px' }}></div>
-                  </div>
-                )}
+                    <div style={{ margin: '30px 0' }}>
+                      <div style={{ height: '2px', width: '40px', background: THEME.gold, margin: '0 auto 20px' }}></div>
+                    </div>
 
-                <a
-                  href={data?.location?.address || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={THEME.fontBody}
-                  style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#000', borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '1px' }}
-                >
-                  GET DIRECTIONS
-                </a>
-              </GlassSection>
+                    <a
+                      href={loc?.address || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={THEME.fontBody}
+                      style={{ display: 'inline-block', padding: '15px 40px', background: THEME.gold, color: '#000', borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '1px' }}
+                    >
+                      GET DIRECTIONS
+                    </a>
+                  </GlassSection>
+                </div>
+              ))}
 
               <GlassSection padding="60px 25px">
                 <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 10vw, 3rem)', color: THEME.gold, marginBottom: '20px' }}>Thank You</h3>

@@ -598,15 +598,23 @@ export default function EarthyTemplate({ data, orderId }: { data: any, orderId?:
 
               <section style={{ padding: '60px 0', textAlign: 'center', position: 'relative' }}>
                 <FloatingDeco style={{ top: '20%', left: '-50px', transform: 'rotate(-10deg)', opacity: 0.3 }} />
+
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
                 <Reveal delay={200}>
-                  <div style={{ fontSize: '0.9rem', letterSpacing: '8px', color: 'var(--earthy-accent)', marginBottom: '20px', fontWeight: 800 }}>LOCATION</div>
-                  <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-display)', color: 'var(--earthy-brown)', marginBottom: '15px', fontWeight: 400 }}>{data?.location?.name || 'The Rose Garden Estates'}</h2>
-                  <p style={{ marginBottom: '40px', opacity: 0.9, fontSize: '1.1rem', color: 'var(--earthy-text)', fontStyle: 'italic' }}>{data?.location?.address || '123 Romance Lane, Loving Valley'}</p>
-                  <div style={{ height: '300px', borderRadius: '30px', overflow: 'hidden', boxShadow: '0 15px 45px rgba(0,0,0,0.08)', marginBottom: '40px', border: '1px solid var(--earthy-tan)' }}>
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3430.292!2d-118.243!3d34.052!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDAzJzA3LjIiTiAxMTjCsDE0JzM0LjgiVw!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" width="100%" height="100%" style={{ border: 0 }} loading="lazy"></iframe>
-                  </div>
-                  <a href={data?.location?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none' }}>VIEW LOCATION</a>
+                  <div style={{ fontSize: '0.9rem', letterSpacing: '8px', color: 'var(--earthy-accent)', marginBottom: '20px', fontWeight: 800 }}>{idx === 0 ? "LOCATION" : "SECONDARY LOCATION"}</div>
+                  <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-display)', color: 'var(--earthy-brown)', marginBottom: '15px', fontWeight: 400 }}>{loc?.name || 'The Rose Garden Estates'}</h2>
+                  <p style={{ marginBottom: '40px', opacity: 0.9, fontSize: '1.1rem', color: 'var(--earthy-text)', fontStyle: 'italic' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '123 Romance Lane, Loving Valley')}</p>
+                  
+                  <a href={loc?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none' }}>VIEW LOCATION</a>
                 </Reveal>
+                </div>
+              ))}
+            
               </section>
 
               <PhotoCarousel data={data} />

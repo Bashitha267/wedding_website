@@ -453,18 +453,19 @@ export default function SydneyTemplate({ data, orderId }: { data: any, orderId?:
             <ItineraryTimeline data={data} />
 
             <section style={{ padding: '80px 0', textAlign: 'center' }}>
-              <Reveal delay={200}>
-                <div style={{ fontSize: '0.9rem', letterSpacing: '5px', color: SYDNEY_GOLD, marginBottom: '20px', fontWeight: 700 }}>THE VENUE</div>
-                <h2 style={{ fontSize: '2.5rem', color: SYDNEY_NAVY, fontFamily: 'var(--font-display)', marginBottom: '10px' }}>{data?.location?.name || 'The Harbor Grand'}</h2>
-                <p style={{ marginBottom: '30px', color: SYDNEY_NAVY, opacity: 0.7 }}>{data?.location?.address || 'Circular Quay, Sydney NSW 2000'}</p>
 
-                <div style={{ height: '350px', borderRadius: '15px', overflow: 'hidden', border: `1px solid #eee`, boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginBottom: '30px' }}>
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.084897042588!2d80.635832!3d7.290572!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3662c95333f21%3A0x6a0a09e072f9602f!2sThe%20Grand%20Kandyan!5e0!3m2!1sen!2slk!4v1620000000000!5m2!1sen!2slk"
-                    width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-                  ></iframe>
-                </div>
-                <a href="#" target="_blank" rel="noopener noreferrer" style={{
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
+              <Reveal delay={200}>
+                <div style={{ fontSize: '0.9rem', letterSpacing: '5px', color: SYDNEY_GOLD, marginBottom: '20px', fontWeight: 700 }}>{idx === 0 ? "THE VENUE" : "SECONDARY VENUE"}</div>
+                <h2 style={{ fontSize: '2.5rem', color: SYDNEY_NAVY, fontFamily: 'var(--font-display)', marginBottom: '10px' }}>{loc?.name || 'The Harbor Grand'}</h2>
+                <p style={{ marginBottom: '30px', color: SYDNEY_NAVY, opacity: 0.7 }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || 'Circular Quay, Sydney NSW 2000')}</p>
+
+                <a href={loc?.address || "#"} target="_blank" rel="noopener noreferrer" style={{
                   display: 'inline-block',
                   backgroundColor: SYDNEY_NAVY,
                   color: 'white',
@@ -477,6 +478,9 @@ export default function SydneyTemplate({ data, orderId }: { data: any, orderId?:
                   borderRadius: '5px'
                 }}>NAVIGATE TO VENUE</a>
               </Reveal>
+                </div>
+              ))}
+            
             </section>
 
             <PhotoCarousel data={data} />

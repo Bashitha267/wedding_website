@@ -131,7 +131,6 @@ const MinimalRSVP = ({ orderId, data }: { orderId?: string, data?: any }) => {
 
 // Wax Seal Component
 
-
 // Custom Countdown
 const MinimalCountdown = ({ data }: { data?: any }) => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -225,19 +224,18 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
     gallery: combinedGallery.length > 0 ? combinedGallery : ['/photo_2.png', '/photo_3.png', '/photo_4.png']
   };
 
-
   const ceremonyInfo = {
-    name: data?.ceremonyLocation?.name || data?.location?.name || 'Cathedral of Santa Maria',
-    address: data?.ceremonyLocation?.address || data?.location?.address || 'Piazza del Duomo, Terrasini, Sicilia',
+    name: data?.churchLocation?.name || data?.ceremonyLocation?.name,
+    address: data?.churchLocation?.address || data?.ceremonyLocation?.address,
     time: data?.ceremonyTime || (data?.eventDate ? new Date(data.eventDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '14:30'),
-    mapUrl: data?.ceremonyLocation?.mapUrl || data?.location?.mapUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3145.2132717088926!2d13.0827103!3d38.1504068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13198c6a67e8837d%3A0x7b6c507a2a0a25!2sDuomo%20di%20Terrasini!5e0!3m2!1sen!2sit!4v1716000000000!5m2!1sen!2sit'
+    mapUrl: data?.churchLocation?.mapUrl || data?.ceremonyLocation?.mapUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3145.2132717088926!2d13.0827103!3d38.1504068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13198c6a67e8837d%3A0x7b6c507a2a0a25!2sDuomo%20di%20Terrasini!5e0!3m2!1sen!2sit!4v1716000000000!5m2!1sen!2sit'
   };
 
   const receptionInfo = {
-    name: data?.receptionLocation?.name || 'Villa Palagonia',
-    address: data?.receptionLocation?.address || 'Via Palagonia 12, Bagheria, Sicilia',
+    name: data?.location?.name || data?.receptionLocation?.name || 'Villa Palagonia',
+    address: data?.location?.address || data?.receptionLocation?.address || 'Via Palagonia 12, Bagheria, Sicilia',
     time: data?.receptionTime || '18:00',
-    mapUrl: data?.receptionLocation?.mapUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3146.425890831135!2d13.5113889!3d38.0791667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1319e1b5b5b5b5b5%3A0x123456789abcdef!2sVilla%20Palagonia!5e0!3m2!1sen!2sit!4v1716000000000!5m2!1sen!2sit'
+    mapUrl: data?.location?.mapUrl || data?.receptionLocation?.mapUrl || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3146.425890831135!2d13.5113889!3d38.0791667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1319e1b5b5b5b5b5%3A0x123456789abcdef!2sVilla%20Palagonia!5e0!3m2!1sen!2sit!4v1716000000000!5m2!1sen!2sit'
   };
 
   const hasCeremony = !!ceremonyInfo.name;
@@ -330,8 +328,6 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
                <Image src="/minimal_envelope_base.png" alt="Envelope" fill style={{ objectFit: 'cover' }} />
              </div>
 
-
-
              {/* Wax Seal */}
              {!isUnsealing && (
                <div style={{ 
@@ -383,9 +379,6 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
               zIndex: 2
             }}></div>
           </div>
-
-
-
 
           <Reveal delay={500}>
             <div style={{ textAlign: 'center', padding: '0 30px' }}>
@@ -450,8 +443,6 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
           </Reveal>
         </section>
 
-
-
         {/* Location Toggle */}
         <section style={{ padding: '80px 20px', textAlign: 'center', backgroundColor: '#fafafa' }}>
           <Reveal>
@@ -499,17 +490,12 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
             <div>
               <Reveal key={locationType}>
                 {activeLocation.name && <h3 className={playfair.className} style={{ fontSize: '1.8rem', marginBottom: '12px', fontWeight: 400 }}>{activeLocation.name}</h3>}
-                {activeLocation.address && <p style={{ fontSize: '0.9rem', opacity: 0.5, marginBottom: '25px', lineHeight: 1.6 }}>{activeLocation.address}</p>}
+                {activeLocation.address && <p style={{ fontSize: '0.9rem', opacity: 0.5, marginBottom: '25px', lineHeight: 1.6 }}>{activeLocation.address?.startsWith('http') ? '' : activeLocation.address}</p>}
                 {activeLocation.time && <div style={{ fontSize: '1.1rem', fontWeight: 500, marginBottom: '35px', letterSpacing: '1px' }}>{activeLocation.time}</div>}
 
                 {activeLocation.mapUrl && activeLocation.mapUrl !== '#' && activeLocation.mapUrl.includes('google.com/maps') && (
                   <>
-                    <div style={{ height: '280px', width: '100%', borderRadius: '2px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', marginBottom: '35px' }}>
-                      <iframe
-                        src={activeLocation.mapUrl}
-                        width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-                      ></iframe>
-                    </div>
+                    
                     <a href={activeLocation.mapUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', padding: '12px 0', borderBottom: '1px solid #1a1a1a', color: '#1a1a1a', textDecoration: 'none', fontSize: '0.75rem', letterSpacing: '3px', fontWeight: 600 }}>
                       VIEW ON MAP
                     </a>
@@ -520,8 +506,6 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
           </Reveal>
         </section>
 
-
-
         {/* Timeline */}
         <section style={{ padding: '100px 20px' }}>
           <Reveal>
@@ -529,9 +513,6 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
             <MinimalTimeline data={data} />
           </Reveal>
         </section>
-
-
-
 
         {/* Dress Code */}
         {(data?.dressCode?.title || (typeof data?.dressCode === 'string' && data.dressCode)) && (
@@ -562,7 +543,6 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
           </Reveal>
         </section>
 
-
         <section style={{ padding: '60px 10px' }}>
           <Reveal>
             <h2 style={{ fontSize: '0.7rem', letterSpacing: '4px', textTransform: 'uppercase', opacity: 0.4, marginBottom: '40px', fontWeight: 600, textAlign: 'center' }}>OUR GALLERY</h2>
@@ -577,8 +557,6 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
             ))}
           </div>
         </section>
-
-
 
         {/* Calendar Button */}
 

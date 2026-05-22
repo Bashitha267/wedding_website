@@ -88,8 +88,6 @@ const FlightPath = () => (
   </div>
 );
 
-
-
 // SVG Icons
 const MusicIcon = ({ muted }: { muted: boolean }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -480,8 +478,6 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
                <Image src="/aviation_envelope_base.png" alt="Envelope" fill style={{ objectFit: 'cover' }} />
              </div>
 
-
-
              {/* Gold Wax Seal */}
              {!isUnsealing && (
                <div style={{ 
@@ -599,15 +595,21 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
 
           <WeddingCalendar onAdd={() => {}} data={data} />
 
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
           <GlassSection>
              <div className={THEME.fontDisplay} style={{ fontSize: '0.85rem', letterSpacing: '5px', color: THEME.gold, marginBottom: '15px', fontWeight: 800 }}>DESTINATION</div>
-             <h2 className={THEME.fontDisplay} style={{ fontSize: '2.2rem', marginBottom: '12px', color: THEME.white }}>{data?.location?.name || 'Grand Royal Ballroom'}</h2>
-             <p className={THEME.fontBody} style={{ opacity: 0.9, color: THEME.white, fontWeight: 400, letterSpacing: '1px' }}>{data?.location?.address || '456 Majesty Way, Royal City'}</p>
-             <div style={{ height: '280px', borderRadius: '25px', overflow: 'hidden', border: `2px solid ${THEME.gold}`, margin: '35px 0', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-               <iframe src="https://www.google.com/maps/embed?..." width="100%" height="100%" style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(1.2)' }}></iframe>
-             </div>
-             <a href="#" className={THEME.fontBody} style={{ display: 'inline-block', padding: '16px 45px', background: THEME.gold, color: THEME.white, borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '2px', boxShadow: '0 8px 25px rgba(197, 160, 89, 0.4)' }}>FLIGHT DIRECTIONS</a>
+             <h2 className={THEME.fontDisplay} style={{ fontSize: '2.2rem', marginBottom: '12px', color: THEME.white }}>{loc?.name || 'Grand Royal Ballroom'}</h2>
+             <p className={THEME.fontBody} style={{ opacity: 0.9, color: THEME.white, fontWeight: 400, letterSpacing: '1px' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '456 Majesty Way, Royal City')}</p>
+             
+             <a href={loc?.address || "#"} className={THEME.fontBody} style={{ display: 'inline-block', padding: '16px 45px', background: THEME.gold, color: THEME.white, borderRadius: '40px', fontWeight: 900, textDecoration: 'none', letterSpacing: '2px', boxShadow: '0 8px 25px rgba(197, 160, 89, 0.4)' }}>FLIGHT DIRECTIONS</a>
           </GlassSection>
+                </div>
+              ))}
 
           {/* Announcements */}
           {data?.announcements && (

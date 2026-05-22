@@ -486,20 +486,23 @@ export default function ScrapbookTemplate({ data, orderId }: { data: any, orderI
 
                             <section style={{ padding: '60px 10px', textAlign: 'center', position: 'relative' }}>
                                 <WashiTape color="#ffcc33" rotate={-5} style={{ top: '0', right: '10%' }} />
-                                <Reveal>
-                                    <div style={{ fontSize: '0.8rem', letterSpacing: '6px', color: '#a2c2e0', marginBottom: '15px', fontWeight: 800 }}>THE DESTINATION</div>
-                                    <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-alex-brush)', color: '#4a4a4a', marginBottom: '15px' }}>{data?.location?.name || 'The Rose Garden Estates'}</h2>
-                                    <p style={{ marginBottom: '40px', opacity: 0.8, fontSize: '1rem', color: '#4a4a4a' }}>{data?.location?.address || '123 Romance Lane, Loving Valley'}</p>
-                                    
-                                    <div style={{ height: '350px', borderRadius: '15px', overflow: 'hidden', border: '8px solid white', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', marginBottom: '40px' }}>
-                                        <iframe
-                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.084897042588!2d80.635832!3d7.290572!2m3!1f0!2f0!3f0!3m2!i1024!2i768!4f13.1!3m3!1m2!1s0x3ae3662c95333f21%3A0x6a0a09e072f9602f!2sThe%20Grand%20Kandyan!5e0!3m2!1sen!2slk!4v1620000000000!5m2!1sen!2slk"
-                                            width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-                                        ></iframe>
-                                    </div>
 
-                                    <a href="#" target="_blank" className="btn-primary">OPEN IN MAPS</a>
+              {/* Dynamic Locations Rendering */}
+              {[
+                data?.location || { name: 'The Grand Venue', address: '123 Dream Avenue, Celebration City' }, 
+                data?.churchLocation
+              ].filter(loc => loc && (loc?.name || loc?.address)).map((loc, idx) => (
+                <div key={idx} style={{ marginTop: idx > 0 ? '60px' : '0' }}>
+                                <Reveal>
+                                    <div style={{ fontSize: '0.8rem', letterSpacing: '6px', color: '#a2c2e0', marginBottom: '15px', fontWeight: 800 }}>{idx === 0 ? "THE DESTINATION" : "SECONDARY LOCATION"}</div>
+                                    <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-alex-brush)', color: '#4a4a4a', marginBottom: '15px' }}>{loc?.name || 'The Rose Garden Estates'}</h2>
+                                    <p style={{ marginBottom: '40px', opacity: 0.8, fontSize: '1rem', color: '#4a4a4a' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '123 Romance Lane, Loving Valley')}</p>
+
+                                    <a href={loc?.address || "#"} target="_blank" className="btn-primary">OPEN IN MAPS</a>
                                 </Reveal>
+                </div>
+              ))}
+            
                             </section>
 
                             <PhotoCarousel data={data} />

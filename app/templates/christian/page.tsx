@@ -225,18 +225,11 @@ export default function ChristianTemplate({ data, orderId }: { data: any, orderI
   const videoRef = useRef<HTMLVideoElement>(null);
   const hotelLocation = data?.location || {};
   const churchLocation = data?.churchLocation || {};
-  const isGoogleMapsUrl = (value?: string) => {
-    if (!value || typeof value !== 'string') return false;
-    const lower = value.toLowerCase();
-    return value.startsWith('http') && (
-      lower.includes('google.com/maps') ||
-      lower.includes('maps.google.com') ||
-      lower.includes('goo.gl/maps') ||
-      lower.includes('maps.app.goo.gl')
-    );
+  const getMapEmbed = (loc: any, fallbackName: string) => {
+    return `https://maps.google.com/maps?q=${encodeURIComponent((loc?.name || fallbackName) + ' ' + (loc?.address && !loc.address.includes('http') ? loc.address : ''))}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
   };
-  const hotelMapUrl = isGoogleMapsUrl(hotelLocation?.address) ? hotelLocation.address : '';
-  const churchMapUrl = isGoogleMapsUrl(churchLocation?.address) ? churchLocation.address : '';
+  const hotelMapUrl = getMapEmbed(hotelLocation, 'Grand Ballroom Hotel');
+  const churchMapUrl = churchLocation?.name || churchLocation?.address ? getMapEmbed(churchLocation, "Saint Mary's Cathedral") : '';
 
   const toggleMusic = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -360,9 +353,6 @@ export default function ChristianTemplate({ data, orderId }: { data: any, orderI
 
                 {hotelMapUrl && (
                   <>
-                    <div style={{ height: '280px', borderRadius: '30px', overflow: 'hidden', border: `3px solid ${THEME.secondary}`, margin: '35px 0', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
-                      <iframe src={hotelMapUrl} width="100%" height="100%" style={{ border: 0 }}></iframe>
-                    </div>
 
                     <a
                       href={hotelMapUrl}
@@ -377,21 +367,17 @@ export default function ChristianTemplate({ data, orderId }: { data: any, orderI
                 )}
               </GlassSection>
 
+              {(churchLocation?.name || churchLocation?.address) && (
               <GlassSection>
                 <div className={THEME.fontDisplay} style={{ fontSize: '0.9rem', letterSpacing: '6px', color: THEME.secondary, marginBottom: '20px', fontWeight: 900 }}>THE HOUSE OF GOD</div>
                 <h2 className={THEME.fontDisplay} style={{ fontSize: '2.4rem', marginBottom: '20px', fontWeight: 900 }}>{churchLocation?.name || 'Saint Mary\'s Cathedral'}</h2>
 
                 {churchLocation?.address && !churchLocation.address.startsWith('http') && (
-                  <p className={THEME.fontBody} style={{ opacity: 1, color: THEME.secondary, marginBottom: '30px', fontWeight: 800, fontSize: '1.1rem' }}>
-                    {churchLocation.address}
-                  </p>
+                  <p className={THEME.fontBody} style={{ opacity: 1, color: THEME.secondary, marginBottom: '30px', fontWeight: 800, fontSize: '1.1rem' }}>{churchLocation?.address?.startsWith('http') ? '' : churchLocation?.address}</p>
                 )}
 
                 {churchMapUrl && (
                   <>
-                    <div style={{ height: '280px', borderRadius: '30px', overflow: 'hidden', border: `3px solid ${THEME.secondary}`, margin: '35px 0', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
-                      <iframe src={churchMapUrl} width="100%" height="100%" style={{ border: 0 }}></iframe>
-                    </div>
 
                     <a
                       href={churchMapUrl}
@@ -405,6 +391,7 @@ export default function ChristianTemplate({ data, orderId }: { data: any, orderI
                   </>
                 )}
               </GlassSection>
+              )}
 
               <GlassSection padding="80px 25px">
                 <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2.4rem, 11vw, 3.5rem)', color: THEME.secondary, marginBottom: '30px', fontWeight: 900 }}>With Blessings</h3>
