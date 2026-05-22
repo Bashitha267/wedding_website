@@ -223,6 +223,20 @@ export default function ChristianTemplate({ data, orderId }: { data: any, orderI
   const [isOpen, setIsOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const hotelLocation = data?.location || {};
+  const churchLocation = data?.churchLocation || {};
+  const isGoogleMapsUrl = (value?: string) => {
+    if (!value || typeof value !== 'string') return false;
+    const lower = value.toLowerCase();
+    return value.startsWith('http') && (
+      lower.includes('google.com/maps') ||
+      lower.includes('maps.google.com') ||
+      lower.includes('goo.gl/maps') ||
+      lower.includes('maps.app.goo.gl')
+    );
+  };
+  const hotelMapUrl = isGoogleMapsUrl(hotelLocation?.address) ? hotelLocation.address : '';
+  const churchMapUrl = isGoogleMapsUrl(churchLocation?.address) ? churchLocation.address : '';
 
   const toggleMusic = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -335,28 +349,61 @@ export default function ChristianTemplate({ data, orderId }: { data: any, orderI
               <WeddingCalendar onAdd={() => { }} data={data} />
 
               <GlassSection>
-                <div className={THEME.fontDisplay} style={{ fontSize: '0.9rem', letterSpacing: '6px', color: THEME.secondary, marginBottom: '20px', fontWeight: 900 }}>THE HOUSE OF GOD</div>
-                <h2 className={THEME.fontDisplay} style={{ fontSize: '2.4rem', marginBottom: '20px', fontWeight: 900 }}>{data?.location?.name || 'Saint Mary\'s Cathedral'}</h2>
+                <div className={THEME.fontDisplay} style={{ fontSize: '0.9rem', letterSpacing: '6px', color: THEME.secondary, marginBottom: '20px', fontWeight: 900 }}>HOTEL LOCATION</div>
+                <h2 className={THEME.fontDisplay} style={{ fontSize: '2.4rem', marginBottom: '20px', fontWeight: 900 }}>{hotelLocation?.name || 'Grand Ballroom Hotel'}</h2>
 
-                {data?.location?.address && !data.location.address.startsWith('http') && (
+                {hotelLocation?.address && !hotelLocation.address.startsWith('http') && (
                   <p className={THEME.fontBody} style={{ opacity: 1, color: THEME.secondary, marginBottom: '30px', fontWeight: 800, fontSize: '1.1rem' }}>
-                    {data.location.address}
+                    {hotelLocation.address}
                   </p>
                 )}
 
-                <div style={{ height: '280px', borderRadius: '30px', overflow: 'hidden', border: `3px solid ${THEME.secondary}`, margin: '35px 0', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
-                  <iframe src="https://www.google.com/maps/embed?..." width="100%" height="100%" style={{ border: 0 }}></iframe>
-                </div>
+                {hotelMapUrl && (
+                  <>
+                    <div style={{ height: '280px', borderRadius: '30px', overflow: 'hidden', border: `3px solid ${THEME.secondary}`, margin: '35px 0', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
+                      <iframe src={hotelMapUrl} width="100%" height="100%" style={{ border: 0 }}></iframe>
+                    </div>
 
-                <a
-                  href={data?.location?.address || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={THEME.fontBody}
-                  style={{ display: 'inline-block', padding: '18px 50px', background: THEME.secondary, color: '#fff', borderRadius: '45px', fontWeight: 900, textDecoration: 'none', letterSpacing: '2px', boxShadow: '0 12px 35px rgba(15, 42, 74, 0.4)' }}
-                >
-                  MAP TO CHURCH
-                </a>
+                    <a
+                      href={hotelMapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={THEME.fontBody}
+                      style={{ display: 'inline-block', padding: '18px 50px', background: THEME.secondary, color: '#fff', borderRadius: '45px', fontWeight: 900, textDecoration: 'none', letterSpacing: '2px', boxShadow: '0 12px 35px rgba(15, 42, 74, 0.4)' }}
+                    >
+                      MAP TO HOTEL
+                    </a>
+                  </>
+                )}
+              </GlassSection>
+
+              <GlassSection>
+                <div className={THEME.fontDisplay} style={{ fontSize: '0.9rem', letterSpacing: '6px', color: THEME.secondary, marginBottom: '20px', fontWeight: 900 }}>THE HOUSE OF GOD</div>
+                <h2 className={THEME.fontDisplay} style={{ fontSize: '2.4rem', marginBottom: '20px', fontWeight: 900 }}>{churchLocation?.name || 'Saint Mary\'s Cathedral'}</h2>
+
+                {churchLocation?.address && !churchLocation.address.startsWith('http') && (
+                  <p className={THEME.fontBody} style={{ opacity: 1, color: THEME.secondary, marginBottom: '30px', fontWeight: 800, fontSize: '1.1rem' }}>
+                    {churchLocation.address}
+                  </p>
+                )}
+
+                {churchMapUrl && (
+                  <>
+                    <div style={{ height: '280px', borderRadius: '30px', overflow: 'hidden', border: `3px solid ${THEME.secondary}`, margin: '35px 0', boxShadow: '0 20px 50px rgba(0,0,0,0.4)' }}>
+                      <iframe src={churchMapUrl} width="100%" height="100%" style={{ border: 0 }}></iframe>
+                    </div>
+
+                    <a
+                      href={churchMapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={THEME.fontBody}
+                      style={{ display: 'inline-block', padding: '18px 50px', background: THEME.secondary, color: '#fff', borderRadius: '45px', fontWeight: 900, textDecoration: 'none', letterSpacing: '2px', boxShadow: '0 12px 35px rgba(15, 42, 74, 0.4)' }}
+                    >
+                      MAP TO CHURCH
+                    </a>
+                  </>
+                )}
               </GlassSection>
 
               <GlassSection padding="80px 25px">

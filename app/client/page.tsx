@@ -25,6 +25,7 @@ export default function ClientDashboard() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const isChristian = order?.template_id === 'christian';
 
   useEffect(() => {
     // 1. Get logged in user 
@@ -487,9 +488,17 @@ export default function ClientDashboard() {
                   
                   {/* Location */}
                   <div style={{ flex: 1, backgroundColor: 'white', padding: '25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.03)', border: '1px solid #eeeeee' }}>
-                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><MapPin size={20} color="#000000" /> Location</h3>
-                    <input type="text" placeholder="Venue Name" value={templateDraft?.location?.name || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), name: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '10px' }} />
-                    <textarea placeholder="Full Address / Google Maps Link" value={templateDraft?.location?.address || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), address: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', resize: 'vertical', minHeight: '60px' }} />
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}><MapPin size={20} color="#000000" /> {isChristian ? 'Hotel Location' : 'Location'}</h3>
+                    <input type="text" placeholder={isChristian ? 'Hotel Name' : 'Venue Name'} value={templateDraft?.location?.name || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), name: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '10px' }} />
+                    <textarea placeholder={isChristian ? 'Hotel Address / Google Maps Link' : 'Full Address / Google Maps Link'} value={templateDraft?.location?.address || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), address: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', resize: 'vertical', minHeight: '60px' }} />
+
+                    {isChristian && (
+                      <>
+                        <div style={{ height: '12px' }} />
+                        <input type="text" placeholder="Church Name" value={templateDraft?.churchLocation?.name || ''} onChange={e => setTemplateDraft({...templateDraft, churchLocation: {...(templateDraft.churchLocation || {}), name: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '10px' }} />
+                        <textarea placeholder="Church Address / Google Maps Link" value={templateDraft?.churchLocation?.address || ''} onChange={e => setTemplateDraft({...templateDraft, churchLocation: {...(templateDraft.churchLocation || {}), address: e.target.value}})} style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', resize: 'vertical', minHeight: '60px' }} />
+                      </>
+                    )}
                   </div>
                 </div>
 

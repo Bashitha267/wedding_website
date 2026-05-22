@@ -25,6 +25,7 @@ export default function AdminEditor() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const isChristian = order?.template_id === 'christian';
 
   useEffect(() => {
     if (orderId) fetchOrderData(orderId);
@@ -208,9 +209,18 @@ export default function AdminEditor() {
                         <div style={{ backgroundColor: 'white', padding: '25px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
                             <h3>Event Details</h3>
                             <div style={{ marginTop: '15px' }}>
-                                <label>Location Name</label><input type="text" value={templateDraft?.location?.name || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), name: e.target.value}})} style={{ width: '100%', padding: '8px', marginTop: '5px' }} />
-                                <label style={{ display: 'block', marginTop: '15px' }}>Address / Maps Link</label>
+                                <label>{isChristian ? 'Hotel Location Name' : 'Location Name'}</label><input type="text" value={templateDraft?.location?.name || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), name: e.target.value}})} style={{ width: '100%', padding: '8px', marginTop: '5px' }} />
+                                <label style={{ display: 'block', marginTop: '15px' }}>{isChristian ? 'Hotel Address / Maps Link' : 'Address / Maps Link'}</label>
                                 <textarea value={templateDraft?.location?.address || ''} onChange={e => setTemplateDraft({...templateDraft, location: {...(templateDraft.location || {}), address: e.target.value}})} style={{ width: '100%', padding: '8px', marginTop: '5px' }} />
+
+                                {isChristian && (
+                                  <>
+                                    <label style={{ display: 'block', marginTop: '15px' }}>Church Location Name</label>
+                                    <input type="text" value={templateDraft?.churchLocation?.name || ''} onChange={e => setTemplateDraft({...templateDraft, churchLocation: {...(templateDraft.churchLocation || {}), name: e.target.value}})} style={{ width: '100%', padding: '8px', marginTop: '5px' }} />
+                                    <label style={{ display: 'block', marginTop: '15px' }}>Church Address / Maps Link</label>
+                                    <textarea value={templateDraft?.churchLocation?.address || ''} onChange={e => setTemplateDraft({...templateDraft, churchLocation: {...(templateDraft.churchLocation || {}), address: e.target.value}})} style={{ width: '100%', padding: '8px', marginTop: '5px' }} />
+                                  </>
+                                )}
                             </div>
                         </div>
                     </div>
