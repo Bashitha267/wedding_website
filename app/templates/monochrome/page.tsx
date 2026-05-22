@@ -447,7 +447,7 @@ export default function MonochromeTemplate({ data, orderId }: { data: any, order
                                     <h2 style={{ fontSize: '3.5rem', fontFamily: 'var(--font-display)', color: 'black', marginBottom: '15px' }}>{loc?.name || 'The Rose Garden Estates'}</h2>
                                     <p style={{ marginBottom: '40px', opacity: 0.7, fontSize: '1rem', color: 'black' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '123 Romance Lane, Loving Valley')}</p>
                                     
-                                    <a href={loc?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-block' }}>VIEW LOCATION</a>
+                                    <a href={loc?.address?.includes('http') ? loc.address : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((loc?.name || '') + ' ' + (loc?.address || ''))}`} target="_blank" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-block' }}>VIEW LOCATION</a>
                                 </Reveal>
                 </div>
               ))}

@@ -324,7 +324,7 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
                 <p className={THEME.fontBody} style={{ opacity: 0.8, color: THEME.goldLight, marginBottom: '30px' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || 'Kandy, Sri Lanka')}</p>
 
                 <a
-                  href={loc?.address || '#'}
+                  href={loc?.address?.includes('http') ? loc.address : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((loc?.name || '') + ' ' + (loc?.address || ''))}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={THEME.fontBody}
@@ -336,7 +336,7 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
                 </div>
               ))}
 
-              <GlassSection padding="60px 25px">
+              <GlassSection>
                 <h3 className={THEME.fontDisplay} style={{ fontSize: 'clamp(2rem, 10vw, 3rem)', color: THEME.gold, marginBottom: '20px' }}>Ayubowan</h3>
                 <p className={THEME.fontBody} style={{ fontSize: '1.1rem', opacity: 0.9, marginBottom: '40px' }}>Thank you for being part of our story.</p>
                 <PoruwaRSVP orderId={orderId} data={data} />

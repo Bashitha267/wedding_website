@@ -610,7 +610,7 @@ export default function EarthyTemplate({ data, orderId }: { data: any, orderId?:
                   <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-display)', color: 'var(--earthy-brown)', marginBottom: '15px', fontWeight: 400 }}>{loc?.name || 'The Rose Garden Estates'}</h2>
                   <p style={{ marginBottom: '40px', opacity: 0.9, fontSize: '1.1rem', color: 'var(--earthy-text)', fontStyle: 'italic' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '123 Romance Lane, Loving Valley')}</p>
                   
-                  <a href={loc?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none' }}>VIEW LOCATION</a>
+                  <a href={loc?.address?.includes('http') ? loc.address : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((loc?.name || '') + ' ' + (loc?.address || ''))}`} target="_blank" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none' }}>VIEW LOCATION</a>
                 </Reveal>
                 </div>
               ))}

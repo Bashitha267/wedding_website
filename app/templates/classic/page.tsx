@@ -476,7 +476,7 @@ export default function ClassicTemplate({ data, orderId }: { data: any, orderId?
                     <h2 style={{ fontSize: '1.8rem', marginBottom: '10px' }}>{loc?.name || 'The Rose Garden Estates'}</h2>
                     <p style={{ marginBottom: '25px', opacity: 0.8, fontSize: '0.9rem' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '123 Romance Lane, Loving Valley')}</p>
 
-                    <a href="https://maps.app.goo.gl/example" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ padding: '10px 30px', fontSize: '0.9rem' }}>VIEW LOCATION</a>
+                    <a href={loc?.address?.includes('http') ? loc.address : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((loc?.name || '') + ' ' + (loc?.address || ''))}`} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ padding: '10px 30px', fontSize: '0.9rem' }}>VIEW LOCATION</a>
                   </Reveal>
                 </div>
               ))}

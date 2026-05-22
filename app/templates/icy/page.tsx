@@ -351,7 +351,7 @@ export default function IcyTemplate({ data, orderId }: { data: any, orderId?: st
                   <div style={{ fontSize: '0.9rem', letterSpacing: '8px', color: 'var(--icy-blue)', marginBottom: '20px', fontWeight: 800 }}>{idx === 0 ? "LOCATION" : "SECONDARY LOCATION"}</div>
                   <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-display)', color: 'var(--icy-dark)', marginBottom: '15px' }}>{loc?.name || 'Frost Garden Estates'}</h2>
                   <p style={{ marginBottom: '40px', opacity: 0.8, fontSize: '1rem', color: 'var(--icy-dark)' }}>{loc?.address?.startsWith('http') ? '' : (loc?.address || '456 Snow Peak, Winter Valley')}</p>
-                  <a href={loc?.mapUrl || "#"} target="_blank" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none' }}>VIEW LOCATION</a>
+                  <a href={loc?.address?.includes('http') ? loc.address : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((loc?.name || '') + ' ' + (loc?.address || ''))}`} target="_blank" className="btn-primary" style={{ display: 'inline-block', textDecoration: 'none' }}>VIEW LOCATION</a>
                 </Reveal>
                 </div>
               ))}
