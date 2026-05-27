@@ -133,7 +133,7 @@ const ChristianItinerary = ({ data }: { data?: any }) => {
   );
 };
 
-const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => {
+const WeddingCalendar = ({ onAdd, data, title }: { onAdd: () => void, data?: any, title?: string }) => {
   const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
   const year = eventDate.getFullYear();
   const month = eventDate.getMonth();
@@ -147,7 +147,7 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
   return (
     <Reveal delay={200}>
       <div style={{ padding: '35px 25px', textAlign: 'center', background: THEME.glassBg, backdropFilter: 'blur(45px)', WebkitBackdropFilter: 'blur(45px)', borderRadius: '35px', border: `1px solid ${THEME.glassBorder}`, margin: '45px 0', boxShadow: '0 25px 60px rgba(0,0,0,0.1)' }}>
-        <div className={THEME.fontDisplay} style={{ fontSize: '2.8rem', color: THEME.secondary, marginBottom: '12px', fontWeight: 900 }}>Save our Date</div>
+        <div className={THEME.fontDisplay} style={{ fontSize: '2.8rem', color: THEME.secondary, marginBottom: '12px', fontWeight: 900 }}>{title || "Save our Date"}</div>
         <div className={THEME.fontBody} style={{ fontSize: '1.3rem', fontWeight: 900, color: THEME.secondary, marginBottom: '25px', letterSpacing: '4px' }}>{monthName} {year}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '10px', maxWidth: '320px', margin: '0 auto 35px' }}>
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <div key={i} className={THEME.fontBody} style={{ fontSize: '0.85rem', fontWeight: 900, color: THEME.secondary }}>{d}</div>)}
@@ -235,6 +235,30 @@ export default function ChristianTemplate({ data, orderId }: { data: any, orderI
     e.stopPropagation();
     const audio = document.getElementById('bg-music') as HTMLAudioElement;
     if (audio) { audio.muted = !isMuted; setIsMuted(!isMuted); }
+  };
+
+  const addToCalendar = () => {
+    const title = encodeURIComponent(`${data?.brideName || 'Sarah'} & ${data?.groomName || 'Mark'}'s Wedding`);
+    const startStr = data?.eventDate 
+      ? new Date(data.eventDate).toISOString().replace(/-|:|\.\d\d\d/g, "") 
+      : "20260824T150000Z";
+    const dates = `${startStr}/${startStr}`;
+    const details = encodeURIComponent("Join us for our special day!");
+    const location = encodeURIComponent(data?.location?.name || "Grand Ballroom Hotel");
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
+    window.open(url, '_blank');
+  };
+
+  const addToCalendar2 = () => {
+    const title = encodeURIComponent(`${data?.brideName || 'Sarah'} & ${data?.groomName || 'Mark'}'s Wedding - ${data?.eventDate2Name || 'Date 2'}`);
+    const startStr = data?.eventDate2 
+      ? new Date(data.eventDate2).toISOString().replace(/-|:|\.\d\d\d/g, "") 
+      : "20260824T150000Z";
+    const dates = `${startStr}/${startStr}`;
+    const details = encodeURIComponent("Join us for our special day!");
+    const location = encodeURIComponent(data?.location?.name || "Grand Ballroom Hotel");
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
+    window.open(url, '_blank');
   };
 
   const handleOpen = () => {
@@ -339,7 +363,16 @@ export default function ChristianTemplate({ data, orderId }: { data: any, orderI
                 <BlendingImage src={thankYouImage} size="280px" align="left" />
               </Reveal>
 
-              <WeddingCalendar onAdd={() => { }} data={data} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <WeddingCalendar onAdd={addToCalendar} data={data} title={data?.eventDateName || "Save our Date"} />
+                {data?.eventDate2 && (
+                  <WeddingCalendar 
+                    onAdd={addToCalendar2} 
+                    data={{ ...data, eventDate: data.eventDate2 }} 
+                    title={data.eventDate2Name || 'Date 2 & Time 2'}
+                  />
+                )}
+              </div>
 
               <GlassSection>
                 <div className={THEME.fontDisplay} style={{ fontSize: '0.9rem', letterSpacing: '6px', color: THEME.secondary, marginBottom: '20px', fontWeight: 900 }}>HOTEL LOCATION</div>

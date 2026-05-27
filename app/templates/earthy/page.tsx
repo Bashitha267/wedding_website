@@ -422,7 +422,7 @@ const PhotoCarousel = ({ data }: { data?: any }) => {
   );
 };
 
-const EarthyCalendar = ({ data }: { data: any }) => {
+const EarthyCalendar = ({ data, title }: { data: any, title?: string }) => {
   const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
   const year = eventDate.getFullYear();
   const month = eventDate.getMonth();
@@ -439,7 +439,7 @@ const EarthyCalendar = ({ data }: { data: any }) => {
       <div style={{ padding: '70px 30px', textAlign: 'center', backgroundColor: 'var(--earthy-tan)', borderRadius: '40px', margin: '60px 0', boxShadow: '0 20px 60px rgba(0,0,0,0.02)', position: 'relative', border: '1px solid white' }}>
         <FloatingDeco style={{ top: '-40px', right: '-40px', transform: 'rotate(20deg)', opacity: 0.5 }} />
 
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', color: 'var(--earthy-brown)', marginBottom: '15px', fontWeight: 400 }}>Save the Date</div>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', color: 'var(--earthy-brown)', marginBottom: '15px', fontWeight: 400 }}>{title || "Save the Date"}</div>
         <div style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--earthy-text)', marginBottom: '40px', letterSpacing: '5px' }}>{monthName} {year}</div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '15px', maxWidth: '340px', margin: '0 auto 10px' }}>
@@ -592,7 +592,12 @@ export default function EarthyTemplate({ data, orderId }: { data: any, orderId?:
 
               <FloatingDeco style={{ top: '300vh', right: '-20px', transform: 'rotate(45deg)', zIndex: 5 }} />
 
-              <EarthyCalendar data={data} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                <EarthyCalendar data={data} title={data?.eventDateName || "Save the Date"} />
+                {data?.eventDate2 && (
+                  <EarthyCalendar data={{ ...data, eventDate: data.eventDate2 }} title={data.eventDate2Name || 'Date 2 & Time 2'} />
+                )}
+              </div>
 
               <SectionImage src={data?.images?.image2 || "/photo_3.png"} alt="Ceremony" height="300px" />
 

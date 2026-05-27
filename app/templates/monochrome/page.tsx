@@ -228,7 +228,7 @@ const MonochromeCountdown = ({ data }: { data: any }) => {
     );
 };
 
-const MonochromeCalendar = ({ data }: { data: any }) => {
+const MonochromeCalendar = ({ data, title }: { data: any, title?: string }) => {
   const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
   const year = eventDate.getFullYear();
   const month = eventDate.getMonth();
@@ -257,7 +257,7 @@ const MonochromeCalendar = ({ data }: { data: any }) => {
             marginBottom: '10px',
             lineHeight: 1
         }}>
-            Save the Date
+            {title || "Save the Date"}
         </div>
         <div style={{ 
             fontSize: '1.1rem', 
@@ -430,7 +430,12 @@ export default function MonochromeTemplate({ data, orderId }: { data: any, order
                                 <ItineraryTimeline data={data} />
                             </div>
 
-                            <MonochromeCalendar data={data} />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                                <MonochromeCalendar data={data} title={data?.eventDateName || "Save the Date"} />
+                                {data?.eventDate2 && (
+                                    <MonochromeCalendar data={{ ...data, eventDate: data.eventDate2 }} title={data.eventDate2Name || 'Date 2 & Time 2'} />
+                                )}
+                            </div>
 
                             <SectionImage src={data?.images?.image2 || "/photo_3.png"} alt="Ceremony" height="400px" tornTop />
 

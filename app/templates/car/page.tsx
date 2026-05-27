@@ -356,14 +356,36 @@ export default function CarTemplate({ data, orderId }: { data: any, orderId?: st
         <section style={{ padding: '40px 30px 40px' }}>
           <Reveal>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', borderTop: '1px solid #f0f0f0', borderBottom: '1px solid #f0f0f0', padding: '45px 0' }}>
-              <div style={{ flex: 1, textAlign: 'center' }}>
-                <Calendar size={24} color="#c14d4d" style={{ marginBottom: '15px' }} />
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2.5px', marginBottom: '12px', opacity: 0.8 }}>DATE</div>
-                <div style={{ fontSize: '1rem', lineHeight: 1.4, fontWeight: 600 }}>
-                  {data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '20th SEPT 2026'}
-                  <br />
-                  <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>{data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase() : 'SUNDAY'}</span>
+              <div style={{ flex: 1, textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div>
+                  <Calendar size={24} color="#c14d4d" style={{ marginBottom: '15px', marginLeft: 'auto', marginRight: 'auto' }} />
+                  <div style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2.5px', marginBottom: '12px', opacity: 0.8 }}>
+                    {data?.eventDateName ? data.eventDateName.toUpperCase() : 'DATE'}
+                  </div>
+                  <div style={{ fontSize: '1rem', lineHeight: 1.4, fontWeight: 600 }}>
+                    {data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : '20th SEPT 2026'}
+                    <br />
+                    <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>
+                      {data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase() : 'SUNDAY'}
+                      {data?.eventDate && ` - ${new Date(data.eventDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                    </span>
+                  </div>
                 </div>
+                {data?.eventDate2 && (
+                  <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '15px' }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2.5px', marginBottom: '12px', opacity: 0.8 }}>
+                      {(data.eventDate2Name || 'DATE 2 & TIME 2').toUpperCase()}
+                    </div>
+                    <div style={{ fontSize: '1rem', lineHeight: 1.4, fontWeight: 600 }}>
+                      {new Date(data.eventDate2).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      <br />
+                      <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>
+                        {new Date(data.eventDate2).toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase()}
+                        {` - ${new Date(data.eventDate2).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100px', padding: '0 20px' }}>

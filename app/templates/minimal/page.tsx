@@ -394,8 +394,35 @@ export default function MinimalTemplate({ data, orderId }: { data: any, orderId?
                 {data?.groomName || 'Massimiliano'}
               </h1>
 
-              <div style={{ marginTop: '35px', fontSize: '1rem', fontWeight: 500, letterSpacing: '2px' }}>
-                {data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase() : '20 SEPTEMBER 2026'}
+              <div style={{ marginTop: '35px', display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+                <div>
+                  {data?.eventDateName && (
+                    <span style={{ fontSize: '0.65rem', opacity: 0.5, display: 'block', letterSpacing: '1px', marginBottom: '4px', fontWeight: 600 }}>
+                      {data.eventDateName.toUpperCase()}
+                    </span>
+                  )}
+                  <span style={{ fontSize: '1rem', fontWeight: 500, letterSpacing: '2px' }}>
+                    {data?.eventDate ? new Date(data.eventDate).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase() : '20 SEPTEMBER 2026'}
+                    {data?.eventDate && (
+                      <span style={{ fontSize: '0.85rem', opacity: 0.6, marginLeft: '8px', fontWeight: 400 }}>
+                        {new Date(data.eventDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    )}
+                  </span>
+                </div>
+                {data?.eventDate2 && (
+                  <div style={{ borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '12px', width: '100%', maxWidth: '200px' }}>
+                    <span style={{ fontSize: '0.65rem', opacity: 0.5, display: 'block', letterSpacing: '1px', marginBottom: '4px', fontWeight: 600 }}>
+                      {(data.eventDate2Name || "Date 2 & Time 2").toUpperCase()}
+                    </span>
+                    <span style={{ fontSize: '1rem', fontWeight: 500, letterSpacing: '2px' }}>
+                      {new Date(data.eventDate2).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase()}
+                      <span style={{ fontSize: '0.85rem', opacity: 0.6, marginLeft: '8px', fontWeight: 400 }}>
+                        {new Date(data.eventDate2).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </span>
+                  </div>
+                )}
               </div>
               <p style={{ fontSize: '0.8rem', opacity: 0.4, marginTop: '8px', letterSpacing: '1px', fontWeight: 500, marginBottom: '20px' }}>
                 {data?.location?.city?.toUpperCase() || 'TERRASINI, SICILIA'}

@@ -108,7 +108,7 @@ const GlassSection = ({ children, padding = '40px 25px' }: { children: React.Rea
   </Reveal>
 );
 
-const WeddingCalendar = ({ data }: { data?: any }) => {
+const WeddingCalendar = ({ data, title }: { data?: any, title?: string }) => {
   const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
   const year = eventDate.getFullYear();
   const month = eventDate.getMonth();
@@ -122,7 +122,7 @@ const WeddingCalendar = ({ data }: { data?: any }) => {
   return (
     <Reveal delay={200}>
       <div style={{ padding: '30px 20px', textAlign: 'center', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', borderRadius: '30px', border: `1px solid ${THEME.gold}`, margin: '40px 0' }}>
-        <div className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '10px' }}>Save the Date</div>
+        <div className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '10px' }}>{title || "Save the Date"}</div>
         <div className={THEME.fontBody} style={{ fontSize: '1.1rem', fontWeight: 700, color: THEME.goldLight, marginBottom: '20px', letterSpacing: '3px' }}>{monthName} {year}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', maxWidth: '300px', margin: '0 auto 30px' }}>
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <div key={i} className={THEME.fontBody} style={{ fontSize: '0.7rem', fontWeight: 900, color: THEME.gold }}>{d}</div>)}
@@ -142,12 +142,12 @@ const WeddingCalendar = ({ data }: { data?: any }) => {
         </div>
         <button
           onClick={() => {
-            const title = encodeURIComponent(`${data?.brideName || 'Bride'} & ${data?.groomName || 'Groom'}'s Wedding`);
+            const calTitle = encodeURIComponent(`${data?.brideName || 'Bride'} & ${data?.groomName || 'Groom'}'s Wedding${title ? ` - ${title}` : ''}`);
             const startStr = data?.eventDate
               ? new Date(data.eventDate).toISOString().replace(/-|:|\.\d\d\d/g, "")
               : "20260824T150000Z";
             const dates = `${startStr}/${startStr}`;
-            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}`;
+            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${calTitle}&dates=${dates}`;
             window.open(url, '_blank');
           }}
           className={THEME.fontBody}
@@ -310,7 +310,15 @@ export default function PoruwaTemplate({ data, orderId }: { data: any, orderId?:
 
               <PoruwaCountdown data={data} />
 
-              <WeddingCalendar data={data} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <WeddingCalendar data={data} title={data?.eventDateName || "Save the Date"} />
+                {data?.eventDate2 && (
+                  <WeddingCalendar 
+                    data={{ ...data, eventDate: data.eventDate2 }} 
+                    title={data.eventDate2Name || 'Date 2 & Time 2'}
+                  />
+                )}
+              </div>
 
               {/* Dynamic Locations Rendering */}
               {[

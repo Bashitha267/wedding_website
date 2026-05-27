@@ -11,7 +11,7 @@ import Image from 'next/image';
 const WEDDING_DATE = new Date(2026, 7, 24); // August 24, 2026
 const MUSIC_URL = "https://res.cloudinary.com/dnfbik3if/video/upload/v1775201422/krasnoshchok-wedding-romantic-love-music-409293_ikekwk.mp3"; // Placeholder dynamic link
 
-const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => {
+const WeddingCalendar = ({ onAdd, data, title }: { onAdd: () => void, data?: any, title?: string }) => {
   const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
   const year = eventDate.getFullYear();
   const month = eventDate.getMonth();
@@ -34,7 +34,7 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
         boxShadow: '0 10px 30px rgba(217, 133, 148, 0.15)'
       }}>
         <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.5rem', color: 'var(--rose-dark)', marginBottom: '10px' }}>
-          Save the Date
+          {title || "Save the Date"}
         </div>
         <div style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '20px', letterSpacing: '2px' }}>
           {monthName} {year}
@@ -328,6 +328,18 @@ export default function ClassicTemplate({ data, orderId }: { data: any, orderId?
     window.open(url, '_blank');
   };
 
+  const addToCalendar2 = () => {
+    const title = encodeURIComponent(`${data?.brideName || 'Sarah'} & ${data?.groomName || 'Mark'}'s Wedding - ${data?.eventDate2Name || 'Date 2'}`);
+    const startStr = data?.eventDate2 
+      ? new Date(data.eventDate2).toISOString().replace(/-|:|\.\d\d\d/g, "") 
+      : "20260824T150000Z";
+    const dates = `${startStr}/${startStr}`;
+    const details = encodeURIComponent("Join us for our special day!");
+    const location = encodeURIComponent(data?.location?.name || "The Rose Garden Estates");
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
+    window.open(url, '_blank');
+  };
+
   return (
     <div className="desktop-bg-wrapper theme-classic" style={{ backgroundColor: '#f0f0f0', minHeight: '100vh', width: '100%', display: 'flex', justifyContent: 'center' }}>
       <main className="invitation-container" style={{ position: 'relative', boxShadow: '0 0 50px rgba(0,0,0,0.1)' }}>
@@ -459,7 +471,16 @@ export default function ClassicTemplate({ data, orderId }: { data: any, orderId?
 
                 <ItineraryTimeline data={data} />
 
-                <WeddingCalendar onAdd={addToCalendar} data={data} />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                  <WeddingCalendar onAdd={addToCalendar} data={data} title={data?.eventDateName || "Save the Date"} />
+                  {data?.eventDate2 && (
+                    <WeddingCalendar 
+                      onAdd={addToCalendar2} 
+                      data={{ ...data, eventDate: data.eventDate2 }} 
+                      title={data.eventDate2Name || 'Date 2 & Time 2'}
+                    />
+                  )}
+                </div>
 
                 <SectionImage src={data?.images?.image2 || "/photo_3.png"} alt="Hands" height="250px" />
 

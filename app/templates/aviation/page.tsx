@@ -340,7 +340,7 @@ const BoardingPass = ({ data, orderId }: { data: any, orderId?: string }) => {
   );
 };
 
-const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => {
+const WeddingCalendar = ({ onAdd, data, title }: { onAdd: () => void, data?: any, title?: string }) => {
   const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
   const year = eventDate.getFullYear();
   const month = eventDate.getMonth();
@@ -354,7 +354,7 @@ const WeddingCalendar = ({ onAdd, data }: { onAdd: () => void, data?: any }) => 
   return (
     <Reveal delay={200}>
       <div style={{ padding: '30px 20px', textAlign: 'center', background: THEME.glassBg, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', borderRadius: '30px', border: `1px solid ${THEME.glassBorder}`, margin: '40px 0', boxShadow: '0 15px 35px rgba(0,0,0,0.2)', position: 'relative', overflow: 'hidden' }}>
-        <div className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.3)', position: 'relative', zIndex: 1 }}>Save the Date</div>
+        <div className={THEME.fontDisplay} style={{ fontSize: '2.5rem', color: THEME.gold, marginBottom: '10px', textShadow: '0 2px 10px rgba(0,0,0,0.3)', position: 'relative', zIndex: 1 }}>{title || "Save the Date"}</div>
         <div className={THEME.fontBody} style={{ fontSize: '1.1rem', fontWeight: 900, color: THEME.white, marginBottom: '20px', letterSpacing: '3px', position: 'relative', zIndex: 1 }}>{monthName} {year}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', maxWidth: '300px', margin: '0 auto 30px', position: 'relative', zIndex: 1 }}>
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <div key={i} className={THEME.fontBody} style={{ fontSize: '0.7rem', fontWeight: 900, color: THEME.gold }}>{d}</div>)}
@@ -593,7 +593,16 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
             </div>
           </GlassSection>
 
-          <WeddingCalendar onAdd={() => {}} data={data} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+            <WeddingCalendar onAdd={() => {}} data={data} title={data?.eventDateName || "Save the Date"} />
+            {data?.eventDate2 && (
+              <WeddingCalendar 
+                onAdd={() => {}} 
+                data={{ ...data, eventDate: data.eventDate2 }} 
+                title={data.eventDate2Name || 'Date 2 & Time 2'} 
+              />
+            )}
+          </div>
 
               {/* Dynamic Locations Rendering */}
               {[

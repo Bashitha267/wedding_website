@@ -319,6 +319,22 @@ export default function AdminEditor() {
                                onChange={(e) => setTemplateDraft({...templateDraft, eventDate: e.target.value})}
                                style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '15px' }} 
                             />
+                            
+                            <hr style={{ borderColor: '#eeeeee', margin: '15px 0' }} />
+                            <h4 style={{ fontSize: '0.9rem', marginBottom: '10px', color: '#555' }}>Second Date & Time (Optional)</h4>
+                            <input 
+                               type="text" 
+                               placeholder="Name for Date 2 (Default: Date 2)" 
+                               value={templateDraft?.eventDate2Name || ''} 
+                               onChange={(e) => setTemplateDraft({...templateDraft, eventDate2Name: e.target.value})}
+                               style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px', marginBottom: '10px' }} 
+                            />
+                            <input 
+                               type="datetime-local" 
+                               value={templateDraft?.eventDate2 ? templateDraft.eventDate2.substring(0,16) : ''} 
+                               onChange={(e) => setTemplateDraft({...templateDraft, eventDate2: e.target.value})}
+                               style={{ width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }} 
+                            />
                           </div>
                           
                           <div style={{ flex: 1, backgroundColor: 'white', padding: '25px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>

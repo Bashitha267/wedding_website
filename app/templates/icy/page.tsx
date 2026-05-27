@@ -139,7 +139,7 @@ const IcyHero = ({ data }: { data: any }) => (
   </section>
 );
 
-const IcyCalendar = ({ data }: { data: any }) => {
+const IcyCalendar = ({ data, title }: { data: any, title?: string }) => {
   const eventDate = data?.eventDate ? new Date(data.eventDate) : new Date(2026, 7, 24);
   const year = eventDate.getFullYear();
   const month = eventDate.getMonth();
@@ -164,7 +164,7 @@ const IcyCalendar = ({ data }: { data: any }) => {
         position: 'relative',
         overflow: 'hidden'
       }}>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', color: 'var(--icy-dark)', marginBottom: '10px', lineHeight: 1.2 }}>Save the Date</div>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: '3.5rem', color: 'var(--icy-dark)', marginBottom: '10px', lineHeight: 1.2 }}>{title || "Save the Date"}</div>
         <div style={{ fontSize: '1.2rem', letterSpacing: '5px', color: 'var(--icy-blue)', fontWeight: 700, marginBottom: '40px' }}>{monthName} {year}</div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '15px', maxWidth: '340px', margin: '0 auto' }}>
@@ -335,7 +335,12 @@ export default function IcyTemplate({ data, orderId }: { data: any, orderId?: st
                 <ItineraryTimeline data={data} />
               </div>
 
-              <IcyCalendar data={data} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                <IcyCalendar data={data} title={data?.eventDateName || "Save the Date"} />
+                {data?.eventDate2 && (
+                  <IcyCalendar data={{ ...data, eventDate: data.eventDate2 }} title={data.eventDate2Name || 'Date 2 & Time 2'} />
+                )}
+              </div>
 
               <BlendedImage src={data?.images?.image2 || "/photo_3.png"} alt="Ceremony" height="400px" />
 
