@@ -20,7 +20,7 @@ const WhatsAppIcon = ({ size = 20, color = "currentColor" }) => (
 
 export default function Home() {
     // START: Coming soon mode (prevents rendering the main page but keeps the code intact)
-    const isComingSoon = true;
+    const isComingSoon = false;
 
     if (isComingSoon) {
         return (

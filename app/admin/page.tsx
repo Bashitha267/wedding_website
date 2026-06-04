@@ -409,7 +409,7 @@ export default function AdminDashboard() {
           ))}
           <div style={{ padding: '15px 20px', marginTop: '10px', borderTop: '1px solid #333' }}>
             <Link 
-              href="/live" 
+              href="/" 
               target="_blank" 
               style={{ 
                 display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 20px', 
@@ -452,7 +452,7 @@ export default function AdminDashboard() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '15px' }}>
                 <h1 style={{ margin: 0 }}>{cfg.label}</h1>
                 <Link 
-                  href="/live" 
+                  href="/" 
                   target="_blank" 
                   style={{ 
                     display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', 
@@ -461,7 +461,7 @@ export default function AdminDashboard() {
                     boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                   }}
                 >
-                  <Eye size={18} /> Live Preview (/live)
+                  <Eye size={18} /> Live Preview (/)
                 </Link>
               </div>
               <SearchAndFilterBar />
