@@ -22,6 +22,9 @@ export default function AdminDashboard() {
   // Template Pricing State
   const [templatePrices, setTemplatePrices] = useState<Record<string, string>>({});
   const [priceSaving, setPriceSaving] = useState<string | null>(null);
+  const [savedStatus, setSavedStatus] = useState<Record<string, boolean>>({});
+  const [pricingModalTemplate, setPricingModalTemplate] = useState<{ id: string; name: string } | null>(null);
+  const [pricingInputValue, setPricingInputValue] = useState<string>('');
   
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,15 +54,21 @@ export default function AdminDashboard() {
     }
   };
 
-  const saveTemplatePrice = async (templateId: string) => {
+  const saveTemplatePrice = async (templateId: string, newPriceRaw: string) => {
     setPriceSaving(templateId);
-    const raw = templatePrices[templateId];
-    const price = raw === '' || raw == null ? null : Number(raw);
+    const price = newPriceRaw === '' || newPriceRaw == null ? null : Number(newPriceRaw);
     const { error } = await supabase
       .from('template_prices')
       .upsert({ template_id: templateId, price }, { onConflict: 'template_id' });
-    if (error) alert(`Failed to save price: ${error.message}`);
-    else await fetchTemplatePrices();
+    if (error) {
+      alert(`Failed to save price: ${error.message}`);
+    } else {
+      await fetchTemplatePrices();
+      setSavedStatus(prev => ({ ...prev, [templateId]: true }));
+      setTimeout(() => {
+        setSavedStatus(prev => ({ ...prev, [templateId]: false }));
+      }, 2000);
+    }
     setPriceSaving(null);
   };
 
@@ -647,52 +656,54 @@ export default function AdminDashboard() {
                 <thead style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #eee' }}>
                   <tr>
                     <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>TEMPLATE</th>
-                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>THEME</th>
-                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>CURRENT PRICE (LKR)</th>
-                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>SET NEW PRICE</th>
+                    <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>PRICE (LKR)</th>
                     <th style={{ padding: '15px 20px', fontWeight: 600, color: '#444', fontSize: '0.9rem' }}>ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
                   {templates.map((t) => {
                     const current = templatePrices[t.id];
+                    const isSaving = priceSaving === t.id;
+                    const isSaved = savedStatus[t.id];
                     return (
                       <tr key={t.id} style={{ borderBottom: '1px solid #eee' }}>
                         <td style={{ padding: '16px 20px', fontWeight: 600, fontSize: '1rem' }}>{t.name}</td>
-                        <td style={{ padding: '16px 20px', color: '#888', fontSize: '0.9rem' }}>{t.theme}</td>
                         <td style={{ padding: '16px 20px' }}>
-                          {current ? (
-                            <span style={{ fontWeight: 700, color: '#111' }}>LKR {Number(current).toLocaleString()}</span>
-                          ) : (
-                            <span style={{ color: '#aaa', fontSize: '0.85rem' }}>Not set</span>
-                          )}
-                        </td>
-                        <td style={{ padding: '16px 20px' }}>
-                          <input
-                            type="number"
-                            min="0"
-                            placeholder="e.g. 15000"
-                            value={templatePrices[t.id] ?? ''}
-                            onChange={(e) => setTemplatePrices(prev => ({ ...prev, [t.id]: e.target.value }))}
-                            style={{ padding: '8px 12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '1rem', width: '160px' }}
-                          />
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            {current ? (
+                              <span style={{ fontWeight: 700, color: '#111', fontSize: '1rem' }}>LKR {Number(current).toLocaleString()}</span>
+                            ) : (
+                              <span style={{ color: '#aaa', fontSize: '0.9rem', fontStyle: 'italic' }}>Price on request</span>
+                            )}
+                            {isSaving && (
+                              <span style={{ color: '#666', fontSize: '0.85rem' }}>Saving...</span>
+                            )}
+                            {!isSaving && isSaved && (
+                              <span style={{ display: 'flex', alignItems: 'center', gap: '3px', color: '#28a745', fontSize: '0.85rem', fontWeight: 600 }}>
+                                <Check size={14} /> Saved
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td style={{ padding: '16px 20px' }}>
                           <button
-                            onClick={() => saveTemplatePrice(t.id)}
-                            disabled={priceSaving === t.id}
+                            onClick={() => {
+                              setPricingModalTemplate({ id: t.id, name: t.name });
+                              setPricingInputValue(current ?? '');
+                            }}
                             style={{
-                              padding: '8px 20px',
-                              backgroundColor: priceSaving === t.id ? '#aaa' : '#28a745',
+                              padding: '8px 16px',
+                              backgroundColor: '#0070f3',
                               color: 'white',
                               border: 'none',
                               borderRadius: '6px',
-                              cursor: priceSaving === t.id ? 'default' : 'pointer',
+                              cursor: 'pointer',
                               fontWeight: 600,
-                              fontSize: '0.85rem'
+                              fontSize: '0.85rem',
+                              transition: 'background-color 0.2s',
                             }}
                           >
-                            {priceSaving === t.id ? 'Saving...' : 'Save'}
+                            Change Price
                           </button>
                         </td>
                       </tr>
@@ -802,6 +813,100 @@ export default function AdminDashboard() {
         </div>
       )}
       </main>
+
+      {/* Pricing Modal */}
+      {pricingModalTemplate && (
+        <div style={{ 
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '8px', width: '400px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>Update Template Price</h2>
+              <button onClick={() => setPricingModalTemplate(null)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#666' }}><X size={20} /></button>
+            </div>
+            
+            <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '20px' }}>
+              Template: <strong style={{ color: '#111' }}>{pricingModalTemplate.name}</strong>
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.85rem', color: '#666', fontWeight: 600 }}>Current Price</label>
+                <div style={{ padding: '10px 12px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #e9ecef', fontWeight: 600 }}>
+                  {templatePrices[pricingModalTemplate.id] ? (
+                    `LKR ${Number(templatePrices[pricingModalTemplate.id]).toLocaleString()}`
+                  ) : (
+                    "Price on request (Not set)"
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '5px', fontSize: '0.85rem', color: '#666', fontWeight: 600 }}>New Price (LKR)</label>
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <span style={{ position: 'absolute', left: '12px', color: '#666', fontWeight: 600, fontSize: '0.95rem' }}>LKR</span>
+                  <input 
+                    type="number" 
+                    min="0"
+                    placeholder="Leave blank for Price on request"
+                    value={pricingInputValue}
+                    onChange={(e) => setPricingInputValue(e.target.value)}
+                    style={{ 
+                      width: '100%', 
+                      padding: '10px 12px 10px 48px', 
+                      border: '1px solid #ced4da', 
+                      borderRadius: '6px',
+                      fontSize: '1rem',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
+                <button 
+                  onClick={async () => {
+                    await saveTemplatePrice(pricingModalTemplate.id, pricingInputValue);
+                    setPricingModalTemplate(null);
+                  }}
+                  disabled={priceSaving === pricingModalTemplate.id}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    backgroundColor: '#28a745',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: priceSaving === pricingModalTemplate.id ? 'default' : 'pointer',
+                    fontWeight: 600,
+                    fontSize: '0.9rem',
+                    textAlign: 'center'
+                  }}
+                >
+                  {priceSaving === pricingModalTemplate.id ? 'Saving...' : 'Save Price'}
+                </button>
+                <button 
+                  onClick={() => setPricingModalTemplate(null)}
+                  style={{
+                    padding: '12px 20px',
+                    backgroundColor: '#e9ecef',
+                    color: '#495057',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    fontSize: '0.9rem'
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Modal */}
       {editingOrder && (
