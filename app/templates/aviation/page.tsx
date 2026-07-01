@@ -386,11 +386,11 @@ export default function AviationTheme({ data, orderId }: { data: any, orderId?: 
   
   const galleryRaw = data?.images?.gallery || [];
   const gallery = (galleryRaw.length > 0 ? galleryRaw : DEFAULT_IMAGES) as string[];
-  const img0 = gallery[0] || DEFAULT_IMAGES[0];
-  const img1 = gallery[1] || DEFAULT_IMAGES[1] || DEFAULT_IMAGES[0];
-  const img2 = gallery[2] || DEFAULT_IMAGES[2] || DEFAULT_IMAGES[0];
-  const img3 = gallery[3] || DEFAULT_IMAGES[3] || DEFAULT_IMAGES[0];
-  const img4 = gallery[4] || DEFAULT_IMAGES[4] || DEFAULT_IMAGES[0];
+  const img0 = data?.images?.heroImage || gallery[0] || DEFAULT_IMAGES[0];
+  const img1 = data?.images?.image1 || gallery[1] || DEFAULT_IMAGES[1] || DEFAULT_IMAGES[0];
+  const img2 = data?.images?.image2 || gallery[2] || DEFAULT_IMAGES[2] || DEFAULT_IMAGES[0];
+  const img3 = data?.images?.image3 || gallery[3] || DEFAULT_IMAGES[3] || DEFAULT_IMAGES[0];
+  const img4 = data?.images?.thankYouImage || gallery[4] || DEFAULT_IMAGES[4] || DEFAULT_IMAGES[0];
 
   const toggleMusic = (e: React.MouseEvent) => {
     e.stopPropagation();
